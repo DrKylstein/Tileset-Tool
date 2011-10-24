@@ -1,0 +1,163 @@
+<html>
+	<head>
+		<title>Tileset Tool Help</title>
+	</head>
+	<body>
+		<h1>Tileset Tool Help</h1>
+		<h3 id="top">Contents</h3>
+		<ol>
+			<li>Docks<ol>
+				<li><a href="#tile-properties-dock">Tile Properties Dock</a></li>
+				<li><a href="#animation-dock">Animation Dock</a></li>
+				<li><a href="#palette-dock">Palette Dock</a></li>
+			</ol></li>
+			<li>Menus and Toolbars<ol>
+				<li><a href="#paint-mode">Paint Mode</a></li>
+				<li><a href="#tools">Tools</a></li>
+			</ol></li>
+			<li><a href="#hotkeys">Hotkeys</a></li>
+			<li><a href="#formats">Supported File Formats</a><ol>
+				<li><a href="#format-tileset">Tileset Formats</a></li>
+				<li><a href="#format-image">Image Formats</a></li>
+				<li><a href="#format-palette">Palette Formats</a></li>
+			</ol></li>
+		</ol>
+
+		<h3 id="tile-proerties-dock">Tile Properties Dock</h3>
+		<a href="#top">Return to Top</a>
+		<p>Gameplay properties of the currently selected tile, or the template tile in <a href="#paint-mode">paint mode</a>, are edited here.
+		A change to a property will not take effect until the control looses focus. <a href="#hotkeys">Hotkeys</a> are also provided.</p>
+
+		<h3 id="animation-dock">Animation Dock</h3>
+		<a href="#top">Return to Top</a>
+		<p>This dock contains editing and playback controls for the animation of the current tile.
+		The box on the left is a preview of the animation. The buttons beneath it can rewind, step back one frame, start and stop, step forward, and skip to the end of the animation, respectively.
+		The box on the right shows the animation as a filmstrip. You can seek to a specific frame by clicking on it.
+		By double-clicking on a frame in the filmstrip, you can change which graphic the frame uses.
+		The dialog that opens will highlight the current graphic, and a single click on any other graphic cell will close the dialog, setting the frame to the clicked graphic.
+		Next to the playback controls is a drop-down box that can be used to select a preset animation sequence.
+		The animation will be set relative the current first frame when the <q>Apply</q> button is clicked, or the <a href="#hotkeys">hotkey</a> is activated.
+		</p>
+
+		<h3 id="palette-dock">Palette Dock</h3>
+		<a href="#top">Return to Top</a>
+		<p>This dock displays the tileset's internal palette.
+		This will be set automatically when <a href="#import-image">importing graphics</a>, and can also be <a href="#import-palette">imported</a> or <a href="#fix-palette">corrected</a> with an external file.
+		The palette is divided into 16 pages of 16 colors each.
+		Only one page can be used by the game at a time.
+		If you are using the palette-enabled tileset loader patch with the latest palette patch, the game will load all 16 pages into memory when a level is loaded, and the first page will be enabled.
+		The remaining pages are for use by effect patches.
+		</p>
+
+		<h3 id="paint-mode">Paint Mode</h3>
+		<a href="#top">Return to Top</a>
+		<p>Paint mode can be toggled from the paintbrush icon on the toolbar.
+		While in paint mode, the properties and/or animation of the last tile selected will be applied to every new tile selected.
+		Animations will be adjusted automatically so that the offset between the first-frame of the new tile and the first-frame of
+		the template tile will be the same as the offset between the new tile and the old-tile in the tileset.</p>
+		<p>Whether paint mode copies properties, animations, or both can be set from the drop-down menu on the toolbar button, or from the edit menu.</p>
+
+		<h3 id="tools">Tools</h3>
+		<a href="#top">Return to Top</a>
+		<dl>
+			<dt id="import-image">Import Image</dt>
+				<dd>
+					<p>Load tile graphics from an image.</p>
+
+					<p>The image must be in a <a href="#image-format">supported format</a> and divide evenly into 16x16 pixel cells.
+					This action cannot be undone.</p>
+				</dd>
+			<dt id="fix-palette">Fix Palette</dt>
+				<dd>
+					<p>Remap the tile graphics to a specified palette/</p>
+
+					<p>You wil be asked whether to use the standard EGA palette. This is the palette used by the Commander Keen games in the unmodified form.
+					If you choose <q>Yes</q>, the tileset will load 16 identical pages of this palette.
+					If <q>No</q>, see <a href="#import-palette">Import Palette</a> for details.
+					Once the palette is loaded, the colors of the tile graphics will be automatically re-mapped to their closest match in the new palette.
+					This action cannot be undone.</p>
+				</dd>
+			<dt id="import-palette">Import Palette</dt>
+				<dd>
+					<p>Replace the current palette with one loaded from a file.</p>
+
+					<p>A <a href="#palette-format">palette file</a> will be loaded directly.
+					For an <a href="#image-format">image file</a>, if it has an internal palette, that will be used.
+					Otherwise, the top-leftmost 16x16 pixel square will be interpreted as a palette.
+					If the file does not contain 256 colors, or is shorter than 16 pixels for True Color images, the first 16 colors found will be mapped to the remaining color pages.
+					Unlike <a href="#fix-palette">Fix Palette</a>, this operation will not adjust the colors of the tile-graphics&emdash;they will use whatever color now occupies the position of the previous one.</p>
+				</dd>
+			<!--dt id="auto-map">Auto-map tiles</dt>
+				<dd>
+					<p>Write all of the animations in the file such that tile 1 references tile graphic 1, and so on.</p>
+
+					<p>This is porvided as a convenience for those used to TileInfo and earlier versions of Tileset Tool.
+					It may be very slow, cannot be undone, and is not recommended.
+					See <a href="#story-new">Starting a New Tileset</a> for alternatives.</p>
+				</dd-->
+			<dt id="export-image">Export Image</dt>
+				<dd>
+					<p>Save tile graphics to an image.</p>
+
+					<p>This operation exists as counterpart to <a href="#import-image">Import Image.</a> It can be used to recover the tile graphics data for editing if the source has been lost.
+					The resulting file may not be organized neatly.</p>
+				</dd>
+			<dt id="export-palette">Export Palette</dt>
+				<dd>
+					<p>Save palette to an external file.</p>
+
+					<p>This operation exists as counterpart to <a href="#import-palette">Import Palette.</a>
+					It will save to a <a href="#palette-format">palette format</a> which may be usable with a non-tileset aware palette patch.</p>
+				</dd>
+		</dl>
+
+		<h3 id="hotkeys">Hot Keys</h3>
+		<a href="#top">Return to Top</a>
+		<dl>
+			<dt>W</dt>
+				<dd>Toggle Top Collison</dd>
+			<dt>A</dt>
+				<dd>Toggle Left Collison</dd>
+			<dt>S</dt>
+				<dd>Toggle Bottom Collison</dd>
+			<dt>D</dt>
+				<dd>Toggle Right Collison</dd>
+			<dt>N</dt>
+				<dd>Set Interaction to <q>Do <u>N</u>othing</q>.</dd>
+			<dt>K</dt>
+				<dd>Cycle Interaction value between <q><u>K</u>ey</q> types.</dd>
+			<dt>L</dt>
+				<dd>Cycle Interaction value between <q>Door</q> types. (<q><u>L</u>ocked</q>)</dd>
+			<dt>H</dt>
+				<dd>Set Interaction to <q>Kills</q>. (<q><u>H</u>urt</q>)</dd>
+			<dt>F</dt>
+				<dd>Set tile as <q><u>F</u>oreground</q>. (Occupies Interaction value.)</dd>
+			<dt>M</dt>
+				<dd>Set tile as <q><u>M</u>asked</q>. (Occupies Interaction value.)</dd>
+			<dt>C</dt>
+				<dd>Apply currently selected animation <u>c</u>cle.</dd>
+		</dl>
+
+		<h3 id="formats">Supported Formats</h3>
+		<dl>
+			<dt id="tileset-format">Opening Tilesets</dt>
+				<dd><ul>
+					<li>Lemm's tileset format (*.tls)</li>
+					<li>TileInfo-style binary patch (*.tli)</li>
+				</ul></dd>
+			<dt>Saving Tilesets</dt>
+				<dd><ul>
+					<li>Lemm's tileset format (*.tls)</li>
+				</ul></dd>
+			<dt id="image-format">Image formats</dt>
+				<dd><ul>
+					<li>Windows Bitmap (*.bmp)</li>
+					<li>Portable Network Graphics (*.png)</li>
+					<li>Tagged Image Format (*.tiff)</li>
+				</ul></dd>
+			<dt id="palette-format">Palette formats</dt>
+				<dd>VGA RAMDAC register dump file (*.bin, *.dat)</dd>
+
+		</dl>
+	</body>
+</html>

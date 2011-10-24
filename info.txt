@@ -1,0 +1,88 @@
+This is (incomplete) readme for the patch portion of the tiletool.  We'll make a nicer html version later ;-)
+
+
+The header file contains a list of filenames of the individual tilesheets used by a mod.  Thus, 
+a mod will have one tilehead, and up to one tilesheet per level, all contained within the same folder
+as the executible.
+
+
+TILEHEAD:
+0    16*91    TS_File      Contains an ASCII zero terminated filename of a tilesheet.
+                           The patch looks at byte 16*current_level for a filename.
+                           Therefore, all levels (including levels 80, 81 and 90) must
+                           reference a tilesheet file.  Currently we can do up to 32 levels,
+                           but one day a patch may be made to allow more.
+
+                           
+                           
+                           
+The tilesheet file is loaded at the start of each level (during the fade in and fade out).
+It contains information for tile info, animation, and graphics in that order.                          
+                           
+                           
+TILESHEET:
+
+0        2    TileCount    Number of tiles in tilesheet (keen1: TC = 910; keen2,3 = ?)
+2        2    FrameCount   Number of frames in tilesheet.  (keen1: FC = 8, keen2,3 = ?)
+4        2    GfxLength    Length of one plane of tile graphics.  (keen1,2,3: GL = as much as desired/will fit)
+6        4    InfoLoc      Offset from beginning of file of tileinfo
+10       4    AnimLoc      Offset from beginning of file of animinfo
+14       4    GfxLoc       Offset from beginning of file of graphics
+18      46    buffer       left empty
+
+64    TC*6    TileInfo     TileInfo*
+?   TC*FrameCount*2    AnimInfo     AnimInfo**
+?     GL*4    GfxLoc	   Tile Graphics***
+
+
+*TileInfo
+
+Similar to the unmodded tileinfo.  Contains 5 planes.  The first plane (plane 0) is 910 words for the behaviour of the tiles.
+The values are unchanged from keen 1-3.  Planes 1 thru 4 are blocking top, right, bottom, and left edges, respectively,
+and are only one byte per tile.  In addition, the byte can signify axis-normal blocking, or sloped blocking.  Slope values
+are negative and defined in the PDF file.  There is no animation plane, as this has been replaced by animation data.
+
+
+TILEINFO:
+0     TC    Behaviour    Unchanged from Keen1-3
+TC    TC    Top Blocking Values 0 thru 3 unchaged from Keen1-3.  Negative values indicate various slopes.
+TC*2    TC    Right         ""
+TC*3    TC    Bottom        ""
+TC*4    TC    Left          ""
+
+
+
+**AnimInfo
+
+In the unmodded keen1-3.exe, the game goes through the animation plane and processes each tile.  The data in the
+animation plane is converted into offsets in video memory, which are stored in four arrays of words in main memory (one
+per animation frame).  The AnimInfo is in the format of these arrays.  Because offsets can be arbitrary, one tile
+can have ANY four GRAPHICS for a given frame.  For "non-animating" tiles, this graphic is the same for each
+frame.  By using empty space in the executable, the patch stores animation information for 4 extra arrays,
+for a total of 8 frames!  
+
+
+ANIMINFO:
+0     TC*2    Frame 0      Offset data for frame 0
+TC*2  TC*2    Frame 1      Offset data for frame 1 
+TC*4  TC*2    Frame 2      Offset data for frame 2
+...
+TC*14 TC*2    Frame 7      Offset data for frame 7 
+
+
+
+***Graphics info is simply tile EGALATCH data.  It is loaded into video memory.  The patch makes use of a pointer
+to the start of tile graphics that is defined during game loading.
+
+GFXINFO:
+0       GL    Blue         Data for the BLUE  plane (8 pixels per byte)
+GL      GL    Green        Data for the GREEN plane (8 pixels per byte)
+GL*2    GL    Red          Data for the RED   plane (8 pixels per byte)
+GL*3    GL    Light        Data for the LIGHT plane (8 pixels per byte)
+
+
+
+
+To be continued...
+
+

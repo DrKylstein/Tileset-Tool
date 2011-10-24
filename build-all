@@ -1,0 +1,14 @@
+#! /bin/sh
+make clean
+qmake-qt4
+make release > linux64.log
+mv ./bin/tilesettool ./bin/tilesettool-64
+make clean
+qmake-qt4 -spec linux-x-g++-32
+make release > linux32.log
+mv ./bin/tilesettool ./bin/tilesettool-32
+make clean
+qmake-qt4 -spec win32-x-g++
+make release > win32.log
+make clean
+qmake-qt4

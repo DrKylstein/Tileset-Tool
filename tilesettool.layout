@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="debug" />
+	<File name="AnimationEditor.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="10372" topLine="198" />
+	</File>
+	<File name="AnimationEditor.hpp" open="0" top="0" tabpos="4">
+		<Cursor position="1445" topLine="35" />
+	</File>
+	<File name="AnimationPreview.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="1891" topLine="23" />
+	</File>
+	<File name="AnimationPreview.hpp" open="0" top="0" tabpos="8">
+		<Cursor position="1202" topLine="26" />
+	</File>
+	<File name="FramePickerDialog.cpp" open="0" top="0" tabpos="10">
+		<Cursor position="1639" topLine="23" />
+	</File>
+	<File name="FramePickerDialog.hpp" open="0" top="0" tabpos="9">
+		<Cursor position="1285" topLine="15" />
+	</File>
+	<File name="MainWindow.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="12190" topLine="0" />
+	</File>
+	<File name="MainWindow.hpp" open="0" top="0" tabpos="4">
+		<Cursor position="1468" topLine="22" />
+	</File>
+	<File name="PaletteEditor.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="956" topLine="0" />
+	</File>
+	<File name="PaletteEditor.hpp" open="0" top="0" tabpos="4">
+		<Cursor position="1223" topLine="8" />
+	</File>
+	<File name="PreferencesDialog.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1594" topLine="17" />
+	</File>
+	<File name="PreferencesDialog.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1262" topLine="0" />
+	</File>
+	<File name="RowToListProxyModel.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="1633" topLine="5" />
+	</File>
+	<File name="RowToListProxyModel.hpp" open="0" top="0" tabpos="2">
+		<Cursor position="658" topLine="0" />
+	</File>
+	<File name="SlopeEditor.cpp" open="0" top="0" tabpos="8">
+		<Cursor position="960" topLine="36" />
+	</File>
+	<File name="SlopeEditor.hpp" open="0" top="0" tabpos="4">
+		<Cursor position="166" topLine="2" />
+	</File>
+	<File name="TileAnimModel.cpp" open="0" top="0" tabpos="6">
+		<Cursor position="1190" topLine="15" />
+	</File>
+	<File name="TileAnimModel.hpp" open="0" top="0" tabpos="3">
+		<Cursor position="588" topLine="0" />
+	</File>
+	<File name="TileEditor.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="4096" topLine="72" />
+	</File>
+	<File name="TileEditor.hpp" open="0" top="0" tabpos="2">
+		<Cursor position="771" topLine="1" />
+	</File>
+	<File name="TileGfxModel.cpp" open="0" top="0" tabpos="11">
+		<Cursor position="1773" topLine="27" />
+	</File>
+	<File name="TileGfxModel.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="541" topLine="0" />
+	</File>
+	<File name="TileInfo.h" open="0" top="0" tabpos="4">
+		<Cursor position="260" topLine="0" />
+	</File>
+	<File name="TileInfoModel.cpp" open="0" top="0" tabpos="9">
+		<Cursor position="1082" topLine="0" />
+	</File>
+	<File name="TileMapDelegate.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="1660" topLine="10" />
+	</File>
+	<File name="TileMapDelegate.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="485" topLine="0" />
+	</File>
+	<File name="TileModel.cpp" open="0" top="0" tabpos="6">
+		<Cursor position="20223" topLine="615" />
+	</File>
+	<File name="TileModel.hpp" open="0" top="0" tabpos="8">
+		<Cursor position="2121" topLine="32" />
+	</File>
+	<File name="TileSetView.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="8365" topLine="36" />
+	</File>
+	<File name="TileSetView.hpp" open="0" top="0" tabpos="2">
+		<Cursor position="2221" topLine="27" />
+	</File>
+	<File name="TileSheetDelegate.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="1524" topLine="0" />
+	</File>
+	<File name="docs/index.html" open="0" top="0" tabpos="4">
+		<Cursor position="7781" topLine="105" />
+	</File>
+	<File name="main.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="42" topLine="0" />
+	</File>
+	<File name="tilesettool.pro" open="0" top="0" tabpos="12">
+		<Cursor position="910" topLine="0" />
+	</File>
+	<File name="tilesettool.qrc" open="0" top="0" tabpos="3">
+		<Cursor position="970" topLine="0" />
+	</File>
+	<File name="todo.txt" open="0" top="0" tabpos="1">
+		<Cursor position="1581" topLine="9" />
+	</File>
+</CodeBlocks_layout_file>

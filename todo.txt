@@ -1,0 +1,101 @@
+x.x.x
+		unpatched tileinfo support
+		galaxy support
+		jj2 support
+		custom formats
+
+0.3.5	(current)
+done	store and use palette in the TLS
+done		revised palette handling, palette once again resides in info model and palette correction works the same as loading (you pick a file).
+done	split animation editing into a seperate widget/dock, simplifying TileEditor.
+done	clean up dead files
+done	split up model functionality among children of TileModel. known regressions:
+done		hotkeys
+done		animations changed to absolute--breaks editor (replaced)
+done?			and tli support
+done	animation frame-picker
+done		BUG: The frame picker doesn't display anything, and the other tile viewers have no selection highlight
+done		May want to re-add preset selection, this time using the starting frame the user chooses.
+done		Option to initalize animations in the old way.
+done	BUG: animation preview behaves erratically.
+done	eliminate duplicate tli opening code
+done	BUG: converting an old format set resulted in a tileset of the original size instead of 910.
+done	show curent palette
+partial	enable loading of graphics from EGALATCH, automatic when opening standard format (need Keen1 LZW)
+done	BUG: "New.." doesn't clear tilesetview
+done	BUG: opening a file ontop of another doesn't update animation strip
+done	overhaul animation preview controls
+done	paint mode
+done	make all views onto a tile zoomable
+done	improve selection highlighter
+done	support full workflow with non-palette supporting graphics software
+partial	undo support
+			add non-tile editing actions
+		BUG: after painting a tile, undoing the paint, and turning paint mode off, the tile editor doesn't revert.
+done	help system
+done	better color editing
+done	remove file-properties dialog, add button to animation dock.
+
+		palette preview
+		collision indicators in TileSetView
+		disable fields that interfere with the slope - top slope = top locked to solid, bottom slope = bottom and high side locked to solid
+		copy and paste
+		add tilesheet dock and allow copying from it to the curently selected info cell(s) (as either bulk first frame copy or animation?)
+
+0.3.4:
+done	FIXME: slope shading too light (varies somewhat by system)
+done	tile number indicator
+done	BUG: keyboard navigation does not update tileeditor and behaves eratically when using shift, ctrl.
+done	more organized editor
+done	import/export palettes
+done		+turn TileModel::loadPalette() into TileModel::applyPalette()
+done	distinct export bitmap icon
+done	import animations from old format properly
+done	appliable animation presets (connect 'C' key to apply?)
+done	an operation to shift animations apropriately to match the old behavior
+done	add fix palette to toolbar
+done	split toolbar
+done	set window icon
+1/2		add surface behavior selection for the other sides (used in ckcm).
+			-bottom has been added, which is the only extra one used by CKCM currently.
+
+0.3.3:
+done	proper collision controls
+done	animation preview
+done	EXE import
+done	bitmap export
+done	move TileEditor to dock?
+aborted	support for editing old format
+done	BUG: The import bitmap function clears the tile data.
+done	File dialog should open to last used directory.
+done	Window state saved.
+done	BUG: importing non-standard palette tilesets doesn't work
+done	add Spleen's keyboard commands to TileSetView
+done	simplify collision editing some by splitting up fields
+done?	BUG: directory not getting saved proeprly during a session on Crunchbang Linux
+done	BUG: uppercase file extensions not included for import image dialog
+done	BUG: tile behaviors not saved correctly.
+
+0.3.1:
+done	TLS behavior plane is now one byte
+done	TLS frameCount is now variable (frameCount == 4 || frameCount == 8)
+done	file properties dialog?
+done	accurate About Box text
+done	add import actions to toolbar
+
+0.3.0:
+done	BUG: importing a non-16xN image does not work properly because data() assumes 16xN and no conversion is done.
+done	BUG: tileview does not update when an image is loaded nor when any seperate files are loaded. Updating the view prefernces jogs it.
+done	make the model responsible for holding the gfx and return the tile graphics as DecorationRole for the animation frames
+done	make the model responsible for saving/loading, and maintaining version info.
+done	merge the anim and info models with fixed frame count, merge TileEditor and AnimEditor
+done	implement &New
+done	show animation in TileView
+done	scaling in TileSetView
+done	convert imported image colors.
+done	fix handling tilesets that aren't 208px wide.
+done	ISSUE: scaled-up drawing is very slow again.
+done	modification indicator/close confirmation
+done	support for importing the original format
+done	FIXME: doing a deep scan just to identify files that all have unique extensions? absurd!
+done	maybe open/save should just support everything?

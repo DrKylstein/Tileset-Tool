@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="tilesettool" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="debug">
+				<Option output="bin/tilesettool" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="release">
+				<Option output="bin/tilesettool" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="AnimationEditor.cpp" />
+		<Unit filename="AnimationEditor.hpp" />
+		<Unit filename="AnimationPreview.cpp" />
+		<Unit filename="AnimationPreview.hpp" />
+		<Unit filename="FramePickerDialog.cpp" />
+		<Unit filename="FramePickerDialog.hpp" />
+		<Unit filename="MainWindow.cpp" />
+		<Unit filename="MainWindow.hpp" />
+		<Unit filename="PaletteEditor.cpp" />
+		<Unit filename="PaletteEditor.hpp" />
+		<Unit filename="PreferencesDialog.cpp" />
+		<Unit filename="PreferencesDialog.hpp" />
+		<Unit filename="RowToListProxyModel.cpp" />
+		<Unit filename="RowToListProxyModel.hpp" />
+		<Unit filename="SlopeEditor.cpp" />
+		<Unit filename="SlopeEditor.hpp" />
+		<Unit filename="TileAnimModel.cpp" />
+		<Unit filename="TileAnimModel.hpp" />
+		<Unit filename="TileEditor.cpp" />
+		<Unit filename="TileEditor.hpp" />
+		<Unit filename="TileGfxModel.cpp" />
+		<Unit filename="TileGfxModel.hpp" />
+		<Unit filename="TileInfo.h" />
+		<Unit filename="TileInfoModel.cpp" />
+		<Unit filename="TileInfoModel.hpp" />
+		<Unit filename="TileMapDelegate.cpp" />
+		<Unit filename="TileMapDelegate.hpp" />
+		<Unit filename="TileModel.cpp" />
+		<Unit filename="TileModel.hpp" />
+		<Unit filename="TilePaletteModel.cpp" />
+		<Unit filename="TilePaletteModel.hpp" />
+		<Unit filename="TileSetView.cpp" />
+		<Unit filename="TileSetView.hpp" />
+		<Unit filename="TileSheetDelegate.cpp" />
+		<Unit filename="TileSheetDelegate.hpp" />
+		<Unit filename="docs/index.html" />
+		<Unit filename="images/about.png" />
+		<Unit filename="images/convert-palette.png" />
+		<Unit filename="images/end.png" />
+		<Unit filename="images/exit.png" />
+		<Unit filename="images/export-image.png" />
+		<Unit filename="images/export-palette.png" />
+		<Unit filename="images/grid.png" />
+		<Unit filename="images/help.png" />
+		<Unit filename="images/icon.svg" />
+		<Unit filename="images/import-image.png" />
+		<Unit filename="images/import-info.png" />
+		<Unit filename="images/import-palette.png" />
+		<Unit filename="images/map-tiles.png" />
+		<Unit filename="images/new.png" />
+		<Unit filename="images/next.png" />
+		<Unit filename="images/open.png" />
+		<Unit filename="images/paint.png" />
+		<Unit filename="images/pause.png" />
+		<Unit filename="images/play.png" />
+		<Unit filename="images/preferences.png" />
+		<Unit filename="images/previous.png" />
+		<Unit filename="images/properties.png" />
+		<Unit filename="images/save-as.png" />
+		<Unit filename="images/save.png" />
+		<Unit filename="images/start.png" />
+		<Unit filename="main.cpp" />
+		<Unit filename="tilesettool.pro" />
+		<Unit filename="tilesettool.qrc" />
+		<Unit filename="todo.txt" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
