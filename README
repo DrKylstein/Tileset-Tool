@@ -1,0 +1,7 @@
+To build for your system:
+	1. Make sure you have the Qt4 runtime and development libraries installed.
+	2. open a command prompt in this directory and type (press enter after each 
+		line):
+		qmake-qt4
+		make release
+	3. The program should appear in the "bin" subdirectory.
