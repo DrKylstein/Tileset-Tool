@@ -109,7 +109,7 @@ void AnimationEditor::applyPreset() {
 			break;
 		case 1:
 			for(int i = 0; i != 8; ++i) {
-				newFrames << baseFrame.data().toInt() + (i & 0b1);
+				newFrames << baseFrame.data().toInt() + (i & 1);
 			}
 			break;
 		case 2:
