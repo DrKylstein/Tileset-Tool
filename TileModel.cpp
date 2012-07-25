@@ -98,7 +98,7 @@ bool TileModel::_openLemm(QFile& file) {
 	quint16 tileCount, frameCount, gfxLength;
 	quint32 infoLoc, animLoc, gfxLoc, palLoc;
 	stream >> tileCount >> frameCount >> gfxLength >> infoLoc >> animLoc >> gfxLoc >> palLoc;
-	if(file.size() < 18 + (tileCount * 5) + (tileCount * frameCount * 2) + (gfxLength * 4)) return false;
+	if(file.size() < 18 + (tileCount * 5) + (tileCount * TileInfo::MAX_FRAMES * 2) + (gfxLength * 4)) return false;
 	tiles.clear();
 	tiles = QVector<QVector<int> >(tileCount, blankTile);
 
@@ -393,7 +393,7 @@ bool TileModel::save(const QString& filename) const {
 //		int bottom = right + tileCount;
 //		int left = bottom + tileCount;
 	quint32 animLoc = infoLoc + tileCount * 5;
-	quint32 gfxLoc = animLoc + tileCount * frameCount() * 2;
+	quint32 gfxLoc = animLoc + tileCount * TileInfo::MAX_FRAMES * 2;
 //		int blue = gfxLoc;
 //		int green = blue + gfxLength;
 //		int red = green + gfxLength;
@@ -467,9 +467,9 @@ bool TileModel::save(const QString& filename) const {
 		}
 		stream << b;
 	}
-	for(int j = TileInfo::FIELD_FRAME1; j < frames + TileInfo::FIELD_FRAME1; ++j) {
+	for(int j = 0; j < TileInfo::MAX_FRAMES; ++j) {
 		for(int i = 0; i < tiles.size(); ++i) {
-			stream << qint16((tiles[i][j]) << 5);
+			stream << qint16((tiles[i][(j % frames)+TileInfo::FIELD_FRAME1]) << 5);
 		}
 	}
 	stream.setByteOrder(QDataStream::BigEndian);

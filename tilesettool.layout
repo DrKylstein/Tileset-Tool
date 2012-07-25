@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="debug" />
-	<File name="AnimationEditor.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="10372" topLine="198" />
+	<File name="AnimationEditor.cpp" open="1" top="1" tabpos="0">
+		<Cursor position="4523" topLine="92" />
 	</File>
 	<File name="AnimationEditor.hpp" open="0" top="0" tabpos="4">
 		<Cursor position="1445" topLine="35" />
