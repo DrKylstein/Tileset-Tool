@@ -261,3 +261,12 @@ QSize TileSetView::maximumViewportSize() {
 QSize TileSetView::sizeHint() {
 	return maximumViewportSize();
 }
+QPixmap TileSetView::dumpView() {
+    int scale = _scale;
+    _scale = 1;
+    redrawBuffer();
+    QPixmap dump = buffer.copy();
+    _scale = scale;
+    redrawBuffer();
+    return dump;
+}

@@ -99,8 +99,8 @@ void MainWindow::startNew() {
 }
 void MainWindow::about() {
 	QMessageBox::about(this, tr("About Tileset Tool"), tr(
-		"<p><b>Tileset Tool 0.3.5</b>, an editor for Commander Keen: Invasion of the Vorticons Tilesets.<br />"
-		"Copyright &copy; 2010-2011 Kyle Delaney.</p>"
+		"<p><b>Tileset Tool</b>, an editor for Commander Keen: Invasion of the Vorticons Tilesets.<br />"
+		"Copyright &copy; 2010-2012 Kyle Delaney.</p>"
 
 		"<p>Tileset Tool is free software: you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -171,6 +171,16 @@ void MainWindow::exportBitmap() {
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!_tileSet->graphics().save(filename)) {
+			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be exported to."));
+		}
+	}
+}
+void MainWindow::exportForEditor() {
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), _currentDirectory, tr("Image files (*.bmp *.png *.tiff)"));
+	setCurrentDirectory(filename);
+	if(!filename.isEmpty()) {
+        QImage dump = _mainView->dumpView().toImage().convertToFormat(QImage::Format_Indexed8, _tileSet->tilePalette()->dumpPage(0));
+		if(!dump.save(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be exported to."));
 		}
 	}
@@ -273,6 +283,9 @@ void MainWindow::createActions() {
 
 	exportBitmapAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export image..."), this);
 	connect(exportBitmapAction, SIGNAL(triggered()), this, SLOT(exportBitmap()));
+    
+	exportForEditorAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export to external editor..."), this);
+	connect(exportForEditorAction, SIGNAL(triggered()), this, SLOT(exportForEditor()));
 
 	fixPaletteAction = new QAction(QIcon(":/images/convert-palette.png"), tr("&Fix palette..."), this);
 	connect(fixPaletteAction, SIGNAL(triggered()), this, SLOT(fixPalette()));
@@ -406,7 +419,8 @@ void MainWindow::createMenus() {
 	toolMenu->addAction(fixPaletteAction);
 	toolMenu->addAction(importPaletteAction);
 	toolMenu->addSeparator();
-	//toolMenu->addAction(setOneToOneAction);
+	toolMenu->addAction(setOneToOneAction);
+	toolMenu->addAction(exportForEditorAction);
 	toolMenu->addAction(exportBitmapAction);
 	toolMenu->addAction(exportPaletteAction);
 

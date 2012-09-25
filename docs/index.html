@@ -60,24 +60,24 @@
 		<h3 id="tools">Tools</h3>
 		<a href="#top">Return to Top</a>
 		<dl>
-			<dt id="import-image">Import Image</dt>
+			<dt id="import-image">Import image...</dt>
 				<dd>
-					<p>Load tile graphics from an image.</p>
+					<p>Load tile graphics and palette from an image.</p>
 
 					<p>The image must be in a <a href="#image-format">supported format</a> and divide evenly into 16x16 pixel cells.
 					This action cannot be undone.</p>
 				</dd>
-			<dt id="fix-palette">Fix Palette</dt>
+			<dt id="fix-palette">Fix palette...</dt>
 				<dd>
 					<p>Remap the tile graphics to a specified palette/</p>
 
 					<p>You wil be asked whether to use the standard EGA palette. This is the palette used by the Commander Keen games in the unmodified form.
 					If you choose <q>Yes</q>, the tileset will load 16 identical pages of this palette.
-					If <q>No</q>, see <a href="#import-palette">Import Palette</a> for details.
+					If <q>No</q>, see <a href="#import-palette">Import palette...</a> for details.
 					Once the palette is loaded, the colors of the tile graphics will be automatically re-mapped to their closest match in the new palette.
 					This action cannot be undone.</p>
 				</dd>
-			<dt id="import-palette">Import Palette</dt>
+			<dt id="import-palette">Import palette...</dt>
 				<dd>
 					<p>Replace the current palette with one loaded from a file.</p>
 
@@ -85,28 +85,36 @@
 					For an <a href="#image-format">image file</a>, if it has an internal palette, that will be used.
 					Otherwise, the top-leftmost 16x16 pixel square will be interpreted as a palette.
 					If the file does not contain 256 colors, or is shorter than 16 pixels for True Color images, the first 16 colors found will be mapped to the remaining color pages.
-					Unlike <a href="#fix-palette">Fix Palette</a>, this operation will not adjust the colors of the tile-graphics--they will use whatever color now occupies the position of the previous one.</p>
+					Unlike <a href="#fix-palette">Fix palette...</a>, this operation will not adjust the colors of the tile-graphics--they will use whatever color now occupies the position of the previous one.</p>
 				</dd>
-			<!--dt id="auto-map">Auto-map tiles</dt>
+			<dt id="auto-map">Auto-map tiles</dt>
 				<dd>
 					<p>Write all of the animations in the file such that tile 1 references tile graphic 1, and so on.</p>
 
-					<p>This is porvided as a convenience for those used to TileInfo and earlier versions of Tileset Tool.
-					It may be very slow, cannot be undone, and is not recommended.
-					See <a href="#story-new">Starting a New Tileset</a> for alternatives.</p>
-				</dd-->
-			<dt id="export-image">Export Image</dt>
+					<p>This is provided as a convenience for the inital layout of a tileset, 
+                    and for those used to TileInfo and earlier versions of Tileset Tool.
+					It may be very slow, and cannot be undone.
+					<!--See <a href="#story-new">Starting a New Tileset</a> for alternatives.--></p>
+				</dd>
+			<dt id="export-image">Export image...</dt>
 				<dd>
 					<p>Save tile graphics to an image.</p>
 
 					<p>This operation exists as counterpart to <a href="#import-image">Import Image.</a> It can be used to recover the tile graphics data for editing if the source has been lost.
-					The resulting file may not be organized neatly.</p>
+					The resulting file will be a vertical strip of tiles from first to last as stored in the tileset data. For a more neatly arranged file, see <a href="#export-to-editor">Export to External Editor</a>.</p>
 				</dd>
-			<dt id="export-palette">Export Palette</dt>
+			<dt id="export-to-editor">Export to external editor...</dt>
+				<dd>
+					<p>Save mapped tile graphics to an image.</p>
+
+					<p>Unlike <a href="#export-image">Export Image...</a>, this operation will create an image identical to the one seen in the main editor (minus scaling). 
+                    This is suitable for use in level editors which do not support the tileset patch, or as a placeholder tileset file for modkeen-like utilities.</p>
+				</dd>
+			<dt id="export-palette">Export palette...</dt>
 				<dd>
 					<p>Save palette to an external file.</p>
 
-					<p>This operation exists as counterpart to <a href="#import-palette">Import Palette.</a>
+					<p>This operation exists as counterpart to <a href="#import-palette">Import palette...</a>
 					It will save to a <a href="#palette-format">palette format</a> which may be usable with a non-tileset aware palette patch.</p>
 				</dd>
 		</dl>

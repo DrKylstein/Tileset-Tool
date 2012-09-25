@@ -70,6 +70,7 @@ class MainWindow: public QMainWindow {
 		void setOneToOne();
 		void importBitmap();
 		void exportBitmap();
+		void exportForEditor();
 		void preferences();
 		void fixPalette();
 		void importPalette();
@@ -142,6 +143,7 @@ class MainWindow: public QMainWindow {
 			QAction* setOneToOneAction;
 			QAction* importBitmapAction;
 			QAction* exportBitmapAction;
+			QAction* exportForEditorAction;
 			QAction* fixPaletteAction;
 			QAction* importPaletteAction;
 			QAction* exportPaletteAction;

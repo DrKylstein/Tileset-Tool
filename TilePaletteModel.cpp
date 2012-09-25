@@ -38,3 +38,10 @@ void TilePaletteModel::markAllNew(void) {
 	emit layoutChanged();
 	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
 }
+QVector<QRgb> TilePaletteModel::dumpPage(int page) {
+    QVector<QRgb> dump;
+    for(int i = page*16; i < (page+1)*16; ++i) {
+        dump <<  _parent->_graphics.color(i);
+    }
+    return dump;
+}

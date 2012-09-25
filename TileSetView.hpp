@@ -37,6 +37,7 @@ class TileSetView: public QAbstractItemView {
 		void setItemDelegate(QAbstractItemDelegate * delegate);
 		QSize maximumViewportSize();
 		QSize sizeHint();
+        QPixmap dumpView();
 
 	public slots:
 		void setZoom(int scale);
