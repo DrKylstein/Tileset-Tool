@@ -2,13 +2,14 @@
 make clean
 qmake-qt4
 make release > linux64.log
-mv ./bin/tilesettool ./bin/tilesettool-64
+mv ./bin/tilesettool ./download/linux/
 make clean
-qmake-qt4 -spec linux-x-g++-32
+qmake-qt4 -spec linux-g++-32
 make release > linux32.log
-mv ./bin/tilesettool ./bin/tilesettool-32
+mv ./bin/tilesettool ./download/linux32/
 make clean
 qmake-qt4 -spec win32-x-g++
 make release > win32.log
+mv ./bin/tilesettool.exe ./download/win32/
 make clean
 qmake-qt4

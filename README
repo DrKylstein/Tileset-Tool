@@ -1,3 +1,9 @@
+TilesetTool is an editor for tileset files using lemm's V2 tileset patch for 
+"Commander Keen in Invasion of the Vorticons". 
+
+It also supports editing the palette effects enabled by my supplemental patch: 
+https://github.com/DrKylstein/Commander-Keen-V2-Palettes
+
 To build for your system:
 	1. Make sure you have the Qt4 runtime and development libraries installed.
 	2. open a command prompt in this directory and type (press enter after each 

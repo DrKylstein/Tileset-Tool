@@ -1,0 +1,9 @@
+Makefile
+Makefile.Debug
+Makefile.Release
+bin/
+obj/
+release/
+*.log
+*.Debug
+*.Release
