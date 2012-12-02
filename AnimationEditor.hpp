@@ -50,7 +50,6 @@ class AnimationEditor: public QWidget {
 		void setCurrentModelIndex(const QModelIndex & index);
 		void applyPreset();
 		void setZoom(int);
-		void programSetFrameCount(int frames);
 
 	signals:
 		void frameEdited(const QModelIndex&, const QVariant&);
@@ -62,7 +61,6 @@ class AnimationEditor: public QWidget {
 		void frameSelected(int);
 		void togglePlayback();
 		void frameChange(int);
-		void userSetFrameCount(int index);
 
 	private:
 		QComboBox* animPreset;
@@ -72,11 +70,6 @@ class AnimationEditor: public QWidget {
 		QToolButton* _previous;
 		QToolButton* _next;
 		QToolButton* _end;
-		QComboBox* _frameCount;
-		//QPushButton* _shiftAnimLeft;
-		//QPushButton* _rotateAnimRight;
-		//QPushButton* _pickFrame;
-		//QList<QSpinBox*> frameEditors;
 		AnimationPreview* anim;
 
 		TileSetView* _framesView;
@@ -85,7 +78,7 @@ class AnimationEditor: public QWidget {
 
 		QAbstractItemModel* _model;
 		QAbstractItemModel* _gfxModel;
-		int _currentRow; //QModelIndex _index;
+		int _currentRow;
 		int _frames;
 		bool _playing;
 

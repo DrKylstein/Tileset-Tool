@@ -24,7 +24,7 @@
 #ifndef TILEINFOMODEL_HPP
 #define TILEINFOMODEL_HPP
 #include <QAbstractTableModel>
-class TileModel;
+
 class TileInfoModel: public QAbstractTableModel {
 	Q_OBJECT
 
@@ -35,11 +35,46 @@ class TileInfoModel: public QAbstractTableModel {
 		QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 		Qt::ItemFlags flags (const QModelIndex & index) const;
 		bool setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
-
-		friend class TileModel;
+        void markAllNew(void);
+    
+        bool load(QDataStream&);
+        void dump(QDataStream&);
+        void blank();
+    
+        TileInfoModel(QObject* parent=0): QAbstractTableModel(parent) {}
+    
+        enum {
+            FIELD_BEHAVIOR,
+            FIELD_SOLID,
+            FIELD_SLOPED = 5,
+            FIELD_OFFSET = 7,
+            FIELD_STEEPNESS = 13,
+            FIELD_SURFACE_TYPE = 17,
+        };
+        enum {TOP, RIGHT, BOTTOM, LEFT};
+            
 	private:
-		TileInfoModel(TileModel* parent);
-		TileModel* _parent;
-		void markAllNew(void);
+        static const int _MAX_TILES = 910;
+        
+        struct TileProperties {
+            bool solid[4];
+            bool sloped[4];
+            quint8 offset[4];
+            qint8 steepness[4];
+            quint8 surfaceType[4];
+            quint8 behavior;
+            
+            TileProperties() {
+                for(int i=0; i<4; ++i) {
+                    solid[i] = false;
+                    sloped[i] = false;
+                    offset[i] = 0;
+                    steepness[i] = 0;
+                    surfaceType[i] = 0;
+                }
+                behavior = 0;
+            }
+        } _tileProperties[_MAX_TILES];
+		
 };
 #endif

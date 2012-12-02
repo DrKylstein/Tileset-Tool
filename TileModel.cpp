@@ -28,7 +28,8 @@
 #include "TileGfxModel.hpp"
 #include "TilePaletteModel.hpp"
 #include <QtGui>
-TileModel::TileModel(QObject* parent): /*QAbstractTableModel(parent)*/ QObject(parent), blankTile(TileInfo::FIELD_COUNT), tiles(910, blankTile), numFrames(4) {
+#include <cassert>
+TileModel::TileModel(QObject* parent): QObject(parent), numFrames(TileInfo::MAX_FRAMES) {
 	_tileInfo = new TileInfoModel(this);
 	_tileAnim = new TileAnimModel(this);
 	_tileGfx = new TileGfxModel(this);
@@ -54,12 +55,15 @@ TilePaletteModel* TileModel::tilePalette(void) {
 int TileModel::frameCount() const {
 	return numFrames;
 }
+int TileModel::tileCount() const {
+	return TileInfo::MAX_TILES;
+}
 void TileModel::setFrameCount(int i) {
-	if(i == 4 || i == 8) {
+	/*if(i == 4 || i == 8) {
 		numFrames = i;
-		//emit frameCountChanged(numFrames);
+		emit frameCountChanged(numFrames);
 		_tileAnim->changeFrameCount(i);
-	}
+	}*/
 }
 
 const QImage& TileModel::graphics() {
@@ -67,19 +71,11 @@ const QImage& TileModel::graphics() {
 }
 
 void TileModel::blank() {
-	/*_tileInfo->beginRemoveRows(QModelIndex(), 0, tiles.size() - 1);
-	_tileAnim->beginRemoveRows(QModelIndex(), 0, tiles.size() - 1);*/
-	tiles.clear();
-	/*_tileInfo->endRemoveRows();
-	_tileAnim->endRemoveRows();
-	_tileInfo->beginInsertRows(QModelIndex(), 0, 909);
-	_tileAnim->beginInsertRows(QModelIndex(), 0, 909);*/
-	tiles = QVector<QVector<int> >(910, blankTile);
 	_graphics = QImage();
-	setFrameCount(4);
+	setFrameCount(TileInfo::MAX_FRAMES);
 	emit graphicsChanged(_graphics);
-	_tileInfo->markAllNew();
-	_tileAnim->markAllNew();
+	_tileInfo->blank();
+	_tileAnim->blank();
 	_tileGfx->markAllNew();
 	_tilePalette->markAllNew();
 }
@@ -92,6 +88,9 @@ bool TileModel::open(const QString& filename) {
 	return _openVorticon(file);
 }
 bool TileModel::_openLemm(QFile& file) {
+    quint8 b;
+    quint16 w;
+    
 	if(file.size() < 18) return false;
 	QDataStream stream(&file);
 	stream.setByteOrder(QDataStream::LittleEndian);
@@ -99,77 +98,11 @@ bool TileModel::_openLemm(QFile& file) {
 	quint32 infoLoc, animLoc, gfxLoc, palLoc;
 	stream >> tileCount >> frameCount >> gfxLength >> infoLoc >> animLoc >> gfxLoc >> palLoc;
 	if(file.size() < 18 + (tileCount * 5) + (tileCount * TileInfo::MAX_FRAMES * 2) + (gfxLength * 4)) return false;
-	tiles.clear();
-	tiles = QVector<QVector<int> >(tileCount, blankTile);
-
+    
 	file.seek(infoLoc); //stream.skipRawData(46);
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		qint8 b;
-		stream >> b;
-		if(b == -1) {
-			tiles[i][TileInfo::FIELD_BEHAVIOR] = TileInfo::BEHAVE_FOREGROUND;
-		}else if(b == -2) {
-			tiles[i][TileInfo::FIELD_BEHAVIOR] = TileInfo::BEHAVE_MASKED;
-		} else {
-			tiles[i][TileInfo::FIELD_BEHAVIOR] = b;
-		}
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		qint8 b;
-		stream >> b;
-		unsigned int surf = b & 0x03;
-		tiles[i][TileInfo::FIELD_TOP] = (b != 0);
-		tiles[i][TileInfo::FIELD_SURFACE_TYPE] =  surf != 0 ? surf - 1 : 0;
-		tiles[i][TileInfo::FIELD_SLOPE_ENABLED] = 0;
-		tiles[i][TileInfo::FIELD_SLOPE_SIDE] = 0;
-		tiles[i][TileInfo::FIELD_SLOPE] = 0;
-		tiles[i][TileInfo::FIELD_SLOPE_OFFSET] = 0;
-		if(b & 0x80) {
-			tiles[i][TileInfo::FIELD_SLOPE_ENABLED] = 1;
-			tiles[i][TileInfo::FIELD_SLOPE_SIDE] = TileInfo::SLOPED_TOP;
-			tiles[i][TileInfo::FIELD_SLOPE_OFFSET] = b & 0x0C;
-			tiles[i][TileInfo::FIELD_SLOPE] = pow(2, (b & 0x30) >> 4);
-			if(b & 0x40) {
-				tiles[i][TileInfo::FIELD_SLOPE] *= -1;
-				tiles[i][TileInfo::FIELD_SLOPE_OFFSET] += 4;
-			}
-		}
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		qint8 b;
-		stream >> b;
-		tiles[i][TileInfo::FIELD_RIGHT] = b;
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		qint8 b;
-		stream >> b;
-		unsigned int surf = b & 0x03;
-		tiles[i][TileInfo::FIELD_BOTTOM] = (b != 0);
-		tiles[i][TileInfo::FIELD_BOTTOM_BEHAVIOR] =  surf != 0 ? surf - 1 : 0;
-		if(b & 0x80 && !tiles[i][TileInfo::FIELD_SLOPE_ENABLED]) {
-			tiles[i][TileInfo::FIELD_SLOPE_ENABLED] = 1;
-			tiles[i][TileInfo::FIELD_SLOPE_SIDE] = TileInfo::SLOPED_BOTTOM;
-			tiles[i][TileInfo::FIELD_SLOPE_OFFSET] = b & 0x0C;
-			tiles[i][TileInfo::FIELD_SLOPE] = pow(2, (b & 0x30) >> 4);
-			if(b & 0x40) {
-				tiles[i][TileInfo::FIELD_SLOPE] *= -1;
-				tiles[i][TileInfo::FIELD_SLOPE_OFFSET] += 4;
-			}
-		}
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		qint8 b;
-		stream >> b;
-		tiles[i][TileInfo::FIELD_LEFT] = b;
-	}
+    _tileInfo->load(stream);
 	file.seek(animLoc);
-	for(unsigned int i = 0; i != frameCount; ++i) {
-		for(unsigned int j = 0; j != tileCount; j++) {
-			quint16 w;
-			stream >> w;
-			tiles[j][TileInfo::FIELD_FRAME1 + i] = ((signed int)(w) >> 5) /*- j*/;
-		}
-	}
+    _tileAnim->load(stream);
 	file.seek(palLoc);
 	QImage sheetImage(16, gfxLength >> 1, QImage::Format_Indexed8);
 	QVector<QRgb> pal;
@@ -177,7 +110,6 @@ bool TileModel::_openLemm(QFile& file) {
 		pal	= _defaultPal;
 	} else {
 		quint32 c;
-		quint8 b;
 		for(int i = 0; i < 256; i++) {
 			c = 0xFF000000;
 			stream >> b;
@@ -195,7 +127,6 @@ bool TileModel::_openLemm(QFile& file) {
 	stream.setByteOrder(QDataStream::BigEndian);
 	for(unsigned int p = 0; p != 4; ++p) {
 		for(unsigned int y = 0; y != gfxLength >> 1; ++y) {
-			quint16 w;
 			stream >> w;
 			for(unsigned int x = 0; x != 16; ++x) {
 				sheetImage.setPixel(x, y, sheetImage.pixelIndex(x, y) | ( (w & (1 << (15 - x) ) ) >> (15 - x) ) << p);
@@ -206,8 +137,8 @@ bool TileModel::_openLemm(QFile& file) {
 	emit graphicsChanged(_graphics);
 	setFrameCount(frameCount);
 	emit frameCountChanged(frameCount);
-	_tileAnim->changeFrameCount(frameCount);
-	_tileInfo->markAllNew(); //emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
+	//_tileAnim->changeFrameCount(frameCount);
+	//_tileInfo->markAllNew(); //emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
 	_tileAnim->markAllNew();
 	_tileGfx->markAllNew();
 	_tilePalette->markAllNew();
@@ -345,7 +276,7 @@ bool TileModel::_openVorticon(QFile& file) {
 		tiles[i][TileInfo::FIELD_LEFT] = w;
 	}
 	setFrameCount(4);
-	_tileInfo->markAllNew(); //emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
+	//_tileInfo->markAllNew(); //emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
 	_tileGfx->markAllNew();
 	_tilePalette->markAllNew();
 	_tileAnim->markAllNew();
@@ -387,91 +318,14 @@ bool TileModel::save(const QString& filename) const {
 	quint16 frames = frameCount();
 	quint16 gfxLength = (_graphics.width() * _graphics.height()) / 8;
 	quint32 infoLoc = 64;
-//		int behave = infoLoc;
-//		int top = behave + tileCount;
-//		int right = top + tileCount;
-//		int bottom = right + tileCount;
-//		int left = bottom + tileCount;
 	quint32 animLoc = infoLoc + tileCount * 5;
 	quint32 gfxLoc = animLoc + tileCount * TileInfo::MAX_FRAMES * 2;
-//		int blue = gfxLoc;
-//		int green = blue + gfxLength;
-//		int red = green + gfxLength;
-//		int intensity = red + gfxLength;
 	quint32 palLoc = gfxLoc + (gfxLength * 4);
 
 	stream << tileCount << frames << gfxLength << infoLoc << animLoc << gfxLoc << palLoc;
 	stream << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint16(0);
-	for(int i = 0; i < tiles.size(); ++i) {
-		qint8 b;
-		if(tiles[i][TileInfo::FIELD_BEHAVIOR] == TileInfo::BEHAVE_MASKED) {
-			b = -2;
-		} else if(tiles[i][TileInfo::FIELD_BEHAVIOR] == TileInfo::BEHAVE_FOREGROUND) {
-			b = -1;
-		} else {
-			b = tiles[i][TileInfo::FIELD_BEHAVIOR];
-		}
-		stream << b;
-	}
-	for(int i = 0; i < tiles.size(); ++i) {
-		quint8 b = 0;
-		if(tiles[i][TileInfo::FIELD_TOP]) {
-			b = (tiles[i][TileInfo::FIELD_SURFACE_TYPE] + 1);
-			if(tiles[i][TileInfo::FIELD_SLOPE_ENABLED] && tiles[i][TileInfo::FIELD_SLOPE_SIDE] == TileInfo::SLOPED_TOP) {
-				b |= 0x80 | (quint8(log(abs(tiles[i][TileInfo::FIELD_SLOPE])) / log(2)) << 4);
-				if(tiles[i][TileInfo::FIELD_SLOPE] < 0) {
-					b |= 0x40 | (tiles[i][TileInfo::FIELD_SLOPE_OFFSET] - 4);
-				} else {
-					b |= tiles[i][TileInfo::FIELD_SLOPE_OFFSET];
-				}
-			}
-		}
-		stream << b;
-	}
-	for(int i = 0; i < tiles.size(); ++i) {
-		quint8 b = 0;
-		if(tiles[i][TileInfo::FIELD_BOTTOM] &&
-		tiles[i][TileInfo::FIELD_SLOPE_ENABLED] &&
-		tiles[i][TileInfo::FIELD_SLOPE_SIDE] == TileInfo::SLOPED_BOTTOM &&
-		tiles[i][TileInfo::FIELD_SLOPE] > 0) {
-			b = 1 | 0x80 | (quint8(log(abs(tiles[i][TileInfo::FIELD_SLOPE])) / log(2)) << 4) | tiles[i][TileInfo::FIELD_SLOPE_OFFSET];
-		} else if(tiles[i][TileInfo::FIELD_LEFT]) {
-			b = 1;
-		}
-		stream << b;
-	}
-	for(int i = 0; i < tiles.size(); ++i) {
-		quint8 b = 0;
-		if(tiles[i][TileInfo::FIELD_BOTTOM]) {
-			b = (tiles[i][TileInfo::FIELD_BOTTOM_BEHAVIOR] + 1);
-			if(tiles[i][TileInfo::FIELD_SLOPE_ENABLED] && tiles[i][TileInfo::FIELD_SLOPE_SIDE] == TileInfo::SLOPED_BOTTOM) {
-				b |= 0x80 | (quint8(log(abs(tiles[i][TileInfo::FIELD_SLOPE])) / log(2)) << 4);
-				if(tiles[i][TileInfo::FIELD_SLOPE] < 0) {
-					b |= 0x40 | (tiles[i][TileInfo::FIELD_SLOPE_OFFSET] - 4);
-				} else {
-					b |= tiles[i][TileInfo::FIELD_SLOPE_OFFSET];
-				}
-			}
-		}
-		stream << b;
-	}
-	for(int i = 0; i < tiles.size(); ++i) {
-		quint8 b = 0;
-		if(tiles[i][TileInfo::FIELD_BOTTOM] &&
-		tiles[i][TileInfo::FIELD_SLOPE_ENABLED] &&
-		tiles[i][TileInfo::FIELD_SLOPE_SIDE] == TileInfo::SLOPED_BOTTOM &&
-		tiles[i][TileInfo::FIELD_SLOPE] < 0) {
-			b = 1 | 0x80 | (quint8(log(abs(tiles[i][TileInfo::FIELD_SLOPE])) / log(2)) << 4) | 0x40 | (tiles[i][TileInfo::FIELD_SLOPE_OFFSET] - 4);
-		} else if(tiles[i][TileInfo::FIELD_RIGHT]) {
-			b = 1;
-		}
-		stream << b;
-	}
-	for(int j = 0; j < TileInfo::MAX_FRAMES; ++j) {
-		for(int i = 0; i < tiles.size(); ++i) {
-			stream << qint16((tiles[i][(j % frames)+TileInfo::FIELD_FRAME1]) << 5);
-		}
-	}
+    _tileInfo->dump(stream);
+    _tileAnim->dump(stream);
 	stream.setByteOrder(QDataStream::BigEndian);
 	for(int p = 0; p < 4; ++p) {
 		for(int y = 0; y < gfxLength >> 1; ++y) {
@@ -683,4 +537,18 @@ void TileModel::_extendPalette() {
 	}
 	_graphics.setColorCount(256);
 	_graphics.setColorTable(newPal);
+}
+QVector<QRgb> TileModel::getPaletteRow(int page) {
+    QVector<QRgb> dump;
+    for(int i = page*16; i < (page+1)*16; ++i) {
+        dump <<  _graphics.color(i);
+    }
+    return dump;
+}
+
+QRgb TileModel::getColor(int index, int row) {
+    return _graphics.color((row * 16) + index);
+}
+void TileModel::setColor(QRgb color, int index, int row) {
+    return _graphics.setColor((row * 16) + index, color);
 }

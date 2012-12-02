@@ -43,17 +43,15 @@ class SlopeEditor: public QWidget {
 		void setModel(QAbstractItemModel*);
 		void setRow(int);
 
-	public slots:
-		void setSlope(int);
-		void setOffset(int);
-		void setSide(int);
-
 	protected:
 		void paintEvent(QPaintEvent*);
 		void mousePressEvent(QMouseEvent*);
-
+    
 	private slots:
 		void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+		void setSlope(int);
+		void setOffset(int);
+		void setSide(int);
 
 	private:
 		int _slope, _offset, _side;

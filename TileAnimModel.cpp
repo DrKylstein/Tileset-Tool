@@ -26,14 +26,11 @@
 #include "TileInfo.h"
 #include <QtGui>
 
-TileAnimModel::TileAnimModel(TileModel* parent): QAbstractTableModel(parent) {
-	_parent = parent;
-}
 int TileAnimModel::rowCount(const QModelIndex & parent) const {
-	return _parent->tiles.size();
+	return _MAX_TILES;
 }
 int TileAnimModel::columnCount(const QModelIndex & parent) const {
-	return _parent->numFrames;
+	return _MAX_FRAMES;
 }
 QVariant TileAnimModel::headerData (int section, Qt::Orientation orientation, int role) const {
 	if(role == Qt::DisplayRole) {
@@ -47,56 +44,50 @@ QVariant TileAnimModel::headerData (int section, Qt::Orientation orientation, in
 }
 QVariant TileAnimModel::data (const QModelIndex & index, int role) const {
 	if( (role == Qt::DisplayRole || role == Qt::EditRole) && (index.isValid())) {
-		return _parent->tiles[index.row()][index.column()+TileInfo::FIELD_FRAME1];
+		return _frames[index.column()][index.row()];
 	}
-	/*if(role == Qt::DecorationRole && index.row() < rowCount() && !_parent->_graphics.isNull()) {
-		QPixmap icon(16, 16);
-		QPainter painter(&icon);
-		if((_parent->tiles[index.row()][index.column()+TileInfo::FIELD_FRAME1] + index.row() ) * 16 >= _parent->_graphics.height()) {
-			return QVariant();
-		}
-		painter.drawImage(QRect(0, 0, 16, 16), _parent->_graphics, QRect(0, (_parent->tiles[index.row()][index.column()+TileInfo::FIELD_FRAME1] + index.row() ) * 16, 16, 16));
-		return icon;
-	}*/
 	return QVariant();
 }
 Qt::ItemFlags TileAnimModel::flags (const QModelIndex & index) const {
 	if(!index.isValid()) return Qt::ItemIsEnabled;
 	return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
 }
-/*bool TileInfoModel::insertRows (int row, int count, const QModelIndex & parent) {
-	if(count < 0) return false;
-	beginInsertRows(parent, row, row + count - 1);
-	_parent->tiles.insert(row, count, blankTile);
-	endInsertRows();
-	return true;
-}
-bool TileInfoModel::removeRows (int row, int count, const QModelIndex & parent) {
-	if(count < 0) return false;
-	beginRemoveRows(parent, row, row + count - 1);
-	_parent->tiles.remove(row, count);
-	endRemoveRows();
-	return true;
-}*/
 bool TileAnimModel::setData (const QModelIndex & index, const QVariant & value, int role) {
 	if(role != Qt::EditRole) return false;
 	if(!index.isValid()) return false;
-	if(value.toInt() != _parent->tiles[index.row()][index.column()+TileInfo::FIELD_FRAME1]) {
-		_parent->tiles[index.row()][index.column()+TileInfo::FIELD_FRAME1] = value.toInt();
-		emit dataChanged(index, index);
-	}
+    _frames[index.column()][index.row()] = value.toInt();
+    emit dataChanged(index, index);
 	return true;
 }
-void TileAnimModel::markAllNew(void) {
+bool TileAnimModel::load(QDataStream& stream) {
+    quint16 w;
+	for(unsigned int frame=0;frame!=_MAX_FRAMES;++frame) {
+		for(unsigned int tile=0;tile!=_MAX_TILES;tile++) {
+            if(stream.atEnd()) return false;
+			stream >> w;
+			_frames[frame][tile] = w >> 5;
+		}
+	}
 	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
+    return true;
 }
-void TileAnimModel::changeFrameCount(int i) {
-	if(i == 4) {
-		beginRemoveColumns(QModelIndex(), 4, 7);
-		endRemoveColumns();
+
+void TileAnimModel::dump(QDataStream& stream) {
+	for(unsigned int frame=0;frame!=_MAX_FRAMES;++frame) {
+		for(unsigned int tile=0;tile!=_MAX_TILES;tile++) {
+			stream << (_frames[frame][tile] << 5);
+		}
 	}
-	if(i == 8) {
-		beginInsertColumns(QModelIndex(), 4, 7);
-		endInsertColumns();
+}
+
+void TileAnimModel::blank() {
+	for(unsigned int frame=0;frame!=_MAX_FRAMES;++frame) {
+		for(unsigned int tile=0;tile!=_MAX_TILES;tile++) {
+			_frames[frame][tile] = 0;
+		}
 	}
+}
+
+void TileAnimModel::markAllNew() {
+	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
 }

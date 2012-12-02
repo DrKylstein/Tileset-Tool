@@ -90,7 +90,6 @@ class MainWindow: public QMainWindow {
 		void _tileInfoEdited(const QModelIndex&, const QVariant&);
 		void _frameEdited(const QModelIndex&, const QVariant&);
 		void _presetApplied(int, const QVector<int>&);
-		void _frameCountSet(int);
 
 	protected:
 		void closeEvent(QCloseEvent* event);

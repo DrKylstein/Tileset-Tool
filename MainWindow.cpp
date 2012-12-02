@@ -179,7 +179,7 @@ void MainWindow::exportForEditor() {
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), _currentDirectory, tr("Image files (*.bmp *.png *.tiff)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
-        QImage dump = _mainView->dumpView().toImage().convertToFormat(QImage::Format_Indexed8, _tileSet->tilePalette()->dumpPage(0));
+        QImage dump = _mainView->dumpView().toImage().convertToFormat(QImage::Format_Indexed8, _tileSet->getPaletteRow(0));
 		if(!dump.save(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be exported to."));
 		}
@@ -517,9 +517,6 @@ void MainWindow::_presetApplied(int section, const QVector<int>& newFrames) {
 //		_tileSet->tileAnim()->setData(_tileSet->tileAnim()->index(section, i), newFrames[i]);
 //	}
 }
-void MainWindow::_frameCountSet(int i) {
-	_tileSet->setFrameCount(i);
-}
 void MainWindow::_setUnmodified(bool b) {
 	setWindowModified(!b);
 }
@@ -639,8 +636,6 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 	connect(_propertyEditor, SIGNAL(propertyChanged(const QModelIndex&, const QVariant&)), this, SLOT(_tileInfoEdited(const QModelIndex&, const QVariant&)));
 	connect(_animEditor, SIGNAL(frameEdited(const QModelIndex&, const QVariant&)), this, SLOT(_frameEdited(const QModelIndex&, const QVariant&)));
 	connect(_animEditor, SIGNAL(presetApplied(int, const QVector<int>&)), this, SLOT(_presetApplied(int, const QVector<int>&)));
-	connect(_animEditor, SIGNAL(frameCountChange(int)), this, SLOT(_frameCountSet(int)));
-	connect(_tileSet, SIGNAL(frameCountChanged(int)), _animEditor, SLOT(programSetFrameCount(int)));
 }
 MainWindow::~MainWindow() {
 	_saveSettings();
@@ -723,16 +718,19 @@ void MainWindow::setOneToOne() {
 		QProgressDialog progress(tr("Setting frames..."), tr("Cancel"), 0, _tileSet->tileAnim()->rowCount()*_tileSet->tileAnim()->columnCount(), this);
 		progress.setWindowTitle("Operation in Progress");
 		progress.setWindowModality(Qt::WindowModal);
-		for(int i = 0; i < _tileSet->tileAnim()->rowCount(); ++i) {
-			for(int j = 0; j < _tileSet->tileAnim()->columnCount(); ++j) {
-				_tileSet->tileAnim()->setData(_tileSet->tileAnim()->index(i, j), i);
-				progress.setValue( (i * _tileSet->tileAnim()->columnCount() ) + j);
+        progress.show();
+		for(int tile=0;tile<_tileSet->tileAnim()->rowCount(); ++tile) {
+			for(int frame=0;frame<_tileSet->tileAnim()->columnCount();++frame) {
+                //if(tile < _tileSet->tileGfx()->rowCount()) {
+                _tileSet->tileAnim()->setData(_tileSet->tileAnim()->index(tile, frame), tile);
+                //}
+				progress.setValue((tile * _tileSet->tileAnim()->columnCount())+frame);
 				if(progress.wasCanceled()) {
-					i = _tileSet->tileAnim()->rowCount();
+					tile = _tileSet->tileAnim()->rowCount();
 					break;
 				}
 			}
 		}
-		progress.setValue(_tileSet->tileAnim()->rowCount()*_tileSet->tileAnim()->columnCount());
+		progress.setValue(_tileSet->tileGfx()->rowCount()*_tileSet->tileAnim()->columnCount());
 	}
 }

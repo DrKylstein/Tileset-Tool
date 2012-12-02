@@ -35,12 +35,18 @@ class TileAnimModel: public QAbstractTableModel {
 		QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 		Qt::ItemFlags flags (const QModelIndex & index) const;
 		bool setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
-
-		friend class TileModel;
-	private:
-		TileAnimModel(TileModel* parent);
-		TileModel* _parent;
-		void markAllNew(void);
-		void changeFrameCount(int);
+    
+        bool load(QDataStream&);
+        void dump(QDataStream&);
+        void blank();
+    
+        void markAllNew();
+    
+        TileAnimModel(QObject* parent=0): QAbstractTableModel(parent) {}
+    
+    private:
+        static const int _MAX_TILES = 910;
+        static const int _MAX_FRAMES = 8;
+        quint16 _frames[_MAX_FRAMES][_MAX_TILES];
 };
 #endif

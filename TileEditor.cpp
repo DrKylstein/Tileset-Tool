@@ -23,9 +23,9 @@
 
 #include "TileEditor.hpp"
 #include <QtGui>
-#include "TileInfo.h"
 #include "SlopeEditor.hpp"
 #include "AnimationPreview.hpp"
+#include "TileInfoModel.hpp"
 void TileEditor::resetCurrentIndex() {
 	mapper->toFirst();
 }
@@ -114,14 +114,14 @@ void TileEditor::setModel(QAbstractItemModel * model) {
 	_model = model;
 	mapper->setModel(model);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-	mapper->addMapping(behavior, TileInfo::FIELD_BEHAVIOR, "currentIndex");
-	mapper->addMapping(surfaceType, TileInfo::FIELD_SURFACE_TYPE, "currentIndex");
-	mapper->addMapping(bottomType, TileInfo::FIELD_BOTTOM_BEHAVIOR, "currentIndex");
-	mapper->addMapping(topBlocking, TileInfo::FIELD_TOP);
-	mapper->addMapping(rightBlocking, TileInfo::FIELD_RIGHT);
-	mapper->addMapping(bottomBlocking, TileInfo::FIELD_BOTTOM);
-	mapper->addMapping(leftBlocking, TileInfo::FIELD_LEFT);
-	mapper->addMapping(slopeEnable, TileInfo::FIELD_SLOPE_ENABLED);
+	mapper->addMapping(behavior, TileInfoModel::FIELD_BEHAVIOR, "currentIndex");
+	mapper->addMapping(surfaceType, TileInfoModel::FIELD_SURFACE_TYPE + TileInfoModel::TOP, "currentIndex");
+	mapper->addMapping(bottomType, TileInfoModel::FIELD_SURFACE_TYPE + TileInfoModel::TOP, "currentIndex");
+	mapper->addMapping(topBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::TOP);
+	mapper->addMapping(rightBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::RIGHT);
+	mapper->addMapping(bottomBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::BOTTOM);
+	mapper->addMapping(leftBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::LEFT);
+	mapper->addMapping(slopeEnable, TileInfoModel::FIELD_SLOPED + TileInfoModel::TOP);
 	mapper->toFirst();
 	topSlope->setModel(model);
 	topSlope->setRow(0);

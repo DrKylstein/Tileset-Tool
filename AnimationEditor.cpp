@@ -91,12 +91,6 @@ AnimationEditor::AnimationEditor(QWidget* parent): QWidget(parent) {
 			connect(_framesView, SIGNAL(doubleClicked(const QModelIndex&) ), this, SLOT(pickFrame(const QModelIndex&) ) );
 			connect(anim, SIGNAL(frameChanged(int)), this, SLOT(frameChange(int)));
 			connect(_framesView, SIGNAL(tileSelected(int)), this, SLOT(frameSelected(int)));
-		_frameCount = new QComboBox;
-			_frameCount->addItem(tr("4"));
-			_frameCount->addItem(tr("8"));
-		layout->addWidget(_frameCount);
-		connect(_frameCount, SIGNAL(currentIndexChanged(int)), this, SLOT(userSetFrameCount(int)));
-
 }
 void AnimationEditor::applyPreset() {
 	QModelIndex baseFrame = _model->index(_currentRow, 0);
@@ -194,12 +188,4 @@ void AnimationEditor::frameChange(int i) {
 }
 FramePickerDialog* AnimationEditor::framePicker() {
 	return _framePicker;
-}
-
-void AnimationEditor::userSetFrameCount(int index) {
-	//_model->setFrameCount((index + 1) * 4);
-	emit frameCountChange((index + 1) * 4);
-}
-void AnimationEditor::programSetFrameCount(int frames){
-	_frameCount->setCurrentIndex((frames / 4) - 1);
 }

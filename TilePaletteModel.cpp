@@ -11,15 +11,22 @@ int TilePaletteModel::rowCount(const QModelIndex & parent) const {
 int TilePaletteModel::columnCount(const QModelIndex & parent) const {
 	return 16;
 }
-/*QVariant TilePaletteModel::headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const {
-
+/*QVariant TilePaletteModel::headerData ( int section, Qt::Orientation orientation, int role) const {
+    if(orientation == Qt::Vertical && role == Qt::DisplayRole) {
+        if(section < 8) {
+            return tr("Light %1 (0x%2)").arg(section%8+1).arg(section, 2, 16, QLatin1Char( '0' ));
+        } else {
+            return tr("Dark %1 (0x%2)").arg(section%8+1).arg(section, 2, 16, QLatin1Char( '0' ));
+        }
+    }
+    return QVariant();
 }*/
 QVariant TilePaletteModel::data (const QModelIndex & index, int role) const{
 	if(!index.isValid()) return QVariant();
 	if(role == Qt::BackgroundRole) {
-		return QVariant( QBrush( QColor( _parent->_graphics.color( (index.row() * 16) + index.column() ) ) ) );
+		return QVariant(QBrush(QColor( _parent->getColor(index.column(), index.row()))));
 	} else if(role == Qt::EditRole) {
-		return QVariant( QColor( _parent->_graphics.color( (index.row() * 16) + index.column() ) ) );
+		return QVariant( QColor( _parent->getColor(index.column(), index.row())));
 	}
 	return QVariant();
 }
@@ -29,7 +36,7 @@ Qt::ItemFlags TilePaletteModel::flags (const QModelIndex & index) const {
 }
 bool TilePaletteModel::setData (const QModelIndex & index, const QVariant & value, int role) {
 	if(!index.isValid()) return false;
-	_parent->_graphics.setColor( (index.row() * 16) + index.column(), value.value<QColor>().rgba() );
+	_parent->setColor(index.column(), index.row(), value.value<QColor>().rgba());
 	emit dataChanged(index, index);
 	return true;
 }
@@ -37,11 +44,4 @@ bool TilePaletteModel::setData (const QModelIndex & index, const QVariant & valu
 void TilePaletteModel::markAllNew(void) {
 	emit layoutChanged();
 	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
-}
-QVector<QRgb> TilePaletteModel::dumpPage(int page) {
-    QVector<QRgb> dump;
-    for(int i = page*16; i < (page+1)*16; ++i) {
-        dump <<  _parent->_graphics.color(i);
-    }
-    return dump;
 }

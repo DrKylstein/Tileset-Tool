@@ -27,6 +27,7 @@
 #include <QVector>
 #include <QImage>
 #include <QFile>
+#include "TileInfo.h"
 class TileInfoModel;
 class TileAnimModel;
 class TileGfxModel;
@@ -36,17 +37,13 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 
 	public:
 		TileModel(QObject* parent = 0);
-		//int rowCount(const QModelIndex & parent = QModelIndex()) const;
-		//int columnCount(const QModelIndex & parent = QModelIndex()) const;
-		//QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-		//QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
-		//Qt::ItemFlags flags (const QModelIndex & index) const;
-		//bool setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
-
-		//bool insertRows (int row, int count, const QModelIndex & parent = QModelIndex());
-		//bool removeRows (int row, int count, const QModelIndex & parent = QModelIndex());
 
 		int frameCount() const;
+        int tileCount() const;
+        
+        QRgb getColor(int index, int row=0);
+        void setColor(QRgb, int index, int row=0);
+    
 		void setFrameCount(int);
 		const QImage& graphics();
 
@@ -57,15 +54,13 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 		bool fixPalette(const QString& = QString());
 		bool loadPalette(const QString&);
 		bool savePalette(const QString&);
+        QVector<QRgb> getPaletteRow(int);
 
 		TileInfoModel* tileInfo(void);
-		friend class TileInfoModel;
 		TileAnimModel* tileAnim(void);
-		friend class TileAnimModel;
 		TileGfxModel* tileGfx(void);
 		friend class TileGfxModel;
 		TilePaletteModel* tilePalette(void);
-		friend class TilePaletteModel;
 
 	signals:
 		void frameCountChanged(int);
@@ -73,7 +68,6 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 
 	private:
 		bool _openLemm(QFile&);
-		//bool _openVorticon(QFile&);
 		bool _openVorticon(QFile&);
 		bool _saveLemm(QFile&);
 		bool _saveVorticon(QFile&);
