@@ -47,21 +47,33 @@ bool TileInfoModel::load(QDataStream& stream) {
             _tileProperties[tile].surfaceType[side] = (b & 0x03) - 1;
             if(b & 0x80) {
                 _tileProperties[tile].sloped[side] = 1;
-                _tileProperties[tile].offset[side] = b & 0x0C;
-                _tileProperties[tile].steepness[side] = (b & 0x30) >> 4;
+                _tileProperties[tile].y0[side] = b & 0x0C;
+                _tileProperties[tile].run[side] = pow(2, ((b & 0x30) >> 4));
                 if(b & 0x40) {
-                    _tileProperties[tile].steepness[side] *= -1;
-                    _tileProperties[tile].offset[side] += 4;
+                    _tileProperties[tile].run[side] *= -1;
+                    _tileProperties[tile].y0[side] += 4;
                 }
             } else {
                 _tileProperties[tile].sloped[side] = false;
-                _tileProperties[tile].offset[side] = 0;
-                _tileProperties[tile].steepness[side] = 0;
+                _tileProperties[tile].y0[side] = 0;
+                _tileProperties[tile].run[side] = 0;
             }
         }
     }
 	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
     return true;
+}
+
+static int topBit(int i) {
+	if(i == 0) {
+		return 0;
+	}
+	int bitVal = 1, bitPos = 1;
+	while(i & bitVal == 0) {
+		bitVal = bitVal << 1;
+		++bitPos;
+	}
+	return bitPos;
 }
 
 void TileInfoModel::dump(QDataStream& stream) {
@@ -82,11 +94,11 @@ void TileInfoModel::dump(QDataStream& stream) {
             if(_tileProperties[tile].solid[side]) {
                 b = (_tileProperties[tile].surfaceType[side] + 1);
                 if(_tileProperties[tile].sloped[side]) {
-                    b |= 0x80 | abs(_tileProperties[tile].steepness[side]) << 4;
-                    if(_tileProperties[tile].steepness[side] < 0) {
-                        b |= 0x40 | (_tileProperties[tile].offset[side] - 4);
+                    b |= 0x80 | topBit(abs(_tileProperties[tile].run[side])) << 4;
+                    if(_tileProperties[tile].run[side] < 0) {
+                        b |= 0x40 | (_tileProperties[tile].y0[side]/* - 4*/);
                     } else {
-                        b |= _tileProperties[tile].offset[side];
+                        b |= _tileProperties[tile].y0[side];
                     }
                 }
             }
@@ -121,14 +133,14 @@ QVariant TileInfoModel::data (const QModelIndex & index, int role) const {
 	if( (role == Qt::DisplayRole || role == Qt::EditRole) && (index.isValid())) {
         if(index.column() == FIELD_BEHAVIOR) {
             return _tileProperties[index.row()].behavior;
-        } else if(index.column() >= FIELD_SOLID && index.column() < FIELD_SLOPED) {
+        } else if(index.column() >= FIELD_SOLID && index.column() <= FIELD_SOLID+LEFT) {
             return _tileProperties[index.row()].solid[index.column()-FIELD_SOLID];
-        } else if(index.column() >= FIELD_SLOPED && index.column() < FIELD_OFFSET) {
+        } else if(index.column() >= FIELD_SLOPED && index.column() <= FIELD_SLOPED+LEFT) {
             return _tileProperties[index.row()].sloped[index.column()-FIELD_SLOPED];
-        } else if(index.column() >= FIELD_OFFSET && index.column() < FIELD_STEEPNESS) {
-            return _tileProperties[index.row()].steepness[index.column()-FIELD_OFFSET];
-        } else if(index.column() >= FIELD_STEEPNESS && index.column() < FIELD_SURFACE_TYPE) {
-            return _tileProperties[index.row()].steepness[index.column()-FIELD_STEEPNESS];
+        } else if(index.column() >= FIELD_Y0 && index.column() <= FIELD_Y0+LEFT) {
+            return _tileProperties[index.row()].run[index.column()-FIELD_Y0];
+        } else if(index.column() >= FIELD_RUN && index.column() <= FIELD_RUN+LEFT) {
+            return _tileProperties[index.row()].run[index.column()-FIELD_RUN];
         } else {
             return _tileProperties[index.row()].surfaceType[index.column()-FIELD_SURFACE_TYPE];
         }
@@ -146,15 +158,25 @@ bool TileInfoModel::setData (const QModelIndex & index, const QVariant & value, 
             _tileProperties[index.row()].behavior = value.toInt();
         } else if(index.column() >= FIELD_SOLID && index.column() < FIELD_SLOPED) {
             _tileProperties[index.row()].solid[index.column()-FIELD_SOLID] = value.toBool();
-        } else if(index.column() >= FIELD_SLOPED && index.column() < FIELD_OFFSET) {
+        } else if(index.column() >= FIELD_SLOPED && index.column() < FIELD_Y0) {
             _tileProperties[index.row()].sloped[index.column()-FIELD_SLOPED] = value.toBool();
-        } else if(index.column() >= FIELD_OFFSET && index.column() < FIELD_STEEPNESS) {
-            _tileProperties[index.row()].steepness[index.column()-FIELD_OFFSET] = value.toInt();
-        } else if(index.column() >= FIELD_STEEPNESS && index.column() < FIELD_SURFACE_TYPE) {
-            _tileProperties[index.row()].steepness[index.column()-FIELD_STEEPNESS] = value.toInt();
+        } else if(index.column() >= FIELD_Y0 && index.column() < FIELD_RUN) {
+            _tileProperties[index.row()].run[index.column()-FIELD_Y0] = value.toInt();
+        } else if(index.column() >= FIELD_RUN && index.column() < FIELD_SURFACE_TYPE) {
+            _tileProperties[index.row()].run[index.column()-FIELD_RUN] = value.toInt();
         } else {
             _tileProperties[index.row()].surfaceType[index.column()-FIELD_SURFACE_TYPE] = value.toInt();
         }
     emit dataChanged(index, index);
 	return true;
+}
+
+TileInfoModel::TileProperties& TileInfoModel::tile(int i) {
+	return _tileProperties[i];
+}
+
+void TileInfoModel::markTileUpdated(int i) {
+	QModelIndex start = index(i, 0);
+	QModelIndex end = index(i, 20);
+	emit dataChanged(start, end);
 }

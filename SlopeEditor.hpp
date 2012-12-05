@@ -29,33 +29,29 @@
 class QAbstractItemModel;
 class SlopeEditor: public QWidget {
 		Q_OBJECT
-		Q_PROPERTY(int slope READ slope WRITE setSlope)
-		Q_PROPERTY(int offset READ offset WRITE setOffset)
-		Q_PROPERTY(int side READ side WRITE setSide)
-
 
 	public:
 		SlopeEditor(QWidget* parent = 0);
 		QSize sizeHint() const;
-		int slope() const;
-		int offset() const;
-		int side() const;
 		void setModel(QAbstractItemModel*);
 		void setRow(int);
 
 	protected:
 		void paintEvent(QPaintEvent*);
+		void mouseMoveEvent(QMouseEvent*);
 		void mousePressEvent(QMouseEvent*);
-    
+		void mouseReleaseEvent(QMouseEvent*);
+
 	private slots:
 		void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
-		void setSlope(int);
-		void setOffset(int);
-		void setSide(int);
 
 	private:
-		int _slope, _offset, _side;
+		void _translateAndSubmit();
+		void _translateAndLoad();
+		int _left, _right;
+		bool _slopeOnBottom;
 		QAbstractItemModel* model;
-		int row;
+		int _row;
+		enum {NOT_DRAGGING, DRAG_LEFT, DRAG_RIGHT} _dragMode;
 };
 #endif
