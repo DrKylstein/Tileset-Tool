@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="debug" />
-	<File name="AnimationEditor.cpp" open="1" top="1" tabpos="0">
+	<File name="AnimationEditor.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="4523" topLine="92" />
 	</File>
 	<File name="AnimationEditor.hpp" open="0" top="0" tabpos="4">
@@ -55,11 +55,11 @@
 	<File name="TileAnimModel.hpp" open="0" top="0" tabpos="3">
 		<Cursor position="588" topLine="0" />
 	</File>
-	<File name="TileEditor.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="4096" topLine="72" />
+	<File name="TileEditor.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="1355" topLine="25" />
 	</File>
-	<File name="TileEditor.hpp" open="0" top="0" tabpos="2">
-		<Cursor position="771" topLine="1" />
+	<File name="TileEditor.hpp" open="1" top="1" tabpos="2">
+		<Cursor position="1744" topLine="38" />
 	</File>
 	<File name="TileGfxModel.cpp" open="0" top="0" tabpos="11">
 		<Cursor position="1773" topLine="27" />
@@ -105,8 +105,5 @@
 	</File>
 	<File name="tilesettool.qrc" open="0" top="0" tabpos="3">
 		<Cursor position="970" topLine="0" />
-	</File>
-	<File name="todo.txt" open="0" top="0" tabpos="1">
-		<Cursor position="1581" topLine="9" />
 	</File>
 </CodeBlocks_layout_file>

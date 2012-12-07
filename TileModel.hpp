@@ -40,10 +40,10 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 
 		int frameCount() const;
         int tileCount() const;
-        
+
         QRgb getColor(int index, int row=0);
         void setColor(QRgb, int index, int row=0);
-    
+
 		void setFrameCount(int);
 		const QImage& graphics();
 
@@ -71,8 +71,6 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 		bool _openVorticon(QFile&);
 		bool _saveLemm(QFile&);
 		bool _saveVorticon(QFile&);
-		QVector<int> blankTile;
-		QVector<QVector<int> > tiles; // [tile][field]
 		QImage _graphics;
 		int numFrames;
 		enum {FORMAT_VORTICON, FORMAT_LEMM, FORMAT_KRD} format;

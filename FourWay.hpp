@@ -1,7 +1,7 @@
 /*
  *  Tileset Tool, an editor for Commander Keen: Invasion of the Vorticons
  *  Tilesets.
- *  Copyright (C) 2010-2011  Kyle Delaney
+ *  Copyright (C) 2010-2012  Kyle Delaney
  *
  *  This file is a part of Tileset Tool.
  *
@@ -21,40 +21,49 @@
  *  You may contact the author at <dr.kylstein@gmail.com>
  */
 
-#ifndef SLOPEEDITOR_HPP
-#define SLOPEEDITOR_HPP
-#include <QWidget>
-#include <QModelIndex>
-#include <QLine>
-class QAbstractItemModel;
-class SlopeEditor: public QWidget {
-		Q_OBJECT
+#ifndef FOURWAY_HPP
+#define FOURWAY_HPP
 
+template <class T>
+class FourWay {
 	public:
-		SlopeEditor(QWidget* parent = 0);
-		QSize sizeHint() const;
-		void setModel(QAbstractItemModel*);
-		void setRow(int);
+		T& operator [] (int i) {
+			//if(i > 0 && i < 4) {
+				return _data[i];
+			//}
 
-	signals:
-		void runChanged(int);
-		void y0Changed(int);
-
-	protected:
-		void paintEvent(QPaintEvent*);
-		void mouseMoveEvent(QMouseEvent*);
-		void mousePressEvent(QMouseEvent*);
-		void mouseReleaseEvent(QMouseEvent*);
-
-	private slots:
-		void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+		};
+		const T& operator [] (int i) const {
+			//if(i > 0 && i < 4) {
+				return _data[i];
+			//}
+		};
+		T top() {
+			return _data[0];
+		};
+		T right() {
+			return _data[1];
+		};
+		T bottom() {
+			return _data[2];
+		};
+		T left() {
+			return _data[3];
+		};
+		void setTop(T v) {
+			_data[0] = v;
+		};
+		void setRight(T v) {
+			_data[1] = v;
+		};
+		void setBottom(T v) {
+			_data[2] = v;
+		};
+		void setLeft(T v) {
+			_data[3] = v;
+		};
 
 	private:
-		void _translateAndLoad();
-		int _left, _right;
-		bool _slopeOnBottom;
-		QAbstractItemModel* model;
-		int _row;
-		enum {NOT_DRAGGING, DRAG_LEFT, DRAG_RIGHT} _dragMode;
+		T _data[4];
 };
 #endif

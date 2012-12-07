@@ -44,29 +44,41 @@ void SlopeEditor::paintEvent(QPaintEvent* event) {
 	start.setY(_left * scale);
 	end.setY(_right * scale);
 	//qDebug() << (_slope != 0 ? event->rect().height()/_slope : 0);
-	QLine line = QLine(start, end);
 	QPolygon p;
 	painter.setRenderHint(QPainter::Antialiasing);
 	painter.fillRect(0, 0, width(), height(), pal.color(QPalette::Base));
+	QPen slopePen;
+	slopePen.setColor(pal.color(QPalette::Text));
+	slopePen.setStyle(Qt::SolidLine);
+	slopePen.setWidth(1);
 	QBrush brush = pal.highlight();
 	painter.setBrush(brush);
-	painter.setPen(Qt::NoPen);
+	painter.setPen(slopePen);
 	if(!_slopeOnBottom) {
-		p.setPoints(4, line.x1(), line.y1(), line.x2() + 1, line.y2(), event->rect().right() + 1, event->rect().bottom() + 1, event->rect().left(), event->rect().bottom() + 1);
+		p.setPoints(4, start.x(), start.y(), end.x() + 1, end.y(), event->rect().right() + 1, event->rect().bottom() + 1, event->rect().left(), event->rect().bottom() + 1);
 		painter.drawPolygon(p);
 	} else {
-		p.setPoints(4, line.x1(), line.y1(), line.x2() + 1, line.y2(), event->rect().right() + 1, event->rect().top(), event->rect().left(), event->rect().top());
+		p.setPoints(4, start.x(), start.y(), end.x() + 1, end.y(), event->rect().right() + 1, event->rect().top(), event->rect().left(), event->rect().top());
 		painter.drawPolygon(p);
 	}
-	QPen gridPen; gridPen.setColor(pal.color(QPalette::Text)); gridPen.setStyle(Qt::SolidLine); gridPen.setWidth(2);
-	QPen slopePen; slopePen.setColor(pal.color(QPalette::Text)); slopePen.setStyle(Qt::SolidLine); slopePen.setWidth(3);
-	painter.setPen(gridPen);
-	for(int i = 1; i < 16; i += 4) {
-		painter.drawLine(event->rect().left(), i * scale, event->rect().left() + 16, i * scale);
-		painter.drawLine(event->rect().right(), i * scale, event->rect().right() - 16, i * scale);
+	//handles
+	painter.setBrush(Qt::NoBrush);
+	start.rx() += width()/16;
+	end.rx() -= width()/16;
+	if(start.y() == height()) {
+		start.ry() -= width()/16;
 	}
-	painter.setPen(slopePen);
-	painter.drawLine(line);
+	if(start.y() == 0) {
+		start.ry() += width()/16;
+	}
+	if(end.y() == height()) {
+		end.ry() -= width()/16;
+	}
+	if(end.y() == 0) {
+		end.ry() += width()/16;
+	}
+	painter.drawEllipse(start, width()/16, width()/16);
+	painter.drawEllipse(end, width()/16, width()/16);
 }
 
 void SlopeEditor::mouseMoveEvent(QMouseEvent* event) {
@@ -80,26 +92,32 @@ void SlopeEditor::mouseMoveEvent(QMouseEvent* event) {
 	}
 	int result = scaled_y & 0x1C;
 
+	int run = 0;
+
 	switch(_dragMode) {
 		case DRAG_LEFT:
-			_left = result;
+			if(_right-result != 0) {
+				_left = result;
+				model->setData(model->index(_row, TileInfoModel::FIELD_Y0), _left);
+				emit y0Changed(_left);
+				run = 16 / (_right-_left);
+				model->setData(model->index(_row, TileInfoModel::FIELD_RUN), run);
+				emit runChanged(run);
+			}
 			break;
 		case DRAG_RIGHT:
-			_right = result;
+			if(result-_left != 0) {
+				_right = result;
+				run = 16 / (_right-_left);
+				model->setData(model->index(_row, TileInfoModel::FIELD_RUN), run);
+				emit runChanged(run);
+			}
 			break;
 	}
-	_translateAndSubmit();
+	update();
 }
 
 void SlopeEditor::mouseReleaseEvent(QMouseEvent* event) {
-	if(_dragMode == NOT_DRAGGING) {
-		if(event->y() < height()/4) {
-			_slopeOnBottom = false;
-		} else if(event->y() > height() - (height()/4)) {
-			_slopeOnBottom = true;
-		}
-		_translateAndSubmit();
-	}
 	_dragMode = NOT_DRAGGING;
 	setMouseTracking(false);
 }
@@ -120,87 +138,16 @@ void SlopeEditor::setModel(QAbstractItemModel* m) {
 void SlopeEditor::setRow(int i) {
 	_row = i;
 	_translateAndLoad();
-	update();
 }
 void SlopeEditor::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
 	if(topLeft.row() <= _row && bottomRight.row() >= _row) {
 		_translateAndLoad();
 	}
-	update();
 }
 
 void SlopeEditor::_translateAndLoad() {
-	_slopeOnBottom = model->data(model->index(_row, TileInfoModel::FIELD_SLOPED+TileInfoModel::BOTTOM)).toBool();
-	TileInfoModel* infoModel = (TileInfoModel*)(model);
-	int run, y0;
-	if(_slopeOnBottom) {
-		run = infoModel->tile(_row).run[TileInfoModel::BOTTOM];
-		y0 = infoModel->tile(_row).y0[TileInfoModel::BOTTOM];
-	} else {
-		run = infoModel->tile(_row).run[TileInfoModel::TOP];
-		y0 = infoModel->tile(_row).y0[TileInfoModel::TOP];
-	}
-	_right =_left = y0;
-	if(run != 0) {
-		_right += 16 / run;
-	}
-}
-
-void SlopeEditor::_translateAndSubmit() {
-	int run, y0;
-	y0 = _left;
-	run = 0;
-	if(_right-_left != 0) {
-		run = 16 / (_right-_left);
-	}
-	if(run == 0) {
-		return;
-	}
-	TileInfoModel* infoModel = (TileInfoModel*)model;
-	TileInfoModel::TileProperties* tile = &infoModel->tile(_row);
-	if(_slopeOnBottom) {
-		//unset top
-		tile->sloped[TileInfoModel::TOP] = false;
-		tile->run[TileInfoModel::TOP] = 0;
-		tile->y0[TileInfoModel::TOP] = 0;
-		//set bottom
-		tile->sloped[TileInfoModel::BOTTOM] = true;
-		tile->run[TileInfoModel::BOTTOM] = run;
-		tile->y0[TileInfoModel::BOTTOM] = y0;
-		//set paired side, clear opposite side
-		if(run > 0) { //positive bottom slope -> down to the left, match on right
-			tile->sloped[TileInfoModel::LEFT] = false;
-			tile->run[TileInfoModel::LEFT] = 0;
-			tile->y0[TileInfoModel::LEFT] = 0;
-
-			tile->sloped[TileInfoModel::RIGHT] = true;
-			tile->run[TileInfoModel::RIGHT] = run;
-			tile->y0[TileInfoModel::RIGHT] = y0;
-		} else { //negative -> down to the right, match on left
-			tile->sloped[TileInfoModel::LEFT] = true;
-			tile->run[TileInfoModel::LEFT] = run;
-			tile->y0[TileInfoModel::LEFT] = y0;
-
-			tile->sloped[TileInfoModel::RIGHT] = false;
-			tile->run[TileInfoModel::RIGHT] = 0;
-			tile->y0[TileInfoModel::RIGHT] = 0;
-		}
-	} else {
-		//set top
-		tile->sloped[TileInfoModel::TOP] = true;
-		tile->run[TileInfoModel::TOP] = run;
-		tile->y0[TileInfoModel::TOP] = y0;
-		//unset bottom
-		tile->sloped[TileInfoModel::BOTTOM] = false;
-		tile->run[TileInfoModel::BOTTOM] = 0;
-		tile->y0[TileInfoModel::BOTTOM] = 0;
-		//clear sides
-		tile->sloped[TileInfoModel::LEFT] = false;
-		tile->run[TileInfoModel::LEFT] = 0;
-		tile->y0[TileInfoModel::LEFT] = 0;
-		tile->sloped[TileInfoModel::RIGHT] = false;
-		tile->run[TileInfoModel::RIGHT] = 0;
-		tile->y0[TileInfoModel::RIGHT] = 0;
-	}
-	infoModel->markTileUpdated(_row);
+	_slopeOnBottom = model->data(model->index(_row, TileInfoModel::FIELD_SLOPED_SIDE)).toInt() == 2;
+	_right =_left = model->data(model->index(_row, TileInfoModel::FIELD_Y0)).toInt();
+	_right += 16 / model->data(model->index(_row, TileInfoModel::FIELD_RUN)).toInt();
+	update();
 }

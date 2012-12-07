@@ -1,7 +1,7 @@
 /*
  *  Tileset Tool, an editor for Commander Keen: Invasion of the Vorticons
  *  Tilesets.
- *  Copyright (C) 2010-2011  Kyle Delaney
+ *  Copyright (C) 2010-2012  Kyle Delaney
  *
  *  This file is a part of Tileset Tool.
  *
@@ -21,40 +21,28 @@
  *  You may contact the author at <dr.kylstein@gmail.com>
  */
 
-#ifndef SLOPEEDITOR_HPP
-#define SLOPEEDITOR_HPP
-#include <QWidget>
-#include <QModelIndex>
-#include <QLine>
-class QAbstractItemModel;
-class SlopeEditor: public QWidget {
-		Q_OBJECT
+#ifndef V2TILEINFO_HPP
+#define V2TILEINFO_HPP
 
+#include <QDataStream>
+#include "FourWay.hpp"
+
+class V2TileInfo {
 	public:
-		SlopeEditor(QWidget* parent = 0);
-		QSize sizeHint() const;
-		void setModel(QAbstractItemModel*);
-		void setRow(int);
+        bool load(QDataStream&);
+        void dump(QDataStream&);
+        V2TileInfo(void);
 
-	signals:
-		void runChanged(int);
-		void y0Changed(int);
+        static const int TILES = 910;
 
-	protected:
-		void paintEvent(QPaintEvent*);
-		void mouseMoveEvent(QMouseEvent*);
-		void mousePressEvent(QMouseEvent*);
-		void mouseReleaseEvent(QMouseEvent*);
+        struct TileProperties {
+            FourWay<bool> slopeEnabled;
+            FourWay<bool> negativeSlope;
+            FourWay<quint8> b;
+            FourWay<quint8> m;
+            FourWay<quint8> style;
+            qint8 behavior;
+        } tileProperties[TILES];
 
-	private slots:
-		void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
-
-	private:
-		void _translateAndLoad();
-		int _left, _right;
-		bool _slopeOnBottom;
-		QAbstractItemModel* model;
-		int _row;
-		enum {NOT_DRAGGING, DRAG_LEFT, DRAG_RIGHT} _dragMode;
 };
 #endif

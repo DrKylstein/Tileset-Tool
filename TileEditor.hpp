@@ -50,6 +50,8 @@ class TileEditor: public QWidget {
 
 	private slots:
 		void _focusChange(QWidget*, QWidget*);
+		void _slopeEnableChanged(int);
+		void _runChanged(int);
 
 	private:
 		QDataWidgetMapper* mapper;
@@ -60,10 +62,13 @@ class TileEditor: public QWidget {
 		QCheckBox* bottomBlocking;
 		QCheckBox* leftBlocking;
 		QCheckBox* rightBlocking;
-		QCheckBox* slopeEnable;
+		QComboBox* slopeEnable;
 		SlopeEditor* topSlope;
 
 		QAbstractItemModel* _model;
 		QModelIndex _index;
+
+		void _updateSlopeBlocking();
+
 };
 #endif

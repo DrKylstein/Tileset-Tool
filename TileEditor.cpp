@@ -49,9 +49,13 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 						topSlope = new SlopeEditor;
 							slopeFrameLayout->addWidget(topSlope);
 							topSlope->setEnabled(false);
-					slopeEnable = new QCheckBox(tr("Sloped"));
+							connect(topSlope, SIGNAL(runChanged(int)), this, SLOT(_runChanged(int)));
+					slopeEnable = new QComboBox();
+						slopeEnable->addItem(tr("No Slope"));
+						slopeEnable->addItem(tr("Top Slope"));
+						slopeEnable->addItem(tr("Bottom Slope"));
 						centerLayout->addWidget(slopeEnable, 0, Qt::AlignHCenter);
-							connect(slopeEnable, SIGNAL(toggled(bool)), topSlope, SLOT(setEnabled(bool)));
+							connect(slopeEnable, SIGNAL(currentIndexChanged(int)), this, SLOT(_slopeEnableChanged(int)));
 				topBlocking = new QCheckBox(tr("Top"));
 					currentTileGrid->addWidget(topBlocking, 0, 1, Qt::AlignHCenter | Qt::AlignVCenter);
 				leftBlocking = new QCheckBox(tr("Left"));
@@ -110,27 +114,49 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 
 	connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(_focusChange(QWidget*, QWidget*)));
 }
+void TileEditor::_slopeEnableChanged(int i) {
+	topSlope->setEnabled(i > 0);
+	topBlocking->setEnabled(i != 1);
+	bottomBlocking->setEnabled(i != 2);
+	_updateSlopeBlocking();
+}
 void TileEditor::setModel(QAbstractItemModel * model) {
 	_model = model;
 	mapper->setModel(model);
 	mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 	mapper->addMapping(behavior, TileInfoModel::FIELD_BEHAVIOR, "currentIndex");
-	mapper->addMapping(surfaceType, TileInfoModel::FIELD_SURFACE_TYPE + TileInfoModel::TOP, "currentIndex");
-	mapper->addMapping(bottomType, TileInfoModel::FIELD_SURFACE_TYPE + TileInfoModel::TOP, "currentIndex");
-	mapper->addMapping(topBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::TOP);
-	mapper->addMapping(rightBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::RIGHT);
-	mapper->addMapping(bottomBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::BOTTOM);
-	mapper->addMapping(leftBlocking, TileInfoModel::FIELD_SOLID + TileInfoModel::LEFT);
-	mapper->addMapping(slopeEnable, TileInfoModel::FIELD_SLOPED + TileInfoModel::TOP);
+	mapper->addMapping(surfaceType, TileInfoModel::FIELD_TOP_STYLE, "currentIndex");
+	mapper->addMapping(bottomType, TileInfoModel::FIELD_BOTTOM_STYLE, "currentIndex");
+	mapper->addMapping(topBlocking, TileInfoModel::FIELD_TOP_BLOCKING);
+	mapper->addMapping(rightBlocking, TileInfoModel::FIELD_RIGHT_BLOCKING);
+	mapper->addMapping(bottomBlocking, TileInfoModel::FIELD_BOTTOM_BLOCKING);
+	mapper->addMapping(leftBlocking, TileInfoModel::FIELD_LEFT_BLOCKING);
+	mapper->addMapping(slopeEnable, TileInfoModel::FIELD_SLOPED_SIDE, "currentIndex");
 	mapper->toFirst();
 	topSlope->setModel(model);
 	topSlope->setRow(0);
+}
+
+void TileEditor::_updateSlopeBlocking() {
+	if(_model->index(_index.row(), TileInfoModel::FIELD_SLOPED_SIDE).data().toInt() == 2) {
+		if(_model->index(_index.row(), TileInfoModel::FIELD_RUN).data().toInt() < 0) {
+			rightBlocking->setEnabled(false);
+			leftBlocking->setEnabled(true);
+		} else {
+			rightBlocking->setEnabled(true);
+			leftBlocking->setEnabled(false);
+		}
+	} else {
+		rightBlocking->setEnabled(true);
+		leftBlocking->setEnabled(true);
+	}
 }
 
 void TileEditor::setCurrentModelIndex(const QModelIndex & index) {
 	_index = index;
 	mapper->setCurrentModelIndex(index);
 	topSlope->setRow(index.row());
+	_updateSlopeBlocking();
 }
 
 void TileEditor::_focusChange(QWidget* old, QWidget* new_) {
@@ -139,4 +165,8 @@ void TileEditor::_focusChange(QWidget* old, QWidget* new_) {
 	if(section != -1) {
 		emit propertyChanged(_model->index(mapper->currentIndex(), section), old->property(mapper->mappedPropertyName(old)));
 	}
+}
+
+void TileEditor::_runChanged(int i) {
+	_updateSlopeBlocking();
 }

@@ -90,7 +90,7 @@ bool TileModel::open(const QString& filename) {
 bool TileModel::_openLemm(QFile& file) {
     quint8 b;
     quint16 w;
-    
+
 	if(file.size() < 18) return false;
 	QDataStream stream(&file);
 	stream.setByteOrder(QDataStream::LittleEndian);
@@ -98,7 +98,7 @@ bool TileModel::_openLemm(QFile& file) {
 	quint32 infoLoc, animLoc, gfxLoc, palLoc;
 	stream >> tileCount >> frameCount >> gfxLength >> infoLoc >> animLoc >> gfxLoc >> palLoc;
 	if(file.size() < 18 + (tileCount * 5) + (tileCount * TileInfo::MAX_FRAMES * 2) + (gfxLength * 4)) return false;
-    
+
 	file.seek(infoLoc); //stream.skipRawData(46);
     _tileInfo->load(stream);
 	file.seek(animLoc);
@@ -145,7 +145,7 @@ bool TileModel::_openLemm(QFile& file) {
 	return true;
 }
 bool TileModel::_openVorticon(QFile& file) {
-	QDataStream stream(&file);
+/*	QDataStream stream(&file);
 	stream.setByteOrder(QDataStream::LittleEndian);
 	int tileCount;
 	if(file.fileName().endsWith(".exe", Qt::CaseInsensitive)) {
@@ -305,7 +305,8 @@ bool TileModel::_openVorticon(QFile& file) {
 	//qDebug() << headFilename;
 	importImage(headFilename);
 
-	return true;
+	return true;*/
+	return false;
 }
 bool TileModel::save(const QString& filename) const {
 	QFile file(filename);
@@ -314,7 +315,7 @@ bool TileModel::save(const QString& filename) const {
 	}
 	QDataStream stream(&file);
 	stream.setByteOrder(QDataStream::LittleEndian);
-	quint16 tileCount = tiles.size();
+	quint16 tileCount = 910;
 	quint16 frames = frameCount();
 	quint16 gfxLength = (_graphics.width() * _graphics.height()) / 8;
 	quint32 infoLoc = 64;

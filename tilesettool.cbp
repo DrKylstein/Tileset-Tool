@@ -96,7 +96,6 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="tilesettool.pro" />
 		<Unit filename="tilesettool.qrc" />
-		<Unit filename="todo.txt" />
 		<Extensions>
 			<code_completion />
 			<debugger />

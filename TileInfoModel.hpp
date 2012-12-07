@@ -24,6 +24,7 @@
 #ifndef TILEINFOMODEL_HPP
 #define TILEINFOMODEL_HPP
 #include <QAbstractTableModel>
+#include "FourWay.hpp"
 
 class TileInfoModel: public QAbstractTableModel {
 	Q_OBJECT
@@ -40,45 +41,41 @@ class TileInfoModel: public QAbstractTableModel {
         void dump(QDataStream&);
         void blank();
 
-        struct TileProperties {
-            bool solid[4];
-            bool sloped[4];
-            unsigned int y0[4];
-            int run[4];
-            unsigned int surfaceType[4];
-            unsigned int behavior;
-
-            TileProperties() {
-                for(int i=0; i<4; ++i) {
-                    solid[i] = false;
-                    sloped[i] = false;
-                    y0[i] = 0;
-                    run[i] = 0;
-                    surfaceType[i] = 0;
-                }
-                behavior = 0;
-            }
-        };
-
-
-		TileProperties& tile(int);
-		void markTileUpdated(int);
-
-        TileInfoModel(QObject* parent=0): QAbstractTableModel(parent) {}
+        TileInfoModel(QObject* parent=0): QAbstractTableModel(parent) {blank();}
 
         enum {
             FIELD_BEHAVIOR,
-            FIELD_SOLID,
-            FIELD_SLOPED = 5,
-            FIELD_Y0 = 7,
-            FIELD_RUN = 13,
-            FIELD_SURFACE_TYPE = 17,
+            FIELD_SLOPED_SIDE,
+            FIELD_Y0,
+            FIELD_RUN,
+            FIELD_TOP_BLOCKING,
+            FIELD_RIGHT_BLOCKING,
+            FIELD_BOTTOM_BLOCKING,
+            FIELD_LEFT_BLOCKING,
+            FIELD_TOP_STYLE,
+            FIELD_RIGHT_STYLE,
+            FIELD_BOTTOM_STYLE,
+            FIELD_LEFT_STYLE
         };
-        enum {TOP, RIGHT, BOTTOM, LEFT};
+        static const int FIELD_COUNT = 12;
+        typedef enum{NO_SLOPE, TOP_SLOPE, BOTTOM_SLOPE} slope_side;
 
 	private:
-        static const int _MAX_TILES = 910;
-		TileProperties _tileProperties[_MAX_TILES];
+		static const int _TILES = 910;
+
+		static const int REAL_FOREGROUND = -1;
+		static const int REAL_MASKED = -2;
+		static const int FAKE_FOREGROUND = 28;
+		static const int FAKE_MASKED = 29;
+
+		struct {
+            unsigned int behavior;
+            slope_side slopedSide;
+            unsigned int y0;
+            signed int run;
+            FourWay<bool> blocking;
+            FourWay<unsigned int> style;
+		} _tiles[_TILES];
 
 };
 #endif

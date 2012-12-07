@@ -22,7 +22,8 @@ HEADERS +=	AnimationPreview.hpp \
 			FramePickerDialog.hpp \
 			RowToListProxyModel.hpp \
 			TilePaletteModel.hpp \
-			PaletteEditor.hpp
+			PaletteEditor.hpp \
+			V2TileInfo.hpp
 
 
 SOURCES +=	AnimationPreview.cpp \
@@ -42,4 +43,5 @@ SOURCES +=	AnimationPreview.cpp \
 			FramePickerDialog.cpp \
 			RowToListProxyModel.cpp \
 			TilePaletteModel.cpp \
-			PaletteEditor.cpp
+			PaletteEditor.cpp \
+			V2TileInfo.cpp
