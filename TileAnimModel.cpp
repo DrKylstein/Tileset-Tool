@@ -73,9 +73,11 @@ bool TileAnimModel::load(QDataStream& stream) {
 }
 
 void TileAnimModel::dump(QDataStream& stream) {
+    quint16 w;
 	for(unsigned int frame=0;frame!=_MAX_FRAMES;++frame) {
 		for(unsigned int tile=0;tile!=_MAX_TILES;tile++) {
-			stream << (_frames[frame][tile] << 5);
+			w = _frames[frame][tile] << 5;
+			stream << w;
 		}
 	}
 }

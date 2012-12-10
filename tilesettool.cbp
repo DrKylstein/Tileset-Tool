@@ -6,6 +6,7 @@
 		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="Models/;Views/;" />
 		<Build>
 			<Target title="debug">
 				<Option output="bin/tilesettool" prefix_auto="1" extension_auto="1" />
@@ -32,41 +33,102 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="AnimationEditor.cpp" />
-		<Unit filename="AnimationEditor.hpp" />
-		<Unit filename="AnimationPreview.cpp" />
-		<Unit filename="AnimationPreview.hpp" />
-		<Unit filename="FramePickerDialog.cpp" />
-		<Unit filename="FramePickerDialog.hpp" />
+		<Unit filename="AnimationEditor.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="AnimationEditor.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="AnimationPreview.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="AnimationPreview.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="FourWay.hpp" />
+		<Unit filename="FramePickerDialog.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="FramePickerDialog.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
 		<Unit filename="MainWindow.cpp" />
 		<Unit filename="MainWindow.hpp" />
-		<Unit filename="PaletteEditor.cpp" />
-		<Unit filename="PaletteEditor.hpp" />
+		<Unit filename="PaletteEditor.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="PaletteEditor.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
 		<Unit filename="PreferencesDialog.cpp" />
 		<Unit filename="PreferencesDialog.hpp" />
 		<Unit filename="RowToListProxyModel.cpp" />
 		<Unit filename="RowToListProxyModel.hpp" />
-		<Unit filename="SlopeEditor.cpp" />
-		<Unit filename="SlopeEditor.hpp" />
-		<Unit filename="TileAnimModel.cpp" />
-		<Unit filename="TileAnimModel.hpp" />
-		<Unit filename="TileEditor.cpp" />
-		<Unit filename="TileEditor.hpp" />
-		<Unit filename="TileGfxModel.cpp" />
-		<Unit filename="TileGfxModel.hpp" />
-		<Unit filename="TileInfo.h" />
-		<Unit filename="TileInfoModel.cpp" />
-		<Unit filename="TileInfoModel.hpp" />
-		<Unit filename="TileMapDelegate.cpp" />
-		<Unit filename="TileMapDelegate.hpp" />
-		<Unit filename="TileModel.cpp" />
-		<Unit filename="TileModel.hpp" />
-		<Unit filename="TilePaletteModel.cpp" />
-		<Unit filename="TilePaletteModel.hpp" />
-		<Unit filename="TileSetView.cpp" />
-		<Unit filename="TileSetView.hpp" />
-		<Unit filename="TileSheetDelegate.cpp" />
-		<Unit filename="TileSheetDelegate.hpp" />
+		<Unit filename="SlopeEditor.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="SlopeEditor.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileAnimModel.cpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileAnimModel.hpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileEditor.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileEditor.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileGfxModel.cpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileGfxModel.hpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileInfo.h">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileInfoModel.cpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileInfoModel.hpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileMapDelegate.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileMapDelegate.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileModel.cpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileModel.hpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TilePaletteModel.cpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TilePaletteModel.hpp">
+			<Option virtualFolder="Models/" />
+		</Unit>
+		<Unit filename="TileSetView.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileSetView.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileSheetDelegate.cpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="TileSheetDelegate.hpp">
+			<Option virtualFolder="Views/" />
+		</Unit>
+		<Unit filename="V2TileInfo.cpp" />
+		<Unit filename="V2TileInfo.hpp" />
 		<Unit filename="docs/index.html" />
 		<Unit filename="images/about.png" />
 		<Unit filename="images/convert-palette.png" />

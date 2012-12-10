@@ -73,14 +73,14 @@ bool TileInfoModel::load(QDataStream& stream) {
     return true;
 }
 
-static int topBit(int i) {
+static quint8 topBit(quint8 i) {
 	if(i == 0) {
 		return 0;
 	}
-	int bitVal = 1, bitPos = 1;
-	while(i & bitVal == 0) {
-		bitVal = bitVal << 1;
-		++bitPos;
+	quint8 bitVal = 0x80, bitPos = 7;
+	while((i & bitVal) == 0) {
+		bitVal = bitVal >> 1;
+		--bitPos;
 	}
 	return bitPos;
 }
@@ -98,50 +98,58 @@ void TileInfoModel::dump(QDataStream& stream) {
 
 		//blocking and style
 		for(int side = 0; side < 4; ++side) {
-			tileInfo.tileProperties[i].style[side] = _tiles[i].blocking[side] + _tiles[i].style[side];
+			if(_tiles[i].blocking[side]) {
+				tileInfo.tileProperties[i].style[side] = 1 + _tiles[i].style[side];
+			} else {
+				tileInfo.tileProperties[i].style[side] = 0;
+			}
 		}
+
+		quint8 m, b;
+		bool neg = _tiles[i].run < 0;
+		m = topBit(abs(_tiles[i].run));
+		if(neg) {
+			b = (_tiles[i].y0 - 4) >> 2;
+		} else {
+			b = _tiles[i].y0 >> 2;
+		}
+
 
 		//slope
 		if(_tiles[i].slopedSide == TOP_SLOPE) {
 			tileInfo.tileProperties[i].slopeEnabled.setTop(true);
-			tileInfo.tileProperties[i].m.setTop(topBit(abs(_tiles[i].run)));
-			tileInfo.tileProperties[i].negativeSlope.setTop(_tiles[i].run < 0);
+			tileInfo.tileProperties[i].m.setTop(m);
+			tileInfo.tileProperties[i].negativeSlope.setTop(neg);
+			tileInfo.tileProperties[i].b.setTop(b);
 			if(tileInfo.tileProperties[i].style.top() == 0) {
 				tileInfo.tileProperties[i].style.setTop(1);
 			}
-			if(tileInfo.tileProperties[i].negativeSlope.top()) {
-				tileInfo.tileProperties[i].b.setTop((_tiles[i].y0 << 2)-4);
-			} else {
-				tileInfo.tileProperties[i].b.setTop(_tiles[i].y0 << 2);
-			}
-		} else if(tileInfo.tileProperties[i].slopeEnabled.bottom()) {
+		} else if(_tiles[i].slopedSide == BOTTOM_SLOPE) {
 			tileInfo.tileProperties[i].slopeEnabled.setBottom(true);
+			tileInfo.tileProperties[i].m.setBottom(m);
+			tileInfo.tileProperties[i].negativeSlope.setBottom(neg);
+			tileInfo.tileProperties[i].b.setBottom(b);
 			if(tileInfo.tileProperties[i].style.bottom() == 0) {
 				tileInfo.tileProperties[i].style.setBottom(1);
 			}
-			tileInfo.tileProperties[i].m.setBottom(topBit(abs(_tiles[i].run)));
-			tileInfo.tileProperties[i].negativeSlope.setBottom(_tiles[i].run < 0);
-			if(tileInfo.tileProperties[i].negativeSlope.bottom()) {
-				tileInfo.tileProperties[i].b.setBottom((_tiles[i].y0 << 2)-4);
-				tileInfo.tileProperties[i].slopeEnabled.setRight(true);
-				if(tileInfo.tileProperties[i].style.right() == 0) {
-					tileInfo.tileProperties[i].style.setRight(1);
-				}
-				tileInfo.tileProperties[i].b.setRight(tileInfo.tileProperties[i].b.bottom());
-				tileInfo.tileProperties[i].m.setRight(tileInfo.tileProperties[i].m.bottom());
-				tileInfo.tileProperties[i].negativeSlope.setRight(tileInfo.tileProperties[i].negativeSlope.bottom());
-			} else {
-				tileInfo.tileProperties[i].b.setBottom(_tiles[i].y0 << 2);
+			if(neg) {
 				tileInfo.tileProperties[i].slopeEnabled.setLeft(true);
+				tileInfo.tileProperties[i].m.setLeft(m);
+				tileInfo.tileProperties[i].negativeSlope.setLeft(neg);
+				tileInfo.tileProperties[i].b.setLeft(b);
 				if(tileInfo.tileProperties[i].style.left() == 0) {
 					tileInfo.tileProperties[i].style.setLeft(1);
 				}
-				tileInfo.tileProperties[i].b.setLeft(tileInfo.tileProperties[i].b.bottom());
-				tileInfo.tileProperties[i].m.setLeft(tileInfo.tileProperties[i].m.bottom());
-				tileInfo.tileProperties[i].negativeSlope.setLeft(tileInfo.tileProperties[i].negativeSlope.bottom());
+			} else {
+				tileInfo.tileProperties[i].slopeEnabled.setRight(true);
+				tileInfo.tileProperties[i].m.setRight(m);
+				tileInfo.tileProperties[i].negativeSlope.setRight(neg);
+				tileInfo.tileProperties[i].b.setRight(b);
+				if(tileInfo.tileProperties[i].style.right() == 0) {
+					tileInfo.tileProperties[i].style.setRight(1);
+				}
 			}
 		}
-
 
 	}
 	tileInfo.dump(stream);

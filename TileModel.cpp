@@ -316,7 +316,7 @@ bool TileModel::save(const QString& filename) const {
 	QDataStream stream(&file);
 	stream.setByteOrder(QDataStream::LittleEndian);
 	quint16 tileCount = 910;
-	quint16 frames = frameCount();
+	quint16 frames = 8;
 	quint16 gfxLength = (_graphics.width() * _graphics.height()) / 8;
 	quint32 infoLoc = 64;
 	quint32 animLoc = infoLoc + tileCount * 5;
