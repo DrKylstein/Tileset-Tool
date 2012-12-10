@@ -1,7 +1,7 @@
 /*
  *  Tileset Tool, an editor for Commander Keen: Invasion of the Vorticons
  *  Tilesets.
- *  Copyright (C) 2010-2011  Kyle Delaney
+ *  Copyright (C) 2010-2012  Kyle Delaney
  *
  *  This file is a part of Tileset Tool.
  *

@@ -64,8 +64,13 @@ bool TileInfoModel::load(QDataStream& stream) {
 
 		//blocking and type
 		for(int side = 0; side < 4; ++side) {
-			_tiles[i].blocking[side] = tileInfo.tileProperties[i].style[side] != 0;
-			_tiles[i].style[side] = tileInfo.tileProperties[i].style[side] - 1;
+			if(tileInfo.tileProperties[i].style[side] != 0) {
+				_tiles[i].blocking[side] = true;
+				_tiles[i].style[side] = tileInfo.tileProperties[i].style[side] - 1;
+			} else {
+				_tiles[i].blocking[side] = false;
+				_tiles[i].style[side] = 0;
+			}
 		}
 
 	}
@@ -105,6 +110,7 @@ void TileInfoModel::dump(QDataStream& stream) {
 			}
 		}
 
+		//slope
 		quint8 m, b;
 		bool neg = _tiles[i].run < 0;
 		m = topBit(abs(_tiles[i].run));
@@ -113,9 +119,6 @@ void TileInfoModel::dump(QDataStream& stream) {
 		} else {
 			b = _tiles[i].y0 >> 2;
 		}
-
-
-		//slope
 		if(_tiles[i].slopedSide == TOP_SLOPE) {
 			tileInfo.tileProperties[i].slopeEnabled.setTop(true);
 			tileInfo.tileProperties[i].m.setTop(m);

@@ -29,6 +29,7 @@
 #include "TilePaletteModel.hpp"
 #include <QtGui>
 #include <cassert>
+#include "ClassicTileInfo.hpp"
 TileModel::TileModel(QObject* parent): QObject(parent), numFrames(TileInfo::MAX_FRAMES) {
 	_tileInfo = new TileInfoModel(this);
 	_tileAnim = new TileAnimModel(this);
@@ -145,167 +146,22 @@ bool TileModel::_openLemm(QFile& file) {
 	return true;
 }
 bool TileModel::_openVorticon(QFile& file) {
-/*	QDataStream stream(&file);
-	stream.setByteOrder(QDataStream::LittleEndian);
-	int tileCount;
+	QDataStream stream(&file);
+	ClassicTileInfo info;
+	int tileCount = 0;
 	if(file.fileName().endsWith(".exe", Qt::CaseInsensitive)) {
-		if(file.size() < 0x1C) return false;
-		quint16 mz;
-		stream >> mz;
-		if(mz != 0x5A4D) return false;
-		quint16 lastBlockLength, blockCount, relocationCount, headerParagraphs;
-		stream >> lastBlockLength >> blockCount >> relocationCount >> headerParagraphs;
-		unsigned int exeOffset = headerParagraphs * 16;
-		unsigned int exeSize = ( ( (blockCount - 1) * 512) + lastBlockLength) - exeOffset;
-		if(file.size() < exeOffset + exeSize) return false;
-		unsigned int tileInfoOffset;
-		switch(exeSize) {
-			case 99762: // ep 1 v1.1
-				tileInfoOffset = 0x131F8;
-				tileCount = 611;
-				break;
-			case 99972: // ep 1 v1.31
-				tileInfoOffset = 0x130F8;
-				tileCount = 611;
-				break;
-			case 118114: // ep 2 v1.1
-				tileInfoOffset = 0x17938;
-				tileCount = 689;
-				break;
-			case 118160: // ep2 v1.31
-				tileInfoOffset = 0x17828;
-				tileCount = 689;
-				break;
-			case 127086: // ep3 v1.1
-				tileInfoOffset = 0x199F8;
-				tileCount = 715;
-				break;
-			case 127104: // ep3 v1.31
-				tileInfoOffset = 0x198C8;
-				tileCount = 715;
-				break;
-			default:
-				return false;
-		};
-		stream.skipRawData(exeOffset + tileInfoOffset - 0xA);
-	} else if(file.fileName().endsWith(".tli", Qt::CaseInsensitive)) {
-		if(file.size() % 12) return false;
-		tileCount = file.size() / 12;
-	} else {
+		if(file.size() < 0x1C) {
+			return false;
+		}
+		tileCount = info.findTileInfo(stream);
+		if(tileCount == 0) {
+			return false;
+		}
+	}
+	if(!info.load(stream, tileCount)) {
 		return false;
 	}
-
-	tiles.clear();
-	tiles = QVector<QVector<int> >(910, blankTile);
-
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		quint16 w;
-		stream >> w;
-		switch(w) {
-			case 2:
-				tiles[i][TileInfo::FIELD_FRAME3] = tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME4] = tiles[i][TileInfo::FIELD_FRAME2] = i+1;
-				++i;
-				tiles[i][TileInfo::FIELD_FRAME3] = tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME4] = tiles[i][TileInfo::FIELD_FRAME2] = i-1;
-				stream.skipRawData(2);
-				break;
-
-			case 4:
-				tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME2] = i+1;
-				tiles[i][TileInfo::FIELD_FRAME3] = i+2;
-				tiles[i][TileInfo::FIELD_FRAME4] = i+3;
-				++i;
-				tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME2] = i+1;
-				tiles[i][TileInfo::FIELD_FRAME3] = i+2;
-				tiles[i][TileInfo::FIELD_FRAME4] = i-1;
-				++i;
-				tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME2] = i+1;
-				tiles[i][TileInfo::FIELD_FRAME3] = i-2;
-				tiles[i][TileInfo::FIELD_FRAME4] = i-1;
-				++i;
-				tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME2] = i-3;
-				tiles[i][TileInfo::FIELD_FRAME3] = i-2;
-				tiles[i][TileInfo::FIELD_FRAME4] = i-1;
-				stream.skipRawData(6);
-				break;
-
-			default:
-				tiles[i][TileInfo::FIELD_FRAME1] = i;
-				tiles[i][TileInfo::FIELD_FRAME2] = i;
-				tiles[i][TileInfo::FIELD_FRAME3] = i;
-				tiles[i][TileInfo::FIELD_FRAME4] = i;
-				break;
-		}
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		qint16 w;
-		stream >> w;
-		if(w == -1) {
-			tiles[i][TileInfo::FIELD_BEHAVIOR] = TileInfo::BEHAVE_FOREGROUND;
-		}else if(w == -2) {
-			tiles[i][TileInfo::FIELD_BEHAVIOR] = TileInfo::BEHAVE_MASKED;
-		} else {
-			tiles[i][TileInfo::FIELD_BEHAVIOR] = w;
-		}
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		quint16 w;
-		stream >> w;
-		tiles[i][TileInfo::FIELD_TOP] = (w != 0);
-		tiles[i][TileInfo::FIELD_SURFACE_TYPE] = w != 0 ? w - 1 : 0;
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		quint16 w;
-		stream >> w;
-		tiles[i][TileInfo::FIELD_RIGHT] = w;
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		quint16 w;
-		stream >> w;
-		tiles[i][TileInfo::FIELD_BOTTOM] = (w != 0);
-		tiles[i][TileInfo::FIELD_BOTTOM_BEHAVIOR] = w != 0 ? w - 1 : 0;
-	}
-	for(unsigned int i = 0; i != tileCount; ++i) {
-		quint16 w;
-		stream >> w;
-		tiles[i][TileInfo::FIELD_LEFT] = w;
-	}
-	setFrameCount(4);
-	//_tileInfo->markAllNew(); //emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
-	_tileGfx->markAllNew();
-	_tilePalette->markAllNew();
-	_tileAnim->markAllNew();
-
-	//try to get graphics as well
-	QString extension;
-	switch(tileCount) {
-		case 611:
-			extension = "CK1";
-			break;
-		case 689:
-			extension = "CK2";
-			break;
-		case 715:
-			extension = "CK3";
-			break;
-		default:
-			return true;
-	}
-	QString path = QFileInfo(file.fileName()).path();
-	QDir dir(path);
-	QStringList files = dir.entryList( QStringList( QString("EGAHEAD.%1").arg(extension) ) );
-	if(files.count() == 0) return true;
-	QString headFilename = path;
-	headFilename.append( QString("/%1").arg(files[0]) );
-	//qDebug() << headFilename;
-	importImage(headFilename);
-
-	return true;*/
+	//need to translate here
 	return false;
 }
 bool TileModel::save(const QString& filename) const {

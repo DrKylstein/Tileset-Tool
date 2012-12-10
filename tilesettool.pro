@@ -23,7 +23,8 @@ HEADERS +=	AnimationPreview.hpp \
 			RowToListProxyModel.hpp \
 			TilePaletteModel.hpp \
 			PaletteEditor.hpp \
-			V2TileInfo.hpp
+			V2TileInfo.hpp \
+			ClassicTileInfo.hpp
 
 
 SOURCES +=	AnimationPreview.cpp \
@@ -44,4 +45,5 @@ SOURCES +=	AnimationPreview.cpp \
 			RowToListProxyModel.cpp \
 			TilePaletteModel.cpp \
 			PaletteEditor.cpp \
-			V2TileInfo.cpp
+			V2TileInfo.cpp \
+			ClassicTileInfo.cpp

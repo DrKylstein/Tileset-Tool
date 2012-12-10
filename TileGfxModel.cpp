@@ -25,8 +25,28 @@
 #include "TileModel.hpp"
 #include <QtGui>
 
+/*bool TileGfxModel::load(QDataStream& stream, int length) {
+	delete _image;
+	_image = new QImage(16, gfxLength >> 1, QImage::Format_Indexed8);
+	stream.setByteOrder(QDataStream::BigEndian);
+	for(unsigned int p = 0; p != 4; ++p) {
+		for(unsigned int y = 0; y != length >> 1; ++y) {
+			stream >> w;
+			for(unsigned int x = 0; x != 16; ++x) {
+				_image->setPixel(x, y, sheetImage.pixelIndex(x, y) | ( (w & (1 << (15 - x) ) ) >> (15 - x) ) << p);
+			}
+		}
+	}
+
+}
+
+void TileGfxModel::dump(QDataStream& stream) {
+
+}*/
+
 TileGfxModel::TileGfxModel(TileModel* parent): QAbstractListModel(parent) {
 	_parent = parent;
+	//_image = new QImage();
 }
 int TileGfxModel::rowCount(const QModelIndex & parent) const {
 	return _parent->_graphics.height() / 16;

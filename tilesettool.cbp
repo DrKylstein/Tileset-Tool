@@ -45,6 +45,8 @@
 		<Unit filename="AnimationPreview.hpp">
 			<Option virtualFolder="Views/" />
 		</Unit>
+		<Unit filename="ClassicTileInfo.cpp" />
+		<Unit filename="ClassicTileInfo.hpp" />
 		<Unit filename="FourWay.hpp" />
 		<Unit filename="FramePickerDialog.cpp">
 			<Option virtualFolder="Views/" />
