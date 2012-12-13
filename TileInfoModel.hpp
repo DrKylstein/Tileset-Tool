@@ -38,6 +38,7 @@ class TileInfoModel: public QAbstractTableModel {
 		bool setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
 
         bool load(QDataStream&);
+        bool loadClassic(QDataStream&, int);
         void dump(QDataStream&);
         void blank();
 

@@ -24,7 +24,8 @@ HEADERS +=	AnimationPreview.hpp \
 			TilePaletteModel.hpp \
 			PaletteEditor.hpp \
 			V2TileInfo.hpp \
-			ClassicTileInfo.hpp
+			ClassicTileInfo.hpp \
+			TileInfoHeuristics.hpp
 
 
 SOURCES +=	AnimationPreview.cpp \

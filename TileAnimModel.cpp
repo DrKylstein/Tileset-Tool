@@ -71,6 +71,18 @@ bool TileAnimModel::load(QDataStream& stream) {
 	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
     return true;
 }
+bool TileAnimModel::loadClassic(QDataStream& stream, int size) {
+    quint16 w;
+	for(unsigned int tile=0;tile!=size;tile++) {
+		if(stream.atEnd()) return false;
+		stream >> w;
+		for(unsigned int frame=0;frame!=_MAX_FRAMES;++frame) {
+			_frames[frame][tile] = tile+(frame%w);
+		}
+	}
+	emit dataChanged(createIndex(0, 0), createIndex(size - 1, columnCount() - 1));
+    return true;
+}
 
 void TileAnimModel::dump(QDataStream& stream) {
     quint16 w;

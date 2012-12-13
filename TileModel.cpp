@@ -29,7 +29,8 @@
 #include "TilePaletteModel.hpp"
 #include <QtGui>
 #include <cassert>
-#include "ClassicTileInfo.hpp"
+#include "TileInfoHeuristics.hpp"
+using namespace TileInfoHeuristics;
 TileModel::TileModel(QObject* parent): QObject(parent), numFrames(TileInfo::MAX_FRAMES) {
 	_tileInfo = new TileInfoModel(this);
 	_tileAnim = new TileAnimModel(this);
@@ -147,22 +148,25 @@ bool TileModel::_openLemm(QFile& file) {
 }
 bool TileModel::_openVorticon(QFile& file) {
 	QDataStream stream(&file);
-	ClassicTileInfo info;
 	int tileCount = 0;
 	if(file.fileName().endsWith(".exe", Qt::CaseInsensitive)) {
-		if(file.size() < 0x1C) {
-			return false;
-		}
-		tileCount = info.findTileInfo(stream);
+		tileCount = analyzeExe(stream);
 		if(tileCount == 0) {
+			qDebug() << "Bad exe.";
 			return false;
 		}
+	} else {
+		tileCount = tliLength(file);
 	}
-	if(!info.load(stream, tileCount)) {
+    if(!_tileAnim->loadClassic(stream, tileCount)){
+		qDebug() << "Ran out of animation data.";
 		return false;
-	}
-	//need to translate here
-	return false;
+    }
+    if(!_tileInfo->loadClassic(stream, tileCount)) {
+		qDebug() << "Ran out of info data.";
+		return false;
+    }
+    return true;
 }
 bool TileModel::save(const QString& filename) const {
 	QFile file(filename);

@@ -34,8 +34,6 @@ class ClassicTileInfo {
         void blank(int size);
         int tileCount(void);
 
-        static int findTileInfo(QDataStream&);
-
         struct Tile {
             FourWay<quint16> style;
             qint16 behavior;

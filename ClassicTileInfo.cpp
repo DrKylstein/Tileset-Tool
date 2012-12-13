@@ -23,49 +23,6 @@
 
 #include "ClassicTileInfo.hpp"
 
-int ClassicTileInfo::findTileInfo(QDataStream& stream) {
-	stream.setByteOrder(QDataStream::LittleEndian);
-	quint16 mz;
-	stream >> mz;
-	if(mz != 0x5A4D) return 0;
-	quint16 lastBlockLength, blockCount, relocationCount, headerParagraphs;
-	stream >> lastBlockLength >> blockCount >> relocationCount >> headerParagraphs;
-	unsigned int exeOffset = headerParagraphs * 16;
-	unsigned int exeSize = ( ( (blockCount - 1) * 512) + lastBlockLength) - exeOffset;
-	unsigned int tileInfoOffset;
-	int tileCount = 0;
-	switch(exeSize) {
-		case 99762: // ep 1 v1.1
-			tileInfoOffset = 0x131F8;
-			tileCount = 611;
-			break;
-		case 99972: // ep 1 v1.31
-			tileInfoOffset = 0x130F8;
-			tileCount = 611;
-			break;
-		case 118114: // ep 2 v1.1
-			tileInfoOffset = 0x17938;
-			tileCount = 689;
-			break;
-		case 118160: // ep2 v1.31
-			tileInfoOffset = 0x17828;
-			tileCount = 689;
-			break;
-		case 127086: // ep3 v1.1
-			tileInfoOffset = 0x199F8;
-			tileCount = 715;
-			break;
-		case 127104: // ep3 v1.31
-			tileInfoOffset = 0x198C8;
-			tileCount = 715;
-			break;
-		default:
-			return 0;
-	};
-	stream.skipRawData(exeOffset + tileInfoOffset - 0xA);
-	return tileCount;
-}
-
 bool ClassicTileInfo::load(QDataStream& stream, int size) {
 	if(tiles) {
 		delete[] tiles;
@@ -74,9 +31,9 @@ bool ClassicTileInfo::load(QDataStream& stream, int size) {
 	stream.setByteOrder(QDataStream::LittleEndian);
 	tiles = new Tile[_tileCount];
 
-	for(unsigned int i = 0; i != _tileCount; ++i) {
+	/*for(unsigned int i = 0; i != _tileCount; ++i) {
 		stream >> tiles[i].frames;
-	}
+	}*/
 	for(unsigned int i = 0; i != _tileCount; ++i) {
 		stream >> tiles[i].behavior;
 	}

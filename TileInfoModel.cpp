@@ -24,6 +24,7 @@
 #include <QtGui>
 #include "TileInfoModel.hpp"
 #include "V2TileInfo.hpp"
+#include "ClassicTileInfo.hpp"
 bool TileInfoModel::load(QDataStream& stream) {
 	V2TileInfo tileInfo;
 	if(!tileInfo.load(stream)) {
@@ -75,6 +76,27 @@ bool TileInfoModel::load(QDataStream& stream) {
 
 	}
 	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount() - 1));
+    return true;
+}
+
+bool TileInfoModel::loadClassic(QDataStream& stream, int size) {
+	ClassicTileInfo tileInfo;
+	if(!tileInfo.load(stream, size)) return false;
+	for(int i = 0; i < size; ++i) {
+		//behavior
+		_tiles[i].behavior = tileInfo.tiles[i].behavior;
+		//blocking and type
+		for(int side = 0; side < 4; ++side) {
+			if(tileInfo.tiles[i].style[side] != 0) {
+				_tiles[i].blocking[side] = true;
+				_tiles[i].style[side] = tileInfo.tiles[i].style[side] - 1;
+			} else {
+				_tiles[i].blocking[side] = false;
+				_tiles[i].style[side] = 0;
+			}
+		}
+	}
+	emit dataChanged(createIndex(0, 0), createIndex(size - 1, columnCount() - 1));
     return true;
 }
 

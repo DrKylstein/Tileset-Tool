@@ -120,7 +120,7 @@ void MainWindow::help() {
 	_helpViewer->show();
 }
 void MainWindow::open() {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory, tr("Tileset files (*.tls *.TLS *.tli *.TLI *.exe *.EXE);;Lemm's tileset patch file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory, tr("Lemm's tileset patch file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!_tileSet->open(filename)) {
@@ -283,7 +283,7 @@ void MainWindow::createActions() {
 
 	exportBitmapAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export image..."), this);
 	connect(exportBitmapAction, SIGNAL(triggered()), this, SLOT(exportBitmap()));
-    
+
 	exportForEditorAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export to external editor..."), this);
 	connect(exportForEditorAction, SIGNAL(triggered()), this, SLOT(exportForEditor()));
 

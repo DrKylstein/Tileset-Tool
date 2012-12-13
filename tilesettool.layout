@@ -13,6 +13,12 @@
 	<File name="AnimationPreview.hpp" open="0" top="0" tabpos="8">
 		<Cursor position="1202" topLine="26" />
 	</File>
+	<File name="ClassicTileInfo.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2636" topLine="76" />
+	</File>
+	<File name="ClassicTileInfo.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1114" topLine="20" />
+	</File>
 	<File name="FourWay.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="1101" topLine="22" />
 	</File>
@@ -46,38 +52,38 @@
 	<File name="RowToListProxyModel.hpp" open="0" top="0" tabpos="2">
 		<Cursor position="658" topLine="0" />
 	</File>
-	<File name="SlopeEditor.cpp" open="1" top="0" tabpos="5">
+	<File name="SlopeEditor.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="3698" topLine="91" />
 	</File>
-	<File name="SlopeEditor.hpp" open="1" top="0" tabpos="6">
-		<Cursor position="1269" topLine="28" />
+	<File name="SlopeEditor.hpp" open="0" top="0" tabpos="6">
+		<Cursor position="1269" topLine="24" />
 	</File>
 	<File name="TileAnimModel.cpp" open="0" top="0" tabpos="6">
-		<Cursor position="1190" topLine="15" />
+		<Cursor position="2717" topLine="59" />
 	</File>
 	<File name="TileAnimModel.hpp" open="0" top="0" tabpos="3">
-		<Cursor position="588" topLine="0" />
+		<Cursor position="588" topLine="16" />
 	</File>
-	<File name="TileEditor.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="6270" topLine="132" />
+	<File name="TileEditor.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="6502" topLine="0" />
 	</File>
-	<File name="TileEditor.hpp" open="1" top="0" tabpos="2">
-		<Cursor position="1895" topLine="48" />
+	<File name="TileEditor.hpp" open="0" top="0" tabpos="2">
+		<Cursor position="1895" topLine="38" />
 	</File>
-	<File name="TileGfxModel.cpp" open="0" top="0" tabpos="11">
-		<Cursor position="1773" topLine="27" />
+	<File name="TileGfxModel.cpp" open="1" top="1" tabpos="2">
+		<Cursor position="1606" topLine="33" />
 	</File>
-	<File name="TileGfxModel.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="541" topLine="0" />
+	<File name="TileGfxModel.hpp" open="1" top="0" tabpos="3">
+		<Cursor position="1372" topLine="16" />
 	</File>
 	<File name="TileInfo.h" open="0" top="0" tabpos="4">
 		<Cursor position="260" topLine="0" />
 	</File>
-	<File name="TileInfoModel.cpp" open="1" top="1" tabpos="4">
-		<Cursor position="4553" topLine="119" />
+	<File name="TileInfoModel.cpp" open="0" top="0" tabpos="4">
+		<Cursor position="3582" topLine="127" />
 	</File>
-	<File name="TileInfoModel.hpp" open="1" top="0" tabpos="3">
-		<Cursor position="1715" topLine="22" />
+	<File name="TileInfoModel.hpp" open="0" top="0" tabpos="3">
+		<Cursor position="1790" topLine="12" />
 	</File>
 	<File name="TileMapDelegate.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="1660" topLine="10" />
@@ -85,11 +91,11 @@
 	<File name="TileMapDelegate.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="485" topLine="0" />
 	</File>
-	<File name="TileModel.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="10151" topLine="309" />
+	<File name="TileModel.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="1132" topLine="31" />
 	</File>
-	<File name="TileModel.hpp" open="1" top="0" tabpos="9">
-		<Cursor position="2106" topLine="59" />
+	<File name="TileModel.hpp" open="0" top="0" tabpos="9">
+		<Cursor position="2106" topLine="49" />
 	</File>
 	<File name="TileSetView.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="8365" topLine="36" />
@@ -100,11 +106,11 @@
 	<File name="TileSheetDelegate.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="1524" topLine="0" />
 	</File>
-	<File name="V2TileInfo.cpp" open="1" top="0" tabpos="7">
-		<Cursor position="1838" topLine="43" />
+	<File name="V2TileInfo.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="120" topLine="0" />
 	</File>
 	<File name="V2TileInfo.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1115" topLine="21" />
+		<Cursor position="135" topLine="0" />
 	</File>
 	<File name="docs/index.html" open="0" top="0" tabpos="4">
 		<Cursor position="7781" topLine="105" />
@@ -113,7 +119,7 @@
 		<Cursor position="42" topLine="0" />
 	</File>
 	<File name="tilesettool.pro" open="0" top="0" tabpos="12">
-		<Cursor position="988" topLine="12" />
+		<Cursor position="1038" topLine="0" />
 	</File>
 	<File name="tilesettool.qrc" open="0" top="0" tabpos="3">
 		<Cursor position="970" topLine="0" />
