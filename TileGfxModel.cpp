@@ -25,31 +25,92 @@
 #include "TileModel.hpp"
 #include <QtGui>
 
-/*bool TileGfxModel::load(QDataStream& stream, int length) {
-	delete _image;
-	_image = new QImage(16, gfxLength >> 1, QImage::Format_Indexed8);
-	stream.setByteOrder(QDataStream::BigEndian);
-	for(unsigned int p = 0; p != 4; ++p) {
-		for(unsigned int y = 0; y != length >> 1; ++y) {
-			stream >> w;
-			for(unsigned int x = 0; x != 16; ++x) {
-				_image->setPixel(x, y, sheetImage.pixelIndex(x, y) | ( (w & (1 << (15 - x) ) ) >> (15 - x) ) << p);
-			}
+bool TileGfxModel::load(const QImage& source, const QVector<QRgb>& colors) {
+	if(source.width() % 16) return false;
+	if(source.height() % 16) return false;
+	int length = (source.width() / 16) * (source.height() / 16);
+	QImage converted = QImage(16, length * 16, QImage::Format_RGB32);
+	converted.fill(0);
+	QPainter painter(&converted);
+	int x = 0, y = 0;
+	for(int i = 0; i < length; ++i) {
+		painter.drawImage(QRect(0, i * 16, 16, 16), source, QRect(x, y, 16, 16));
+		x += 16;
+		if(x >= source.width()) {
+			x = 0;
+			y += 16;
 		}
 	}
-
+	painter.end();
+	_graphics = converted.convertToFormat(QImage::Format_Indexed8, colors);
+	beginRemoveRows(QModelIndex(), 0, rowCount());
+	endRemoveRows();
+	beginInsertRows(QModelIndex(), 0, rowCount());
+	endInsertRows();
+	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+	return true;
 }
 
-void TileGfxModel::dump(QDataStream& stream) {
+bool TileGfxModel::load(QDataStream& stream, int gfxLength, const QVector<QRgb>& colors, int skip) {
+	QImage newGfx = QImage(16, gfxLength >> 1, QImage::Format_Indexed8);
+	newGfx.setColorTable(colors);
+	newGfx.fill(0);
+	stream.setByteOrder(QDataStream::BigEndian);
+	quint16 w = 0;
+	for(unsigned int p = 0; p < 4; ++p) {
+		for(unsigned int y = 0; y < gfxLength >> 1; ++y) {
+			stream >> w;
+			for(unsigned int x = 0; x < 16; ++x) {
+				newGfx.setPixel(x, y, newGfx.pixelIndex(x, y) | ( (w & (1 << (15 - x) ) ) >> (15 - x) ) << p);
+			}
+		}
+		stream.skipRawData(skip);
+	}
+	_graphics = newGfx;
+	beginRemoveRows(QModelIndex(), 0, rowCount());
+	endRemoveRows();
+	beginInsertRows(QModelIndex(), 0, rowCount());
+	endInsertRows();
+	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+	return true;
+}
 
-}*/
+void TileGfxModel::dump(QDataStream& stream) const {
+	stream.setByteOrder(QDataStream::BigEndian);
+	quint16 w = 0;
+	for(int p = 0; p < 4; ++p) {
+		for(int y = 0; y < _graphics.height(); ++y) {
+			w = 0;
+			for(int x = 0; x < _graphics.width(); ++x) {
+				w |= ( ( (_graphics.pixelIndex(x, y) & (1 << p) ) != 0) << (15 - x) );
+			}
+			stream << w;
+		}
+	}
+}
 
-TileGfxModel::TileGfxModel(TileModel* parent): QAbstractListModel(parent) {
-	_parent = parent;
-	//_image = new QImage();
+const QImage TileGfxModel::image(void) const {
+	return _graphics;
+}
+
+void TileGfxModel::blank(void) {
+	_graphics.fill(0);
+}
+
+void TileGfxModel::setColorTable(const QVector<QRgb>& colors) {
+	_graphics.setColorTable(colors);
+	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+}
+
+int TileGfxModel::length(void) const {
+	return (_graphics.width() * _graphics.height()) / 8;
+}
+
+TileGfxModel::TileGfxModel(QObject* parent): QAbstractListModel(parent) {
+	//_graphics = QImage(16, 208, QImage::Format_Indexed8);
 }
 int TileGfxModel::rowCount(const QModelIndex & parent) const {
-	return _parent->_graphics.height() / 16;
+	return _graphics.height() / 16;
 }
 QVariant TileGfxModel::headerData (int section, Qt::Orientation orientation, int role) const {
 	if(role == Qt::DisplayRole) {
@@ -65,8 +126,8 @@ QVariant TileGfxModel::data (const QModelIndex & index, int role) const {
 	if(index.isValid()) {
 		QPixmap icon(16, 16);
 		QPainter painter(&icon);
-		if(!_parent->_graphics.isNull()) {
-			painter.drawImage(QRect(0, 0, 16, 16), _parent->_graphics, QRect(0, index.row() * 16, 16, 16));
+		if(!_graphics.isNull()) {
+			painter.drawImage(QRect(0, 0, 16, 16), _graphics, QRect(0, index.row() * 16, 16, 16));
 		}
 		return icon;
 
@@ -77,11 +138,3 @@ Qt::ItemFlags TileGfxModel::flags (const QModelIndex & index) const {
 	if(!index.isValid()) return Qt::ItemIsEnabled;
 	return QAbstractListModel::flags(index);
 }
-void TileGfxModel::markAllNew(void) {
-	beginRemoveRows(QModelIndex(), 0, rowCount());
-	endRemoveRows();
-	beginInsertRows(QModelIndex(), 0, rowCount());
-	endInsertRows();
-	emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
-}
-

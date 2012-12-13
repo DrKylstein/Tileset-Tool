@@ -69,6 +69,7 @@ class MainWindow: public QMainWindow {
 
 		void setOneToOne();
 		void importBitmap();
+		void importEgaHead();
 		void exportBitmap();
 		void exportForEditor();
 		void preferences();
@@ -141,6 +142,7 @@ class MainWindow: public QMainWindow {
 		QMenu* toolMenu;
 			QAction* setOneToOneAction;
 			QAction* importBitmapAction;
+			QAction* importEgaHeadAction;
 			QAction* exportBitmapAction;
 			QAction* exportForEditorAction;
 			QAction* fixPaletteAction;

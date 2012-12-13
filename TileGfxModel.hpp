@@ -24,20 +24,28 @@
 #ifndef TILEGFXMODEL_HPP
 #define TILEGFXMODEL_HPP
 #include <QAbstractTableModel>
-class TileModel;
+#include <QColor>
+#include <QVector>
+#include <QImage>
 class TileGfxModel: public QAbstractListModel {
 	Q_OBJECT
 
 	public:
+		bool load(QDataStream&, int, const QVector<QRgb>&, int skip = 0);
+		bool load(const QImage&, const QVector<QRgb>&);
+		void dump(QDataStream&) const;
+		int length(void) const;
+		void setColorTable(const QVector<QRgb>&);
+		void blank(void);
+		const QImage image(void) const;
+
 		int rowCount(const QModelIndex & parent = QModelIndex()) const;
 		QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 		QVariant data (const QModelIndex & index, int role = Qt::DisplayRole) const;
 		Qt::ItemFlags flags (const QModelIndex & index) const;
+		TileGfxModel(QObject* parent);
 
-		friend class TileModel;
 	private:
-		TileGfxModel(TileModel* parent);
-		TileModel* _parent;
-		void markAllNew(void);
+		QImage _graphics;
 };
 #endif

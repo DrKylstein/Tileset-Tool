@@ -156,7 +156,7 @@ void MainWindow::save() {
 	_undoStack->setClean();
 }
 void MainWindow::importBitmap() {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), _currentDirectory, tr("Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF);; EGAHEAD Files (EGAHEAD.CK? egahead.ck?)"));
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), _currentDirectory, tr("Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!_tileSet->importImage(filename)) {
@@ -166,11 +166,24 @@ void MainWindow::importBitmap() {
 		}
 	}
 }
+
+void MainWindow::importEgaHead() {
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open EGAHEAD"), _currentDirectory, tr("EGAHEAD Files (EGAHEAD.CK? egahead.ck?)"));
+	setCurrentDirectory(filename);
+	if(!filename.isEmpty()) {
+		if(!_tileSet->importEgaHead(filename)) {
+			QMessageBox::critical(this, tr("File Error"),
+				tr("The specified file could not be imported. Note that Keen1 compressed files are not supported at this time."));
+		} else {
+			//setWindowModified(true);
+		}
+	}
+}
 void MainWindow::exportBitmap() {
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), _currentDirectory, tr("Image files (*.bmp *.png *.tiff)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
-		if(!_tileSet->graphics().save(filename)) {
+		if(!_tileSet->tileGfx()->image().save(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be exported to."));
 		}
 	}
@@ -280,6 +293,9 @@ void MainWindow::createActions() {
 
 	importBitmapAction = new QAction(QIcon(":/images/import-image.png"), tr("&Import image..."), this);
 	connect(importBitmapAction, SIGNAL(triggered()), this, SLOT(importBitmap()));
+
+	importEgaHeadAction = new QAction(QIcon(":/images/import-image.png"), tr("&Import EGAHEAD..."), this);
+	connect(importEgaHeadAction, SIGNAL(triggered()), this, SLOT(importEgaHead()));
 
 	exportBitmapAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export image..."), this);
 	connect(exportBitmapAction, SIGNAL(triggered()), this, SLOT(exportBitmap()));
@@ -416,6 +432,7 @@ void MainWindow::createMenus() {
 
 	toolMenu = menuBar()->addMenu(tr("&Tools"));
 	toolMenu->addAction(importBitmapAction);
+	toolMenu->addAction(importEgaHeadAction);
 	toolMenu->addAction(fixPaletteAction);
 	toolMenu->addAction(importPaletteAction);
 	toolMenu->addSeparator();

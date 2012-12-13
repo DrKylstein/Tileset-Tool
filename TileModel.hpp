@@ -45,12 +45,13 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
         void setColor(QRgb, int index, int row=0);
 
 		void setFrameCount(int);
-		const QImage& graphics();
+		//const QImage& graphics();
 
 		void blank();
 		bool open(const QString&);
 		bool save(const QString&) const;
 		bool importImage(const QString&);
+		bool importEgaHead(const QString&);
 		bool fixPalette(const QString& = QString());
 		bool loadPalette(const QString&);
 		bool savePalette(const QString&);
@@ -59,7 +60,6 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 		TileInfoModel* tileInfo(void);
 		TileAnimModel* tileAnim(void);
 		TileGfxModel* tileGfx(void);
-		friend class TileGfxModel;
 		TilePaletteModel* tilePalette(void);
 
 	signals:
@@ -71,15 +71,10 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 		bool _openVorticon(QFile&);
 		bool _saveLemm(QFile&);
 		bool _saveVorticon(QFile&);
-		QImage _graphics;
-		int numFrames;
-		enum {FORMAT_VORTICON, FORMAT_LEMM, FORMAT_KRD} format;
 		TileInfoModel* _tileInfo;
 		TileAnimModel* _tileAnim;
 		TileGfxModel* _tileGfx;
 		TilePaletteModel* _tilePalette;
-		QVector<QRgb> _defaultPal;
-		void _extendPalette();
-		bool _extractPalette(QImage&, QVector<unsigned int>&);
+		bool _doLoadPalette(const QString&);
 };
 #endif
