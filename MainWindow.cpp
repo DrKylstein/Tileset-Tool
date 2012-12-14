@@ -355,46 +355,6 @@ void MainWindow::createActions() {
 	togglePaintPropertiesAction->setCheckable(true);
 	connect(togglePaintPropertiesAction, SIGNAL(toggled(bool)), this, SLOT(_setPaintProperties(bool)));
 
-	toggleTopAction = new QAction(tr("Toggle Top Collison"), this);
-	connect(toggleTopAction, SIGNAL(triggered()), this, SLOT(toggleTop()));
-	toggleTopAction->setShortcut(QKeySequence(tr("W")));
-
-	toggleLeftAction = new QAction(tr("Toggle Left Collison"), this);
-	connect(toggleLeftAction, SIGNAL(triggered()), this, SLOT(toggleLeft()));
-	toggleLeftAction->setShortcut(QKeySequence(tr("A")));
-
-	toggleBottomAction = new QAction(tr("Toggle Bottom Collison"), this);
-	connect(toggleBottomAction, SIGNAL(triggered()), this, SLOT(toggleBottom()));
-	toggleBottomAction->setShortcut(QKeySequence(tr("S")));
-
-	toggleRightAction = new QAction(tr("Toggle Right Collison"), this);
-	connect(toggleRightAction, SIGNAL(triggered()), this, SLOT(toggleRight()));
-	toggleRightAction->setShortcut(QKeySequence(tr("D")));
-
-	setNormalTypeAction = new QAction(tr("Set &Normal Behavior"), this);
-	connect(setNormalTypeAction, SIGNAL(triggered()), this, SLOT(setNormalType()));
-	setNormalTypeAction->setShortcut(QKeySequence(tr("N")));
-
-	cycleKeyTypesAction = new QAction(tr("Set &Key Behavior"), this);
-	connect(cycleKeyTypesAction, SIGNAL(triggered()), this, SLOT(cycleKeyTypes()));
-	cycleKeyTypesAction->setShortcut(QKeySequence(tr("K")));
-
-	cycleDoorTypesAction = new QAction(tr("Set (&Locked) Door Behavior"), this);
-	connect(cycleDoorTypesAction, SIGNAL(triggered()), this, SLOT(cycleDoorTypes()));
-	cycleDoorTypesAction->setShortcut(QKeySequence(tr("L")));
-
-	setDeadlyTypeAction = new QAction(tr("Set &Hazard Behavior"), this);
-	connect(setDeadlyTypeAction, SIGNAL(triggered()), this, SLOT(setDeadlyType()));
-	setDeadlyTypeAction->setShortcut(QKeySequence(tr("H")));
-
-	setForegroundAction = new QAction(tr("Set &Foreground Behavior"), this);
-	connect(setForegroundAction, SIGNAL(triggered()), this, SLOT(setForeground()));
-	setForegroundAction->setShortcut(QKeySequence(tr("F")));
-
-	setMaskedAction = new QAction(tr("Set &Masked Behavior"), this);
-	connect(setMaskedAction, SIGNAL(triggered()), this, SLOT(setMasked()));
-	setMaskedAction->setShortcut(QKeySequence(tr("M")));
-
 	setAnimationAction = new QAction(tr("Apply Animation &Cycle"), this);
 	connect(setAnimationAction, SIGNAL(triggered()), _animEditor, SLOT(applyPreset()));
 	setAnimationAction->setShortcut(QKeySequence(tr("C")));
@@ -646,78 +606,6 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 MainWindow::~MainWindow() {
 	_saveSettings();
 	delete _helpViewer;
-}
-void MainWindow::toggleTop() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_TOP);
-	if(_tileSet->tileInfo()->data(index).toBool()) {
-		_tileSet->tileInfo()->setData(index, 0);
-	}
-	else {
-		_tileSet->tileInfo()->setData(index, 1);
-	}
-}
-void MainWindow::toggleLeft() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_LEFT);
-	if(_tileSet->tileInfo()->data(index).toBool()) {
-		_tileSet->tileInfo()->setData(index, 0);
-	}
-	else {
-		_tileSet->tileInfo()->setData(index, 1);
-	}
-}
-void MainWindow::toggleBottom() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BOTTOM);
-	if(_tileSet->tileInfo()->data(index).toBool()) {
-		_tileSet->tileInfo()->setData(index, 0);
-	}
-	else {
-		_tileSet->tileInfo()->setData(index, 1);
-	}
-
-}
-void MainWindow::toggleRight() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_RIGHT);
-	if(_tileSet->tileInfo()->data(index).toBool()) {
-		_tileSet->tileInfo()->setData(index, 0);
-	}
-	else {
-		_tileSet->tileInfo()->setData(index, 1);
-	}
-}
-void MainWindow::setNormalType() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BEHAVIOR);
-	_tileSet->tileInfo()->setData(index, TileInfo::BEHAVE_NOTHING);
-
-}
-void MainWindow::cycleKeyTypes() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BEHAVIOR);
-	if(_tileSet->tileInfo()->data(index).toInt() >= TileInfo::BEHAVE_KEY_ONE && _tileSet->tileInfo()->data(index).toInt() < TileInfo::BEHAVE_KEY_FOUR) {
-		_tileSet->tileInfo()->setData(index, _tileSet->tileInfo()->data(index).toInt() + 1);
-	}
-	else {
-		_tileSet->tileInfo()->setData(index, TileInfo::BEHAVE_KEY_ONE);
-	}
-}
-void MainWindow::cycleDoorTypes() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BEHAVIOR);
-	if(_tileSet->tileInfo()->data(index).toInt() >= TileInfo::BEHAVE_DOOR_ONE && _tileSet->tileInfo()->data(index).toInt() < TileInfo::BEHAVE_DOOR_FOUR) {
-		_tileSet->tileInfo()->setData(index, _tileSet->tileInfo()->data(index).toInt() + 1);
-	}
-	else {
-		_tileSet->tileInfo()->setData(index, TileInfo::BEHAVE_DOOR_ONE);
-	}
-}
-void MainWindow::setDeadlyType() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BEHAVIOR);
-	_tileSet->tileInfo()->setData(index, TileInfo::BEHAVE_KILLS);
-}
-void MainWindow::setMasked() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BEHAVIOR);
-	_tileSet->tileInfo()->setData(index, TileInfo::BEHAVE_MASKED);
-}
-void MainWindow::setForeground() {
-	QModelIndex index = _tileSet->tileInfo()->index(_mainView->currentIndex().row(), TileInfo::FIELD_BEHAVIOR);
-	_tileSet->tileInfo()->setData(index, TileInfo::BEHAVE_FOREGROUND);
 }
 void MainWindow::setOneToOne() {
 	if(QMessageBox::question(this, tr("Proceed?"), tr("All animation data will be overwritten! Are you sure you want to continue?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok) {

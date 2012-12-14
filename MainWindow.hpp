@@ -56,17 +56,6 @@ class MainWindow: public QMainWindow {
 		void save();
 		void saveAs();
 
-		void toggleTop();
-		void toggleLeft();
-		void toggleBottom();
-		void toggleRight();
-		void setNormalType();
-		void cycleKeyTypes();
-		void cycleDoorTypes();
-		void setDeadlyType();
-		void setMasked();
-		void setForeground();
-
 		void setOneToOne();
 		void importBitmap();
 		void importEgaHead();
@@ -124,20 +113,7 @@ class MainWindow: public QMainWindow {
 				QAction* togglePaintAnimationsAction;
 			QAction* prefAction;
 
-			QAction* toggleTopAction;
-			QAction* toggleLeftAction;
-			QAction* toggleBottomAction;
-			QAction* toggleRightAction;
-
-			QAction* setNormalTypeAction;
-			QAction* cycleKeyTypesAction;
-			QAction* cycleDoorTypesAction;
-			QAction* setDeadlyTypeAction;
-			QAction* setMaskedAction;
-			QAction* setForegroundAction;
-			QAction* setAnimationAction;
-
-
+		QAction* setAnimationAction;
 
 		QMenu* toolMenu;
 			QAction* setOneToOneAction;

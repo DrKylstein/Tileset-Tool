@@ -33,10 +33,8 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 	mapper = new QDataWidgetMapper(this);
 	QVBoxLayout* layout = new QVBoxLayout;
 		setLayout(layout);
-		//QGroupBox* collisionGroup = new QGroupBox("&Collision:");
-			//layout->addWidget(collisionGroup);
 			QGridLayout* currentTileGrid = new QGridLayout;
-				layout->addLayout(currentTileGrid); //collisionGroup->setLayout(currentTileGrid);
+				layout->addLayout(currentTileGrid);
 				QVBoxLayout* centerLayout = new QVBoxLayout;
 					currentTileGrid->addLayout(centerLayout, 1, 1);
 					QFrame* slopeFrame = new QFrame;
@@ -113,6 +111,48 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 								connect(bottomBlocking, SIGNAL(toggled(bool)), bottomType, SLOT(setEnabled(bool)));
 
 	connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(_focusChange(QWidget*, QWidget*)));
+
+
+	toggleTopAction = new QShortcut(QKeySequence(tr("W")), this);
+	connect(toggleTopAction, SIGNAL(activated()), this, SLOT(toggleTop()));
+	toggleTopAction->setContext(Qt::ApplicationShortcut);
+
+	toggleLeftAction = new QShortcut(QKeySequence(tr("A")), this);
+	connect(toggleLeftAction, SIGNAL(activated()), this, SLOT(toggleLeft()));
+	toggleLeftAction->setContext(Qt::ApplicationShortcut);
+
+	toggleBottomAction = new QShortcut(QKeySequence(tr("S")), this);
+	connect(toggleBottomAction, SIGNAL(activated()), this, SLOT(toggleBottom()));
+	toggleBottomAction->setContext(Qt::ApplicationShortcut);
+
+	toggleRightAction = new QShortcut(QKeySequence(tr("D")), this);
+	connect(toggleRightAction, SIGNAL(activated()), this, SLOT(toggleRight()));
+	toggleRightAction->setContext(Qt::ApplicationShortcut);
+
+	setNormalTypeAction = new QShortcut(QKeySequence(tr("N")), this);
+	connect(setNormalTypeAction, SIGNAL(activated()), this, SLOT(setNormalType()));
+	setNormalTypeAction->setContext(Qt::ApplicationShortcut);
+
+	cycleKeyTypesAction = new QShortcut(QKeySequence(tr("K")), this);
+	connect(cycleKeyTypesAction, SIGNAL(activated()), this, SLOT(cycleKeyTypes()));
+	cycleKeyTypesAction->setContext(Qt::ApplicationShortcut);
+
+	cycleDoorTypesAction = new QShortcut(QKeySequence(tr("L")), this);
+	connect(cycleDoorTypesAction, SIGNAL(activated()), this, SLOT(cycleDoorTypes()));
+	cycleDoorTypesAction->setContext(Qt::ApplicationShortcut);
+
+	setDeadlyTypeAction = new QShortcut(QKeySequence(tr("H")), this);
+	connect(setDeadlyTypeAction, SIGNAL(activated()), this, SLOT(setDeadlyType()));
+	setDeadlyTypeAction->setContext(Qt::ApplicationShortcut);
+
+	setForegroundAction = new QShortcut(QKeySequence(tr("F")), this);
+	connect(setForegroundAction, SIGNAL(activated()), this, SLOT(setForeground()));
+	setForegroundAction->setContext(Qt::ApplicationShortcut);
+
+	setMaskedAction = new QShortcut(QKeySequence(tr("M")), this);
+	connect(setMaskedAction, SIGNAL(activated()), this, SLOT(setMasked()));
+	setMaskedAction->setContext(Qt::ApplicationShortcut);
+
 }
 void TileEditor::_slopeEnableChanged(int i) {
 	topSlope->setEnabled(i > 0);
@@ -169,4 +209,55 @@ void TileEditor::_focusChange(QWidget* old, QWidget* new_) {
 
 void TileEditor::_runChanged(int i) {
 	_updateSlopeBlocking();
+}
+
+void TileEditor::toggleTop() {
+	topBlocking->toggle();
+	_focusChange(topBlocking, topBlocking);
+}
+void TileEditor::toggleLeft() {
+	leftBlocking->toggle();
+	_focusChange(leftBlocking, leftBlocking);
+}
+void TileEditor::toggleBottom() {
+	bottomBlocking->toggle();
+	_focusChange(bottomBlocking, bottomBlocking);
+}
+void TileEditor::toggleRight() {
+	rightBlocking->toggle();
+	_focusChange(rightBlocking, rightBlocking);
+}
+void TileEditor::setNormalType() {
+	behavior->setCurrentIndex(TileInfoModel::BEHAVE_NOTHING);
+	_focusChange(behavior, behavior);
+}
+void TileEditor::cycleKeyTypes() {
+	if(behavior->currentIndex() >= TileInfoModel::BEHAVE_KEY_ONE && behavior->currentIndex() < TileInfoModel::BEHAVE_KEY_FOUR) {
+		behavior->setCurrentIndex(behavior->currentIndex() + 1);
+	}
+	else {
+		behavior->setCurrentIndex(TileInfoModel::BEHAVE_KEY_ONE);
+	}
+	_focusChange(behavior, behavior);
+}
+void TileEditor::cycleDoorTypes() {
+	if(behavior->currentIndex() >= TileInfoModel::BEHAVE_DOOR_ONE && behavior->currentIndex() < TileInfoModel::BEHAVE_DOOR_FOUR) {
+		behavior->setCurrentIndex(behavior->currentIndex() + 1);
+	}
+	else {
+		behavior->setCurrentIndex(TileInfoModel::BEHAVE_DOOR_ONE);
+	}
+	_focusChange(behavior, behavior);
+}
+void TileEditor::setDeadlyType() {
+	behavior->setCurrentIndex(TileInfoModel::BEHAVE_KILLS);
+	_focusChange(behavior, behavior);
+}
+void TileEditor::setMasked() {
+	behavior->setCurrentIndex(TileInfoModel::BEHAVE_MASKED);
+	_focusChange(behavior, behavior);
+}
+void TileEditor::setForeground() {
+	behavior->setCurrentIndex(TileInfoModel::BEHAVE_FOREGROUND);
+	_focusChange(behavior, behavior);
 }

@@ -93,6 +93,7 @@
 		<Unit filename="TileInfo.h">
 			<Option virtualFolder="Models/" />
 		</Unit>
+		<Unit filename="TileInfoHeuristics.hpp" />
 		<Unit filename="TileInfoModel.cpp">
 			<Option virtualFolder="Models/" />
 		</Unit>

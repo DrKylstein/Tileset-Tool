@@ -31,6 +31,7 @@ class QDataWidgetMapper;
 class QAbstractItemModel;
 class QComboBox;
 class QCheckBox;
+class QShortcut;
 
 class SlopeEditor;
 
@@ -52,6 +53,16 @@ class TileEditor: public QWidget {
 		void _focusChange(QWidget*, QWidget*);
 		void _slopeEnableChanged(int);
 		void _runChanged(int);
+		void toggleTop();
+		void toggleLeft();
+		void toggleBottom();
+		void toggleRight();
+		void setNormalType();
+		void cycleKeyTypes();
+		void cycleDoorTypes();
+		void setDeadlyType();
+		void setMasked();
+		void setForeground();
 
 	private:
 		QDataWidgetMapper* mapper;
@@ -64,6 +75,17 @@ class TileEditor: public QWidget {
 		QCheckBox* rightBlocking;
 		QComboBox* slopeEnable;
 		SlopeEditor* topSlope;
+
+		QShortcut* toggleTopAction;
+		QShortcut* toggleLeftAction;
+		QShortcut* toggleBottomAction;
+		QShortcut* toggleRightAction;
+		QShortcut* setNormalTypeAction;
+		QShortcut* cycleKeyTypesAction;
+		QShortcut* cycleDoorTypesAction;
+		QShortcut* setDeadlyTypeAction;
+		QShortcut* setMaskedAction;
+		QShortcut* setForegroundAction;
 
 		QAbstractItemModel* _model;
 		QModelIndex _index;
