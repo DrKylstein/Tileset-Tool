@@ -37,7 +37,7 @@ class TileGfxModel: public QAbstractListModel {
 		int length(void) const;
 		void setColorTable(const QVector<QRgb>&);
 		void blank(void);
-		const QImage image(void) const;
+		const QImage image(int length = 1) const;
 
 		int rowCount(const QModelIndex & parent = QModelIndex()) const;
 		QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;

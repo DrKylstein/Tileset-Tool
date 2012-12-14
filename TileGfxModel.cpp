@@ -89,8 +89,24 @@ void TileGfxModel::dump(QDataStream& stream) const {
 	}
 }
 
-const QImage TileGfxModel::image(void) const {
-	return _graphics;
+const QImage TileGfxModel::image(int width) const {
+	qDebug() << width;
+	int length = _graphics.height() / 16;
+	QImage pic(width * 16, (length / width) * 16, QImage::Format_RGB32);
+	pic.fill(0);
+	QPainter painter(&pic);
+	int x = 0, y = 0;
+	for(int i = 0; i < length; ++i) {
+		painter.drawImage(QRect(x, y, 16, 16), _graphics, QRect(0, i * 16, 16, 16));
+		x += 16;
+		if(x >= pic.width()) {
+			x = 0;
+			y += 16;
+		}
+	}
+	painter.end();
+
+	return pic.convertToFormat(QImage::Format_Indexed8, _graphics.colorTable());
 }
 
 void TileGfxModel::blank(void) {

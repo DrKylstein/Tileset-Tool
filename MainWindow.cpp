@@ -36,6 +36,8 @@
 #include "TilePaletteModel.hpp"
 #include "FramePickerDialog.hpp"
 #include "PaletteEditor.hpp"
+#include "PreferencesDialog.hpp"
+
 class RowEdit: public QUndoCommand{
 	public:
 		RowEdit(QAbstractItemModel* model, int row, const QVector<int>& columns, const QVector<QVariant>& data) {
@@ -183,7 +185,7 @@ void MainWindow::exportBitmap() {
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), _currentDirectory, tr("Image files (*.bmp *.png *.tiff)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
-		if(!_tileSet->tileGfx()->image().save(filename)) {
+		if(!_tileSet->tileGfx()->image(_settings->value("Width", 13).toInt()).save(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be exported to."));
 		}
 	}
@@ -231,7 +233,6 @@ void MainWindow::exportPalette() {
 	}
 }
 
-#include "PreferencesDialog.hpp"
 void MainWindow::preferences() {
 	if(_prefsDialog->exec() == QDialog::Accepted) {
 		_saveSettings();
@@ -407,8 +408,12 @@ void MainWindow::createMenus() {
 	fileMenu->addAction(saveAction);
 	fileMenu->addAction(saveAsAction);
 	fileMenu->addSeparator();
-	//fileMenu->addAction(propertiesAction);
-	//fileMenu->addSeparator();
+	fileMenu->addAction(importBitmapAction);
+	fileMenu->addAction(exportBitmapAction);
+	fileMenu->addAction(importPaletteAction);
+	fileMenu->addAction(exportPaletteAction);
+	fileMenu->addAction(importEgaHeadAction);
+	fileMenu->addSeparator();
 	fileMenu->addAction(quitAction);
 
 	editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -418,28 +423,11 @@ void MainWindow::createMenus() {
 	editMenu->addAction(togglePaintModeAction);
 	editMenu->addSeparator();
 	editMenu->addAction(prefAction);
-//	editMenu->addAction(toggleTopAction);
-//	editMenu->addAction(toggleLeftAction);
-//	editMenu->addAction(toggleBottomAction);
-//	editMenu->addAction(toggleRightAction);
-//	editMenu->addAction(setNormalTypeAction);
-//	editMenu->addAction(cycleKeyTypesAction);
-//	editMenu->addAction(cycleDoorTypesAction);
-//	editMenu->addAction(setDeadlyTypeAction);
-//	editMenu->addAction(setMaskedAction);
-//	editMenu->addAction(setForegroundAction);
-//	editMenu->addAction(setAnimationAction);
 
 	toolMenu = menuBar()->addMenu(tr("&Tools"));
-	toolMenu->addAction(importBitmapAction);
-	toolMenu->addAction(importEgaHeadAction);
 	toolMenu->addAction(fixPaletteAction);
-	toolMenu->addAction(importPaletteAction);
-	toolMenu->addSeparator();
 	toolMenu->addAction(setOneToOneAction);
 	toolMenu->addAction(exportForEditorAction);
-	toolMenu->addAction(exportBitmapAction);
-	toolMenu->addAction(exportPaletteAction);
 
 	menuBar()->addSeparator();
 
@@ -453,15 +441,16 @@ void MainWindow::createToolBars() {
 	fileToolBar->addAction(newAction);
 	fileToolBar->addAction(openAction);
 	fileToolBar->addAction(saveAction);
+	fileToolBar->addAction(importBitmapAction);
+	fileToolBar->addAction(exportBitmapAction);
+	fileToolBar->addAction(importPaletteAction);
+	fileToolBar->addAction(exportPaletteAction);
+
 	editToolBar = addToolBar(tr("Edit"));
 	editToolBar->setObjectName("editToolbar");
-	editToolBar->addAction(importBitmapAction);
 	editToolBar->addAction(fixPaletteAction);
-	editToolBar->addAction(importPaletteAction);
+	editToolBar->addAction(setOneToOneAction);
 	editToolBar->addAction(togglePaintModeAction);
-//	editToolBar->addAction(exportBitmapAction);
-//	editToolBar->addAction(setOneToOneAction);
-//	editToolBar->addAction(exportPaletteAction);
 
 }
 void MainWindow::setCurrentFile(QString str) {
