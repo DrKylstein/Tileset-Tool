@@ -232,7 +232,7 @@ bool TileModel::_doLoadPalette(const QString& filename) {
 }
 bool TileModel::loadPalette(const QString& filename) {
 	if(!_doLoadPalette(filename)) return false;
-	_tileGfx->setColorTable(_tilePalette->colorTable());
+	_tileGfx->setColorTable(_tilePalette->colorTable(0));
 	_tileAnim->markAllNew();
 	return true;
 }
@@ -246,13 +246,14 @@ bool TileModel::savePalette(const QString& filename) {
 	return true;
 }
 bool TileModel::fixPalette(const QString& filename) {
-	/*if(!_doLoadPalette(filename)) return false;
-	_graphics = _graphics.convertToFormat(QImage::Format_RGB32).convertToFormat(
-		QImage::Format_Indexed8, _tilePalette->getColorTable().mid(0, 16));
-	_tileGfx->markAllNew();
+	if(filename == QString()) {
+		_tilePalette->reset();
+	} else {
+		if(!_doLoadPalette(filename)) return false;
+	}
+	_tileGfx->load(_tileGfx->image(), _tilePalette->colorTable(0));
 	_tileAnim->markAllNew();
-	return true;*/
-	return false;
+	return true;
 }
 QVector<QRgb> TileModel::getPaletteRow(int page) {
     return _tilePalette->colorTable(page);
