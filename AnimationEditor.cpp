@@ -91,6 +91,10 @@ AnimationEditor::AnimationEditor(QWidget* parent): QWidget(parent) {
 			connect(_framesView, SIGNAL(doubleClicked(const QModelIndex&) ), this, SLOT(pickFrame(const QModelIndex&) ) );
 			connect(anim, SIGNAL(frameChanged(int)), this, SLOT(frameChange(int)));
 			connect(_framesView, SIGNAL(tileSelected(int)), this, SLOT(frameSelected(int)));
+
+	_presetShortcut = new QShortcut(QKeySequence(tr("C")), this);
+	_presetShortcut->setContext(Qt::ApplicationShortcut);
+	connect(_presetShortcut, SIGNAL(activated()), this, SLOT(applyPreset()));
 }
 void AnimationEditor::applyPreset() {
 	QModelIndex baseFrame = _model->index(_currentRow, 0);
@@ -171,6 +175,13 @@ void AnimationEditor::pickFrame(const QModelIndex& index) {
 	_framePicker->setSelectedFrame(index.data().toInt());
 	_framePicker->exec();
 	emit frameEdited(_framesModel->mapToSource(index), _framePicker->selectedFrame());//_framesModel->setData(index, _framePicker->selectedFrame());
+}
+void AnimationEditor::pickTile(const QModelIndex& index) {
+	_framePicker->setSelectedFrame(index.data().toInt());
+	_framePicker->exec();
+	for(int i = 0; i < 8; ++i) {
+		emit frameEdited(_model->index(_framesModel->mapToSource(index).row(), i), _framePicker->selectedFrame());
+	}
 }
 void AnimationEditor::togglePlayback() {
 	if(!_playing) {

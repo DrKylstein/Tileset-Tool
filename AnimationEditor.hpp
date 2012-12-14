@@ -36,6 +36,7 @@ class RowToListProxyModel;
 class TileSetView;
 class TileMapDelegate;
 class QToolButton;
+class QShortcut;
 class AnimationEditor: public QWidget {
 	Q_OBJECT
 
@@ -50,6 +51,7 @@ class AnimationEditor: public QWidget {
 		void setCurrentModelIndex(const QModelIndex & index);
 		void applyPreset();
 		void setZoom(int);
+		void pickTile(const QModelIndex&);
 
 	signals:
 		void frameEdited(const QModelIndex&, const QVariant&);
@@ -81,6 +83,8 @@ class AnimationEditor: public QWidget {
 		int _currentRow;
 		int _frames;
 		bool _playing;
+
+		QShortcut* _presetShortcut;
 
 		FramePickerDialog* _framePicker;
 };

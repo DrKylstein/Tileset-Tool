@@ -354,12 +354,6 @@ void MainWindow::createActions() {
 	togglePaintPropertiesAction = paintMenu->addAction(tr("Paint properties"));
 	togglePaintPropertiesAction->setCheckable(true);
 	connect(togglePaintPropertiesAction, SIGNAL(toggled(bool)), this, SLOT(_setPaintProperties(bool)));
-
-	setAnimationAction = new QAction(tr("Apply Animation &Cycle"), this);
-	connect(setAnimationAction, SIGNAL(triggered()), _animEditor, SLOT(applyPreset()));
-	setAnimationAction->setShortcut(QKeySequence(tr("C")));
-
-
 }
 void MainWindow::createMenus() {
 	fileMenu = menuBar()->addMenu(tr("&File"));
@@ -602,6 +596,8 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 	connect(_propertyEditor, SIGNAL(propertyChanged(const QModelIndex&, const QVariant&)), this, SLOT(_tileInfoEdited(const QModelIndex&, const QVariant&)));
 	connect(_animEditor, SIGNAL(frameEdited(const QModelIndex&, const QVariant&)), this, SLOT(_frameEdited(const QModelIndex&, const QVariant&)));
 	connect(_animEditor, SIGNAL(presetApplied(int, const QVector<int>&)), this, SLOT(_presetApplied(int, const QVector<int>&)));
+
+	connect(_mainView, SIGNAL(activated(const QModelIndex&)), _animEditor, SLOT(pickTile(const QModelIndex&)));
 }
 MainWindow::~MainWindow() {
 	_saveSettings();

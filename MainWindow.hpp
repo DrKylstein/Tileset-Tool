@@ -113,8 +113,6 @@ class MainWindow: public QMainWindow {
 				QAction* togglePaintAnimationsAction;
 			QAction* prefAction;
 
-		QAction* setAnimationAction;
-
 		QMenu* toolMenu;
 			QAction* setOneToOneAction;
 			QAction* importBitmapAction;

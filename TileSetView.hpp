@@ -63,6 +63,7 @@ class TileSetView: public QAbstractItemView {
 		void resizeEvent(QResizeEvent *event);
 		void scrollContentsBy(int dx, int dy);
 		QRegion visualRegionForSelection(const QItemSelection &selection) const;
+		void mouseDoubleClickEvent (QMouseEvent * event);
 
 	private:
 		void updateGeometries();

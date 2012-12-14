@@ -222,6 +222,9 @@ void TileSetView::updateGeometries() {
 	verticalScrollBar()->setSingleStep(tileHeight * _scale);
 	viewport()->update();
 }
+void TileSetView::mouseDoubleClickEvent (QMouseEvent * event) {
+	emit activated(indexAt(QPoint(event->x(), event->y())));
+}
 
 QRect TileSetView::visualRect(const QModelIndex &index) const {
 	if(!index.isValid()) return QRect();
