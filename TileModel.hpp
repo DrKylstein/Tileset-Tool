@@ -44,12 +44,9 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
         QRgb getColor(int index, int row=0);
         void setColor(QRgb, int index, int row=0);
 
-		void setFrameCount(int);
-		//const QImage& graphics();
-
 		void blank();
 		bool open(const QString&);
-		bool save(const QString&) const;
+		bool save(const QString&);
 		bool importImage(const QString&);
 		bool importEgaHead(const QString&);
 		bool fixPalette(const QString& = QString());
@@ -63,8 +60,11 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 		TilePaletteModel* tilePalette(void);
 
 	signals:
-		void frameCountChanged(int);
 		void graphicsChanged(const QImage&);
+		void modificationStateChanged(bool);
+
+	private slots:
+		void _dataChanged(void);
 
 	private:
 		bool _openLemm(QFile&);

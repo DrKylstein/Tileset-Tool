@@ -140,7 +140,6 @@ void AnimationEditor::applyPreset() {
 			}
 			break;
 	}
-	emit presetApplied(_currentRow, newFrames);
 }
 
 void AnimationEditor::setModel(QAbstractItemModel * model) {
@@ -174,13 +173,13 @@ void AnimationEditor::frameSelected(int i) {
 void AnimationEditor::pickFrame(const QModelIndex& index) {
 	_framePicker->setSelectedFrame(index.data().toInt());
 	_framePicker->exec();
-	emit frameEdited(_framesModel->mapToSource(index), _framePicker->selectedFrame());//_framesModel->setData(index, _framePicker->selectedFrame());
+	_model->setData(_framesModel->mapToSource(index), _framePicker->selectedFrame());
 }
 void AnimationEditor::pickTile(const QModelIndex& index) {
 	_framePicker->setSelectedFrame(index.data().toInt());
 	_framePicker->exec();
 	for(int i = 0; i < 8; ++i) {
-		emit frameEdited(_model->index(_framesModel->mapToSource(index).row(), i), _framePicker->selectedFrame());
+		_model->setData(_model->index(index.row(), i), _framePicker->selectedFrame());
 	}
 }
 void AnimationEditor::togglePlayback() {

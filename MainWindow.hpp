@@ -71,19 +71,8 @@ class MainWindow: public QMainWindow {
 
 		void tileSelected(int);
 
-		//void dataChanged(const QModelIndex&,const QModelIndex&);
-		void _setUnmodified(bool);
-		void setPaintMode(bool);
-		void _setPaintAnimations(bool);
-		void _setPaintProperties(bool);
-
-		void _tileInfoEdited(const QModelIndex&, const QVariant&);
-		void _frameEdited(const QModelIndex&, const QVariant&);
-		void _presetApplied(int, const QVector<int>&);
-
 	protected:
 		void closeEvent(QCloseEvent* event);
-		//void keyPressEvent(QKeyEvent* event);
 
 	private:
 		void createActions();
@@ -142,11 +131,6 @@ class MainWindow: public QMainWindow {
 		PreferencesDialog* _prefsDialog;
 		QSettings* _settings;
 		QLabel* _currentTileIndicator;
-		bool _paintMode;
-		int _brushRow;
-		bool _paintAnimations;
-		bool _paintProperties;
-		QUndoStack* _undoStack;
 		QTextBrowser* _helpViewer;
 };
 #endif

@@ -200,11 +200,7 @@ void TileEditor::setCurrentModelIndex(const QModelIndex & index) {
 }
 
 void TileEditor::_focusChange(QWidget* old, QWidget* new_) {
-	int section;
-	section = mapper->mappedSection(old);
-	if(section != -1) {
-		emit propertyChanged(_model->index(mapper->currentIndex(), section), old->property(mapper->mappedPropertyName(old)));
-	}
+	mapper->submit();
 }
 
 void TileEditor::_runChanged(int i) {

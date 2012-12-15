@@ -53,11 +53,6 @@ class AnimationEditor: public QWidget {
 		void setZoom(int);
 		void pickTile(const QModelIndex&);
 
-	signals:
-		void frameEdited(const QModelIndex&, const QVariant&);
-		void presetApplied(int section, const QVector<int>& frames);
-		void frameCountChange(int frames);
-
 	private slots:
 		void pickFrame(const QModelIndex&);
 		void frameSelected(int);

@@ -46,9 +46,6 @@ class TileEditor: public QWidget {
 	public slots:
 		void setCurrentModelIndex(const QModelIndex & index);
 
-	signals:
-		void propertyChanged(const QModelIndex& index, const QVariant& data);
-
 	private slots:
 		void _focusChange(QWidget*, QWidget*);
 		void _slopeEnableChanged(int);

@@ -252,12 +252,22 @@ bool TileInfoModel::setData (const QModelIndex & index, const QVariant & value, 
 			case FIELD_BEHAVIOR:
 				if(value.toInt() >= 0 && value.toInt() < 255) {
 					if(value.toInt() == FAKE_FOREGROUND) {
+						if(_tiles[index.row()].behavior == REAL_FOREGROUND) {
+							return true;
+						}
 						_tiles[index.row()].behavior = REAL_FOREGROUND;
 					} else if(value.toInt() == FAKE_MASKED) {
+						if(_tiles[index.row()].behavior == REAL_MASKED) {
+							return true;
+						}
 						_tiles[index.row()].behavior = REAL_MASKED;
 					} else {
+						if(_tiles[index.row()].behavior == value.toInt()) {
+							return true;
+						}
 						_tiles[index.row()].behavior = value.toInt();
 					}
+					emit dataChanged(index, index);
 					return true;
 				}
 				break;
@@ -265,29 +275,47 @@ bool TileInfoModel::setData (const QModelIndex & index, const QVariant & value, 
 			case FIELD_RIGHT_BLOCKING:
 			case FIELD_BOTTOM_BLOCKING:
 			case FIELD_LEFT_BLOCKING:
+				if(_tiles[index.row()].blocking[index.column()-FIELD_TOP_BLOCKING] == value.toBool()) {
+					return true;
+				}
 				_tiles[index.row()].blocking[index.column()-FIELD_TOP_BLOCKING] = value.toBool();
+				emit dataChanged(index, index);
 				return true;
 			case FIELD_TOP_STYLE:
 			case FIELD_RIGHT_STYLE:
 			case FIELD_BOTTOM_STYLE:
 			case FIELD_LEFT_STYLE:
 				if(value.toInt() >= 0 && value.toInt() < 4) {
+					if(_tiles[index.row()].style[index.column()-FIELD_TOP_STYLE] == value.toInt()) {
+						return true;
+					}
 					_tiles[index.row()].style[index.column()-FIELD_TOP_STYLE] = value.toInt();
+					emit dataChanged(index, index);
 					return true;
 				}
 				break;
 			case FIELD_SLOPED_SIDE:
 				if(value.toInt() >= 0 && value.toInt() < 3) {
+					if(_tiles[index.row()].slopedSide == slope_side(value.toInt())) {
+						return true;
+					}
 					_tiles[index.row()].slopedSide = slope_side(value.toInt());
 				}
 				break;
 			case FIELD_Y0:
 				if(value.toInt() >= 0 && value.toInt() <= 16) {
 					if(value.toInt() >= 16) {
+						if(_tiles[index.row()].y0 == 16) {
+							return true;
+						}
 						_tiles[index.row()].y0 = 16;
 					} else {
+						if(_tiles[index.row()].y0 == value.toInt() & 0xC0) {
+							return true;
+						}
 						_tiles[index.row()].y0 = value.toInt() & 0xC0;
 					}
+					emit dataChanged(index, index);
 					return true;
 				}
 				break;
@@ -301,7 +329,11 @@ bool TileInfoModel::setData (const QModelIndex & index, const QVariant & value, 
 					case -2:
 					case -4:
 					case -8:
+						if(_tiles[index.row()].run == value.toInt()) {
+							return true;
+						}
 						_tiles[index.row()].run = value.toInt();
+						emit dataChanged(index, index);
 						return true;
 					default:
 					break;

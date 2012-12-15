@@ -38,66 +38,13 @@
 #include "PaletteEditor.hpp"
 #include "PreferencesDialog.hpp"
 
-class RowEdit: public QUndoCommand{
-	public:
-		RowEdit(QAbstractItemModel* model, int row, const QVector<int>& columns, const QVector<QVariant>& data) {
-			_model = model;
-			_data = data;
-			_row = row;
-			_columns = columns;
-			for(int i = 0; i < _data.size(); ++i) {
-				_oldData.append(_model->index(_row, _columns[i]).data());
-			}
-		}
-		void redo(){
-			for(int i = 0; i < _data.size(); ++i) {
-				_model->setData(_model->index(_row, _columns[i]), _data[i]);
-			}
-		}
-		void undo(){
-			for(int i = 0; i < _oldData.size(); ++i) {
-				_model->setData(_model->index(_row, _columns[i]), _oldData[i]);
-			}
-		}
-		int id() {
-			return 10;
-		}
-		bool mergeWith(const QUndoCommand* command){
-			qDebug() << "attempting undo merge.";
-			if(command->id() != id()) {
-				qDebug() << "merge rejected: wrong id.";
-				return false;
-			}
-			const RowEdit* rowEdit = static_cast<const RowEdit*>(command);
-			if(rowEdit->_model != _model || rowEdit->_row != _row){
-				qDebug() << "merge rejected: wrong model and/or row.";
-				return false;
-			}
-			for(int i = 0; i < rowEdit->_columns.size(); ++i) {
-				if(_columns.contains(rowEdit->_columns[i])) {
-					return false;
-					qDebug() << "merge rejected: overlapping changes.";
-				}
-			}
-			_columns += rowEdit->_columns;
-			_data += rowEdit->_data;
-			_oldData += rowEdit->_oldData;
-			qDebug() << "a command was merged.";
-			return true;
-		}
-	private:
-		QAbstractItemModel* _model;
-		int _row;
-		QVector<int> _columns;
-		QVector<QVariant> _data;
-		QVector<QVariant> _oldData;
-
-};
 void MainWindow::startNew() {
+	if(!reallyClose()) {
+		return;
+	}
 	_tileSet->blank();
 	setCurrentFile("");
-	//setWindowModified(false);
-	_undoStack->setClean();
+	setWindowModified(false);
 }
 void MainWindow::about() {
 	QMessageBox::about(this, tr("About Tileset Tool"), tr(
@@ -125,13 +72,14 @@ void MainWindow::open() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory, tr("Lemm's tileset patch file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
+		if(!reallyClose()) {
+			return;
+		}
 		if(!_tileSet->open(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified file could not be opened."));
 		} else {
-			//_propertyEditor->resetCurrentIndex();
 			setCurrentFile(filename);
-			//setWindowModified(false);
-			_undoStack->setClean();
+			setWindowModified(false);
 		}
 	}
 }
@@ -143,7 +91,7 @@ void MainWindow::saveAs() {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified file could not be saved to."));
 		} else {
 			setCurrentFile(filename);
-			_undoStack->setClean();
+			setWindowModified(false);
 		}
 	}
 }
@@ -154,8 +102,9 @@ void MainWindow::save() {
 	}
 	if(!_tileSet->save(_currentFile)) {
 		QMessageBox::critical(this, tr("File Error"), tr("The file could not be saved."));
+	} else {
+		setWindowModified(false);
 	}
-	_undoStack->setClean();
 }
 void MainWindow::importBitmap() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), _currentDirectory, tr("Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF)"));
@@ -163,8 +112,6 @@ void MainWindow::importBitmap() {
 	if(!filename.isEmpty()) {
 		if(!_tileSet->importImage(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be imported. Make sure the width and height are divisible by 16."));
-		} else {
-			//setWindowModified(true);
 		}
 	}
 }
@@ -176,8 +123,6 @@ void MainWindow::importEgaHead() {
 		if(!_tileSet->importEgaHead(filename)) {
 			QMessageBox::critical(this, tr("File Error"),
 				tr("The specified file could not be imported. Note that Keen1 compressed files are not supported at this time."));
-		} else {
-			//setWindowModified(true);
 		}
 	}
 }
@@ -239,40 +184,10 @@ void MainWindow::preferences() {
 		_readSettings();
 	}
 }
-void MainWindow::setPaintMode(bool b) {
-	if(_paintMode == true && b == false) {
-		_propertyEditor->setCurrentModelIndex(_mainView->currentIndex());
-		_brushRow = _mainView->currentIndex().row();
-	}
-	_paintMode = b;
-}
-void MainWindow::_setPaintAnimations(bool b) {
-	_paintAnimations = b;
-}
-void MainWindow::_setPaintProperties(bool b) {
-	_paintProperties = b;
-}
 
 void MainWindow::tileSelected(int i) {
 	_currentTileIndicator->setText(tr("Tile: %1/910 Hex: 0x%2").arg(i+1).arg(i, 4, 16, QLatin1Char( '0' )));
-	if(!_paintMode) {
-		_propertyEditor->setCurrentModelIndex(_tileSet->tileInfo()->index(i, 0));
-		_brushRow = i;
-	} else {
-		_undoStack->beginMacro(tr("paint tiles"));
-		if(_paintProperties) {
-			for(int j = 0; j < _tileSet->tileInfo()->columnCount(); ++j) {
-				_tileInfoEdited(_tileSet->tileInfo()->index(i, j), _tileSet->tileInfo()->index(_brushRow, j).data());//_tileSet->tileInfo()->setData(_tileSet->tileInfo()->index(i, j), _tileSet->tileInfo()->index(_brushRow, j).data());
-			}
-		}
-		if (_paintAnimations) {
-			for(int j = 0; j < _tileSet->tileAnim()->columnCount(); ++j) {
-				int frame = _tileSet->tileAnim()->index(_brushRow, j).data().toInt() + i - _brushRow;
-				_tileInfoEdited(_tileSet->tileAnim()->index(i, j), frame);//_tileSet->tileAnim()->setData(_tileSet->tileAnim()->index(i, j), frame);
-			}
-		}
-		_undoStack->endMacro();
-	}
+	_propertyEditor->setCurrentModelIndex(_tileSet->tileInfo()->index(i, 0));
 	_animEditor->setCurrentModelIndex(_tileSet->tileAnim()->index(i, 0));
 }
 void MainWindow::createActions() {
@@ -330,30 +245,6 @@ void MainWindow::createActions() {
 
 	prefAction = new QAction(QIcon(":/images/preferences.png"), tr("P&references..."), this);
 	connect(prefAction, SIGNAL(triggered()), this, SLOT(preferences()));
-
-	propertiesAction = new QAction(QIcon(":/images/properties.png"), tr("&Properties..."), this);
-
-	undoAction = _undoStack->createUndoAction(this, tr("&Undo"));
-	undoAction->setShortcuts(QKeySequence::Undo);
-
-	redoAction = _undoStack->createRedoAction(this, tr("&Redo"));
-	redoAction->setShortcuts(QKeySequence::Redo);
-
-	togglePaintModeAction = new QAction(QIcon(":/images/paint.png"), tr("&Paint mode"), this);
-	togglePaintModeAction->setCheckable(true);
-	connect(togglePaintModeAction, SIGNAL(toggled(bool)), this, SLOT(setPaintMode(bool)));
-	//togglePaintModeAction->setIconVisibleInMenu(false);
-
-	paintMenu = new QMenu(this);
-	togglePaintModeAction->setMenu(paintMenu);
-
-	togglePaintAnimationsAction = paintMenu->addAction(tr("Paint animations"));
-	togglePaintAnimationsAction->setCheckable(true);
-	connect(togglePaintAnimationsAction, SIGNAL(toggled(bool)), this, SLOT(_setPaintAnimations(bool)));
-
-	togglePaintPropertiesAction = paintMenu->addAction(tr("Paint properties"));
-	togglePaintPropertiesAction->setCheckable(true);
-	connect(togglePaintPropertiesAction, SIGNAL(toggled(bool)), this, SLOT(_setPaintProperties(bool)));
 }
 void MainWindow::createMenus() {
 	fileMenu = menuBar()->addMenu(tr("&File"));
@@ -371,11 +262,6 @@ void MainWindow::createMenus() {
 	fileMenu->addAction(quitAction);
 
 	editMenu = menuBar()->addMenu(tr("&Edit"));
-	editMenu->addAction(undoAction);
-	editMenu->addAction(redoAction);
-	editMenu->addSeparator();
-	editMenu->addAction(togglePaintModeAction);
-	editMenu->addSeparator();
 	editMenu->addAction(prefAction);
 
 	toolMenu = menuBar()->addMenu(tr("&Tools"));
@@ -404,7 +290,6 @@ void MainWindow::createToolBars() {
 	editToolBar->setObjectName("editToolbar");
 	editToolBar->addAction(fixPaletteAction);
 	editToolBar->addAction(setOneToOneAction);
-	editToolBar->addAction(togglePaintModeAction);
 
 }
 void MainWindow::setCurrentFile(QString str) {
@@ -446,40 +331,6 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 		event->ignore();
 	}
 }
-//void MainWindow::dataChanged(const QModelIndex& topLeft,const QModelIndex& bottomRight) {
-	//setWindowModified(true);
-//}
-void MainWindow::_tileInfoEdited(const QModelIndex& index, const QVariant& data) {
-	if(data == _tileSet->tileInfo()->data(index)) return;
-	RowEdit* command = new RowEdit(_tileSet->tileInfo(), index.row(), QVector<int>(1, index.column()), QVector<QVariant>(1, data));
-	command->setText(tr("set tile properties"));
-	_undoStack->push(command);
-	//_tileSet->tileInfo()->setData(index, data);
-}
-void MainWindow::_frameEdited(const QModelIndex& index, const QVariant& data) {
-	if(data == _tileSet->tileAnim()->data(index)) return;
-	RowEdit* command = new RowEdit(_tileSet->tileAnim(), index.row(), QVector<int>(1, index.column()), QVector<QVariant>(1, data));
-	command->setText(tr("set tile animation"));
-	_undoStack->push(command);
-	//_tileSet->tileAnim()->setData(index, data);
-}
-void MainWindow::_presetApplied(int section, const QVector<int>& newFrames) {
-	QVector<int> columns;
-	QVector<QVariant> data;
-	for(int i = 0; i < newFrames.size(); ++i) {
-		columns.append(i);
-		data.append(newFrames[i]);
-	}
-	RowEdit* rowEdit = new RowEdit(_tileSet->tileAnim(), section, columns, data);
-	rowEdit->setText("set tile animation");
-	_undoStack->push(rowEdit);
-//	for(int i = 0; i < newFrames.size(); ++i) {
-//		_tileSet->tileAnim()->setData(_tileSet->tileAnim()->index(section, i), newFrames[i]);
-//	}
-}
-void MainWindow::_setUnmodified(bool b) {
-	setWindowModified(!b);
-}
 void MainWindow::_readSettings() {
 	_settings->beginGroup("Window");
 		resize(_settings->value("Size", QSize(976, 506)).toSize());
@@ -503,12 +354,6 @@ void MainWindow::_readSettings() {
 	_settings->beginGroup("Animation_Editor");
 		_animEditor->setZoom(_settings->value("Zoom", 3).toInt());
 		_settings->endGroup();
-	_settings->beginGroup("Tools");
-		_paintProperties = _settings->value("paint_properties", true).toBool();
-		togglePaintPropertiesAction->setChecked(_paintProperties);
-		_paintAnimations = _settings->value("paint_animations", false).toBool();
-		togglePaintAnimationsAction->setChecked(_paintAnimations);
-		_settings->endGroup();
 
 	_currentDirectory = _settings->value("Working_Directory", QDir::homePath()).toString();
 }
@@ -526,15 +371,11 @@ void MainWindow::_saveSettings() {
 		_settings->setValue("Size", _animEditor->framePicker()->size());
 		_settings->setValue("Position", _animEditor->framePicker()->pos());
 		_settings->endGroup();
-	_settings->beginGroup("Tools");
-		_settings->setValue("paint_properties", _paintProperties);
-		_settings->setValue("paint_animations", _paintAnimations);
-		_settings->endGroup();
 	//Tileset View settings are only editable by the preferences dialog, which saves them immeadiately.
 	_settings->setValue("Working_Directory", _currentDirectory);
 }
 
-MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(parent, flags), _paintMode(false) {
+MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(parent, flags) {
 	setWindowIcon(QIcon(":/images/icon.svg"));
 	setCurrentFile("");
 	_tileSet = new TileModel(this);
@@ -550,9 +391,6 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 		_animEditor->setGfxModel(_tileSet->tileGfx());
 	_paletteEditor = new PaletteEditor;
 	_paletteEditor->setModel(_tileSet->tilePalette());
-
-	_undoStack = new QUndoStack(this);
-	connect(_undoStack, SIGNAL(cleanChanged(bool)), this, SLOT(_setUnmodified(bool)));
 
 	_helpViewer = new QTextBrowser();
 	_helpViewer->setSource(QUrl("qrc:/docs/index.html"));
@@ -592,12 +430,8 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 
 	_mainView->setCurrentIndex(_tileSet->tileAnim()->index(0,0));
 
-
-	connect(_propertyEditor, SIGNAL(propertyChanged(const QModelIndex&, const QVariant&)), this, SLOT(_tileInfoEdited(const QModelIndex&, const QVariant&)));
-	connect(_animEditor, SIGNAL(frameEdited(const QModelIndex&, const QVariant&)), this, SLOT(_frameEdited(const QModelIndex&, const QVariant&)));
-	connect(_animEditor, SIGNAL(presetApplied(int, const QVector<int>&)), this, SLOT(_presetApplied(int, const QVector<int>&)));
-
-	connect(_mainView, SIGNAL(activated(const QModelIndex&)), _animEditor, SLOT(pickTile(const QModelIndex&)));
+	connect(_mainView, SIGNAL(doubleClicked(const QModelIndex&)), _animEditor, SLOT(pickTile(const QModelIndex&)));
+	connect(_tileSet, SIGNAL(modificationStateChanged(bool)), this, SLOT(setWindowModified(bool)));
 }
 MainWindow::~MainWindow() {
 	_saveSettings();

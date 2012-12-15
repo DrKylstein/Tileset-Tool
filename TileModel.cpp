@@ -31,11 +31,20 @@
 #include <cassert>
 #include "TileInfoHeuristics.hpp"
 using namespace TileInfoHeuristics;
+
+void TileModel::_dataChanged(void) {
+	emit modificationStateChanged(true);
+}
+
 TileModel::TileModel(QObject* parent): QObject(parent) {
 	_tileInfo = new TileInfoModel(this);
 	_tileAnim = new TileAnimModel(this);
 	_tileGfx = new TileGfxModel(this);
 	_tilePalette = new TilePaletteModel(this);
+	connect(_tileInfo, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(_dataChanged(void)));
+	connect(_tileAnim, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(_dataChanged(void)));
+	connect(_tileGfx, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(_dataChanged(void)));
+	connect(_tilePalette, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(_dataChanged(void)));
 }
 TileInfoModel* TileModel::tileInfo(void) {
 	return _tileInfo;
@@ -56,22 +65,8 @@ int TileModel::frameCount() const {
 int TileModel::tileCount() const {
 	return TileInfo::MAX_TILES;
 }
-void TileModel::setFrameCount(int i) {
-	/*if(i == 4 || i == 8) {
-		numFrames = i;
-		emit frameCountChanged(numFrames);
-		_tileAnim->changeFrameCount(i);
-	}*/
-}
-
-/*const QImage& TileModel::graphics() {
-	return _graphics;
-}*/
 
 void TileModel::blank() {
-	//_graphics = QImage();
-	//setFrameCount(TileInfo::MAX_FRAMES);
-	//emit graphicsChanged(_graphics);
 	_tileInfo->blank();
 	_tileAnim->blank();
 	_tileGfx->blank();
@@ -81,9 +76,16 @@ bool TileModel::open(const QString& filename) {
 	QFile file(filename);
 	if(!file.open(QIODevice::ReadOnly)) return false;
 	if(filename.endsWith(".tls", Qt::CaseInsensitive)) {
-		return _openLemm(file);
+		if(!_openLemm(file)) {
+			return false;
+		}
+	} else {
+		if(!_openVorticon(file)) {
+			return false;
+		}
 	}
-	return _openVorticon(file);
+	//emit modificationStateChanged(false);
+	return true;
 }
 bool TileModel::_openLemm(QFile& file) {
     quint8 b;
@@ -142,7 +144,7 @@ bool TileModel::_openVorticon(QFile& file) {
     }
     return true;
 }
-bool TileModel::save(const QString& filename) const {
+bool TileModel::save(const QString& filename) {
 	QFile file(filename);
 	if(!file.open(QIODevice::WriteOnly)) {
 		return false;
@@ -164,6 +166,7 @@ bool TileModel::save(const QString& filename) const {
     _tileAnim->dump(stream);
 	_tileGfx->dump(stream);
 	_tilePalette->dump(stream);
+	//emit modificationStateChanged(false);
 	return true;
 }
 bool TileModel::importImage(const QString& filename) {
