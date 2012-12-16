@@ -55,6 +55,9 @@ Qt::ItemFlags TileAnimModel::flags (const QModelIndex & index) const {
 bool TileAnimModel::setData (const QModelIndex & index, const QVariant & value, int role) {
 	if(role != Qt::EditRole) return false;
 	if(!index.isValid()) return false;
+	if(_frames[index.column()][index.row()] == value.toInt()) {
+		return true;
+	}
     _frames[index.column()][index.row()] = value.toInt();
     emit dataChanged(index, index);
 	return true;

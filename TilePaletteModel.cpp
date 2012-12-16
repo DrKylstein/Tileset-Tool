@@ -164,6 +164,9 @@ Qt::ItemFlags TilePaletteModel::flags (const QModelIndex & index) const {
 }
 bool TilePaletteModel::setData (const QModelIndex & index, const QVariant & value, int role) {
 	if(!index.isValid()) return false;
+	if(_colors[(index.row() * COLUMNS) + index.column()] == value.value<QColor>().rgba()) {
+		return true;
+	}
 	_colors[(index.row() * COLUMNS) + index.column()] = value.value<QColor>().rgba();
 	emit dataChanged(index, index);
 	return true;
