@@ -179,9 +179,9 @@ void MainWindow::exportPalette() {
 }
 
 void MainWindow::preferences() {
+	_prefsDialog->wrapping = _wrap;
 	if(_prefsDialog->exec() == QDialog::Accepted) {
-		_saveSettings();
-		_readSettings();
+		_setWrap(_prefsDialog->wrapping);
 	}
 }
 
@@ -243,9 +243,37 @@ void MainWindow::createActions() {
 	connect(helpAction, SIGNAL(triggered()), this, SLOT(help()));
 
 
-	prefAction = new QAction(QIcon(":/images/preferences.png"), tr("P&references..."), this);
+	prefAction = new QAction(QIcon(":/images/preferences.png"), tr("Change tileset width..."), this);
 	connect(prefAction, SIGNAL(triggered()), this, SLOT(preferences()));
+
+	zoomInAction = new QAction(QIcon(":/images/preferences.png"), tr("Zoom in"), this);
+	connect(zoomInAction, SIGNAL(triggered()), this, SLOT(_zoomIn()));
+	zoomOutAction = new QAction(QIcon(":/images/preferences.png"), tr("Zoom out"), this);
+	connect(zoomOutAction, SIGNAL(triggered()), this, SLOT(_zoomOut()));
 }
+void MainWindow::_setZoom(int i) {
+	_zoom = i;
+	_mainView->setZoom(_zoom);
+	_animEditor->framePicker()->setZoom(_zoom);
+	_animEditor->setZoom(_zoom*2);
+}
+void MainWindow::_setWrap(int i) {
+	_wrap = i;
+	_mainView->setWrap(_wrap);
+	_animEditor->framePicker()->setWrap(_wrap);
+}
+void MainWindow::_zoomIn(void) {
+	if(_zoom < 16) {
+		_setZoom(++_zoom);
+	}
+}
+void MainWindow::_zoomOut(void){
+	if(_zoom > 1) {
+		_setZoom(--_zoom);
+	}
+}
+
+
 void MainWindow::createMenus() {
 	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(newAction);
@@ -261,7 +289,9 @@ void MainWindow::createMenus() {
 	fileMenu->addSeparator();
 	fileMenu->addAction(quitAction);
 
-	editMenu = menuBar()->addMenu(tr("&Edit"));
+	editMenu = menuBar()->addMenu(tr("&View"));
+	editMenu->addAction(zoomInAction);
+	editMenu->addAction(zoomOutAction);
 	editMenu->addAction(prefAction);
 
 	toolMenu = menuBar()->addMenu(tr("&Tools"));
@@ -345,14 +375,9 @@ void MainWindow::_readSettings() {
 		_animEditor->framePicker()->resize(_settings->value("Size", QSize(500, 500)).toSize());
 		_animEditor->framePicker()->move(_settings->value("Position", QPoint(200, 200)).toPoint());
 		_settings->endGroup();
-	_settings->beginGroup("Tileset_View");
-		_mainView->setZoom(_settings->value("Scale", 2).toInt());
-		_mainView->setWrap(_settings->value("Width", 13).toInt());
-		_animEditor->framePicker()->setZoom(_settings->value("Scale", 2).toInt());
-		_animEditor->framePicker()->setWrap(_settings->value("Width", 13).toInt());
-		_settings->endGroup();
-	_settings->beginGroup("Animation_Editor");
-		_animEditor->setZoom(_settings->value("Zoom", 3).toInt());
+	_settings->beginGroup("View");
+		_setZoom(_settings->value("Scale", 2).toInt());
+		_setWrap(_settings->value("Width", 13).toInt());
 		_settings->endGroup();
 
 	_currentDirectory = _settings->value("Working_Directory", QDir::homePath()).toString();
@@ -371,7 +396,10 @@ void MainWindow::_saveSettings() {
 		_settings->setValue("Size", _animEditor->framePicker()->size());
 		_settings->setValue("Position", _animEditor->framePicker()->pos());
 		_settings->endGroup();
-	//Tileset View settings are only editable by the preferences dialog, which saves them immeadiately.
+	_settings->beginGroup("View");
+		_settings->setValue("Scale", _zoom);
+		_settings->setValue("Width", _wrap);
+		_settings->endGroup();
 	_settings->setValue("Working_Directory", _currentDirectory);
 }
 
@@ -422,7 +450,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 	startNew();
 	_settings = new QSettings(tr("Tileset Tool"), QString(), this);
 	_readSettings();
-	_prefsDialog = new PreferencesDialog(_settings, this);
+	_prefsDialog = new PreferencesDialog(this);
 
 	_currentTileIndicator = new QLabel(tr("Tile: %1/910 Hex: 0x%2").arg(1).arg(0, 4, 16, QLatin1Char( '0' )));
 	connect(_mainView, SIGNAL(tileSelected(int)), this, SLOT(tileSelected(int)));

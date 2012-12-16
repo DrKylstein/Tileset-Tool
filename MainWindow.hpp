@@ -71,6 +71,9 @@ class MainWindow: public QMainWindow {
 
 		void tileSelected(int);
 
+		void _zoomIn(void);
+		void _zoomOut(void);
+
 	protected:
 		void closeEvent(QCloseEvent* event);
 
@@ -94,13 +97,9 @@ class MainWindow: public QMainWindow {
 			QAction* quitAction;
 
 		QMenu* editMenu;
-			QAction* undoAction;
-			QAction* redoAction;
-			QAction* togglePaintModeAction;
-			QMenu* paintMenu;
-				QAction* togglePaintPropertiesAction;
-				QAction* togglePaintAnimationsAction;
 			QAction* prefAction;
+			QAction* zoomInAction;
+			QAction* zoomOutAction;
 
 		QMenu* toolMenu;
 			QAction* setOneToOneAction;
@@ -132,5 +131,10 @@ class MainWindow: public QMainWindow {
 		QSettings* _settings;
 		QLabel* _currentTileIndicator;
 		QTextBrowser* _helpViewer;
+
+		int _zoom;
+		int _wrap;
+		void _setZoom(int);
+		void _setWrap(int);
 };
 #endif

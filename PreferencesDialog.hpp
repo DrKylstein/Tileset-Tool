@@ -30,12 +30,12 @@ class QSettings;
 class PreferencesDialog: public QDialog {
 		Q_OBJECT
 	public:
-		PreferencesDialog(QSettings* settings, QWidget * parent = 0, Qt::WindowFlags f = 0);
-		void accept();
+		PreferencesDialog(QWidget * parent = 0, Qt::WindowFlags f = 0);
+		void accept(void);
+		int exec(void);
+		int wrapping;
 	private:
-		QSpinBox* _tilesetScale;
-		QSpinBox* _animationZoom;
 		QSpinBox* _tilesetWidth;
-		QSettings* _settings;
+
 };
 #endif
