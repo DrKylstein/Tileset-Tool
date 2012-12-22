@@ -3,123 +3,19 @@
 		<title>Tileset Tool Help</title>
 	</head>
 	<body>
-		<h1>Tileset Tool Help</h1>
-		<h3 id="top">Contents</h3>
+		<h1 id="top">Contents</h1>
 		<ol>
-			<li>Docks<ol>
-				<li><a href="#tile-properties-dock">Tile Properties Dock</a></li>
-				<li><a href="#animation-dock">Animation Dock</a></li>
-				<li><a href="#palette-dock">Palette Dock</a></li>
-			</ol></li>
-			<li>Menus and Toolbars<ol>
-				<li><a href="#paint-mode">Paint Mode</a></li>
-				<li><a href="#tools">Tools</a></li>
-			</ol></li>
 			<li><a href="#hotkeys">Hotkeys</a></li>
-			<li><a href="#formats">Supported File Formats</a><ol>
-				<li><a href="#format-tileset">Tileset Formats</a></li>
-				<li><a href="#format-image">Image Formats</a></li>
-				<li><a href="#format-palette">Palette Formats</a></li>
+			<li><a href="#v2">Brief Guide to V2</a><ol>
+				<li><a href="#intro">Introduction to V2</a></li>
+				<li><a href="#tilesets">What's in a Tileset?</a></li>
+				<li><a href="#levels">Levels and TILEHEADS</a></li>
 			</ol></li>
+			<li><a href="#faq">FAQ</a></li>
+			<li><a href="#tips">Tips</a></li>
 		</ol>
-
-		<h3 id="tile-properties-dock">Tile Properties Dock</h3>
-		<a href="#top">Return to Top</a>
-		<p>Gameplay properties of the currently selected tile, or the template tile in <a href="#paint-mode">paint mode</a>, are edited here.
-		A change to a property will not take effect until the control looses focus. <a href="#hotkeys">Hotkeys</a> are also provided.</p>
-
-		<h3 id="animation-dock">Animation Dock</h3>
-		<a href="#top">Return to Top</a>
-		<p>This dock contains editing and playback controls for the animation of the current tile.
-		The box on the left is a preview of the animation. The buttons beneath it can rewind, step back one frame, start and stop, step forward, and skip to the end of the animation, respectively.
-		The box on the right shows the animation as a filmstrip. You can seek to a specific frame by clicking on it.
-		By double-clicking on a frame in the filmstrip, you can change which graphic the frame uses.
-		The dialog that opens will highlight the current graphic, and a single click on any other graphic cell will close the dialog, setting the frame to the clicked graphic.
-		Next to the playback controls is a drop-down box that can be used to select a preset animation sequence.
-		The animation will be set relative the current first frame when the <q>Apply</q> button is clicked, or the <a href="#hotkeys">hotkey</a> is activated.
-		</p>
-
-		<h3 id="palette-dock">Palette Dock</h3>
-		<a href="#top">Return to Top</a>
-		<p>This dock displays the tileset's internal palette.
-		This will be set automatically when <a href="#import-image">importing graphics</a>, and can also be <a href="#import-palette">imported</a> or <a href="#fix-palette">corrected</a> with an external file.
-		The palette is divided into 16 pages of 16 colors each.
-		Only one page can be used by the game at a time.
-		If you are using the palette-enabled tileset loader patch with the latest palette patch, the game will load all 16 pages into memory when a level is loaded, and the first page will be enabled.
-		The remaining pages are for use by effect patches.
-		</p>
-
-		<h3 id="paint-mode">Paint Mode</h3>
-		<a href="#top">Return to Top</a>
-		<p>Paint mode can be toggled from the paintbrush icon on the toolbar.
-		While in paint mode, the properties and/or animation of the last tile selected will be applied to every new tile selected.
-		Animations will be adjusted automatically so that the offset between the first-frame of the new tile and the first-frame of
-		the template tile will be the same as the offset between the new tile and the old-tile in the tileset.</p>
-		<p>Whether paint mode copies properties, animations, or both can be set from the drop-down menu on the toolbar button, or from the edit menu.</p>
-
-		<h3 id="tools">Tools</h3>
-		<a href="#top">Return to Top</a>
-		<dl>
-			<dt id="import-image">Import image...</dt>
-				<dd>
-					<p>Load tile graphics and palette from an image.</p>
-
-					<p>The image must be in a <a href="#image-format">supported format</a> and divide evenly into 16x16 pixel cells.
-					This action cannot be undone.</p>
-				</dd>
-			<dt id="fix-palette">Fix palette...</dt>
-				<dd>
-					<p>Remap the tile graphics to a specified palette/</p>
-
-					<p>You wil be asked whether to use the standard EGA palette. This is the palette used by the Commander Keen games in the unmodified form.
-					If you choose <q>Yes</q>, the tileset will load 16 identical pages of this palette.
-					If <q>No</q>, see <a href="#import-palette">Import palette...</a> for details.
-					Once the palette is loaded, the colors of the tile graphics will be automatically re-mapped to their closest match in the new palette.
-					This action cannot be undone.</p>
-				</dd>
-			<dt id="import-palette">Import palette...</dt>
-				<dd>
-					<p>Replace the current palette with one loaded from a file.</p>
-
-					<p>A <a href="#palette-format">palette file</a> will be loaded directly.
-					For an <a href="#image-format">image file</a>, if it has an internal palette, that will be used.
-					Otherwise, the top-leftmost 16x16 pixel square will be interpreted as a palette.
-					If the file does not contain 256 colors, or is shorter than 16 pixels for True Color images, the first 16 colors found will be mapped to the remaining color pages.
-					Unlike <a href="#fix-palette">Fix palette...</a>, this operation will not adjust the colors of the tile-graphics--they will use whatever color now occupies the position of the previous one.</p>
-				</dd>
-			<dt id="auto-map">Auto-map tiles</dt>
-				<dd>
-					<p>Write all of the animations in the file such that tile 1 references tile graphic 1, and so on.</p>
-
-					<p>This is provided as a convenience for the inital layout of a tileset, 
-                    and for those used to TileInfo and earlier versions of Tileset Tool.
-					It may be very slow, and cannot be undone.
-					<!--See <a href="#story-new">Starting a New Tileset</a> for alternatives.--></p>
-				</dd>
-			<dt id="export-image">Export image...</dt>
-				<dd>
-					<p>Save tile graphics to an image.</p>
-
-					<p>This operation exists as counterpart to <a href="#import-image">Import Image.</a> It can be used to recover the tile graphics data for editing if the source has been lost.
-					The resulting file will be a vertical strip of tiles from first to last as stored in the tileset data. For a more neatly arranged file, see <a href="#export-to-editor">Export to External Editor</a>.</p>
-				</dd>
-			<dt id="export-to-editor">Export to external editor...</dt>
-				<dd>
-					<p>Save mapped tile graphics to an image.</p>
-
-					<p>Unlike <a href="#export-image">Export Image...</a>, this operation will create an image identical to the one seen in the main editor (minus scaling). 
-                    This is suitable for use in level editors which do not support the tileset patch, or as a placeholder tileset file for modkeen-like utilities.</p>
-				</dd>
-			<dt id="export-palette">Export palette...</dt>
-				<dd>
-					<p>Save palette to an external file.</p>
-
-					<p>This operation exists as counterpart to <a href="#import-palette">Import palette...</a>
-					It will save to a <a href="#palette-format">palette format</a> which may be usable with a non-tileset aware palette patch.</p>
-				</dd>
-		</dl>
-
-		<h3 id="hotkeys">Hot Keys</h3>
+		<!--h1>Tileset Tool Help</h1-->
+		<h1 id="hotkeys">Hot Keys</h1>
 		<a href="#top">Return to Top</a>
 		<dl>
 			<dt>W</dt>
@@ -145,27 +41,98 @@
 			<dt>C</dt>
 				<dd>Apply currently selected animation <u>c</u>ycle.</dd>
 		</dl>
+		<h1 id="v2">Brief Guide to V2</h1>
+		<h2 id="intro">Introduction to V2</h2>
+		<a href="#top">Return to Top</a>
+		<p>V2 is an extensive patch for Commander Keen in: Invasion of the Vorticons. It's features include:</p>
+		<ol>
+			<li>More tiles.</li>
+			<li>A different set of tiles for every level.</li>
+			<li>Sloped tiles.</li>
+			<li>Custom 8-frame animations</li>
+			<li>With an addon by Dr. Kylstein, a different palette for every level, and color cycling.</li>
+		</ol>
+		<p>
+			In order to accomplish these things, tile editing for V2 is very different from the classic methods.
+		</p>
 
-		<h3 id="formats">Supported Formats</h3>
+		<h2 id="tilesets">What's in a Tileset?</h2>
+		<a href="#top">Return to Top</a>
+		<p>
+			For convenience, V2 uses files with the ".tls" extension to bundle several different things
+			that had previously been stored separately, as well as new data to support the new features.
+		</p>
 		<dl>
-			<dt id="tileset-format">Opening Tilesets</dt>
-				<dd><ul>
-					<li>Lemm's tileset format (*.tls)</li>
-					<li>TileInfo-style binary patch (*.tli)</li>
-				</ul></dd>
-			<dt>Saving Tilesets</dt>
-				<dd><ul>
-					<li>Lemm's tileset format (*.tls)</li>
-				</ul></dd>
-			<dt id="image-format">Image formats</dt>
-				<dd><ul>
-					<li>Windows Bitmap (*.bmp)</li>
-					<li>Portable Network Graphics (*.png)</li>
-					<li>Tagged Image Format (*.tiff)</li>
-				</ul></dd>
-			<dt id="palette-format">Palette formats</dt>
-				<dd>VGA RAMDAC register dump file (*.bin, *.dat)</dd>
-
+			<dt>Tile properties</dt>
+			<dd>
+				This is what the old TileInfo files contained, but more compact and with added data for slopes.
+			</dd>
+			<dt>Tile animations</dt>
+			<dd>
+				Unlike the old TileInfo, animations are stored as a table of eight frame indexes for each tile,
+				allowing completely custom animation.
+			</dd>
+			<dt>Tile graphics</dt>
+			<dd>
+				This is what would have been in your 1TIL0001.BMP/2TIL0001.BMP/3TIL0001.BMP.
+				Your graphics importer tool still decides how large this can be,
+				but the actual graphics will be loaded from this part of the tileset file.
+			</dd>
+			<dt>Palette</dt>
+			<dd>
+				This is always included by Tileset Tool, but you will need Dr. Kylstein's V2 Palette Patch for the game to use it.
+				It stores the colors to use with the tileset (sprites and menus will also use them, so be careful.).
+				The addon patch will cause the colors to cycle through the first eight sets of sixteen colors at a regular rate,
+				and to switch to the second eight when the lights are turned off.
+			</dd>
 		</dl>
+		<p>
+			Tileset Tool has distinct sections for editing each of these,
+			except for graphics, which must edited in a general graphics program and imported.
+		</p>
+
+		<h2 id="levels">Levels and TILEHEADs</h2>
+		<a href="#top">Return to Top</a>
+		<p>
+			One of V2's flagship features is that you can use a different tileset with every level.
+			Each level has the whole space allocated for tile graphics to itself, and its own animations and colors.
+			Which tileset is used by which level is decided by an additional file,
+			TILEHEAD.CK1 (or .CK2, or .CK3 as appropriate).
+			Editing this file is beyond the scope of Tileset Tool, but a supplementary program, Tileset Manager,
+			is available for that purpose.
+			The file can also be generated from a command line by KeenGraph.
+		</p>
+		<h1 id="faq">FAQ</h1>
+		<dl>
+			<dd>When I try to import my bmp tileset, all tiles show up as tile zero. Is this normal or am I doing something wrong?</dd>
+			<dt>
+				<p>
+					The way the new tilesets work is that any tile can have any graphic assigned to it as part of
+					the eight-frame custom animation that all tiles have.
+					However, this does require each tile have its animation set.
+				</p>
+				<p>
+					For tiles that you don't want to animate, a shortcut is provided:
+					You can double-click on the tile to choose a graphic for all eight frames at once.
+				</p>
+				<p>
+					If you really want to have a tile for every piece of your tile image,
+					the option to "auto-map tiles" is available from the tools menu or toolbar.
+				</p>
+			</dt>
+		</dl>
+		<h1 id="tips">Tips</h1>
+		<h2>Masked Tiles and Animations</h2>
+			<p>
+				A side benefit of the V2 animation system is that you don't have to include tile masks amongst your tiles.
+				As long as the mask is in the right place in the image relative to the graphic it goes with, it will work.
+			</p>
+			<p>
+				Another feature of the V2 animation system is that you don't have to include every frame of an animation amongst your tiles.
+				As long as the frames are somewhere in the image, it can be part of a tile's animation.
+			</p>
+			<p>
+				Used together, these features also enable animating masked tiles!
+			</p>
 	</body>
 </html>
