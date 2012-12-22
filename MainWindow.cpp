@@ -70,7 +70,7 @@ void MainWindow::help() {
 }
 void MainWindow::open() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory,
-		tr("V2 tileset file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
+		tr("V2 tileset file (*.tls *.TLS)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!reallyClose()) {
@@ -94,15 +94,25 @@ void MainWindow::_importInfo() {
 		}
 		if(!_tileSet->openClassic(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified file could not be opened."));
-		} else {
-			setCurrentFile(filename);
-			//setWindowModified(false);
 		}
 	}
 }
 
 bool MainWindow::saveAs() {
-	QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), _currentDirectory, tr("V2 tileset file (*.tls *.TLS)"));
+	QFileDialog saveDialog(this);
+	saveDialog.setDefaultSuffix("tls");
+	saveDialog.setWindowTitle(tr("Save File"));
+	saveDialog.setDirectory(_currentDirectory);
+	saveDialog.setNameFilter(tr("V2 tileset file (*.tls *.TLS)"));
+	saveDialog.setFileMode(QFileDialog::AnyFile);
+	saveDialog.setAcceptMode(QFileDialog::AcceptSave);
+	QString filename;
+	if(saveDialog.exec()) {
+		filename = saveDialog.selectedFiles()[0];
+	} else {
+		return false;
+	}
+	//QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), _currentDirectory, tr("V2 tileset file (*.tls *.TLS)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!_tileSet->save(filename)) {
@@ -417,7 +427,7 @@ void MainWindow::setCurrentDirectory(QString str) {
 bool MainWindow::reallyClose() {
 	if(isWindowModified()) {
 		switch(QMessageBox::question(this, tr("Save Changes"),
-			tr("If you continue, your work may be lost! Would you like to save first?"),
+			tr("If you continue, your recent changes may be lost! Would you like to save first?"),
 			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)) {
 			case QMessageBox::Yes:
 				return save();

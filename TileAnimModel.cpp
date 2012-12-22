@@ -76,11 +76,19 @@ bool TileAnimModel::load(QDataStream& stream) {
 }
 bool TileAnimModel::loadClassic(QDataStream& stream, int size) {
     quint16 w;
+    int framesLeft = 1;
 	for(unsigned int tile=0;tile!=size;tile++) {
 		if(stream.atEnd()) return false;
 		stream >> w;
-		for(unsigned int frame=0;frame!=_MAX_FRAMES;++frame) {
-			_frames[frame][tile] = tile+(frame%w);
+		if(w < 2) {
+			framesLeft = 1;
+		} else if(framesLeft == 1) {
+			framesLeft = w;
+		} else {
+			--framesLeft;
+		}
+		for(unsigned int frame = 0; frame != _MAX_FRAMES; ++frame) {
+			_frames[frame][tile] = tile - (w - framesLeft) + ((frame - framesLeft) % w);
 		}
 	}
 	emit dataChanged(createIndex(0, 0), createIndex(size - 1, columnCount() - 1));
