@@ -46,6 +46,7 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 
 		void blank();
 		bool open(const QString&);
+		bool openClassic(const QString&);
 		bool save(const QString&);
 		bool importImage(const QString&);
 		bool importEgaHead(const QString&);
@@ -67,8 +68,6 @@ class TileModel: public QObject /*QAbstractTableModel*/ {
 		void _dataChanged(void);
 
 	private:
-		bool _openLemm(QFile&);
-		bool _openVorticon(QFile&);
 		bool _saveLemm(QFile&);
 		bool _saveVorticon(QFile&);
 		TileInfoModel* _tileInfo;

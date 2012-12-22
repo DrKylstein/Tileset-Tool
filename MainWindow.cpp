@@ -69,7 +69,8 @@ void MainWindow::help() {
 	_helpViewer->show();
 }
 void MainWindow::open() {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory, tr("V2 tileset file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory,
+		tr("V2 tileset file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!reallyClose()) {
@@ -83,7 +84,24 @@ void MainWindow::open() {
 		}
 	}
 }
-void MainWindow::saveAs() {
+void MainWindow::_importInfo() {
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory,
+		tr("TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
+	setCurrentDirectory(filename);
+	if(!filename.isEmpty()) {
+		if(!reallyClose()) {
+			return;
+		}
+		if(!_tileSet->openClassic(filename)) {
+			QMessageBox::critical(this, tr("File Error"), tr("The specified file could not be opened."));
+		} else {
+			setCurrentFile(filename);
+			//setWindowModified(false);
+		}
+	}
+}
+
+bool MainWindow::saveAs() {
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), _currentDirectory, tr("V2 tileset file (*.tls *.TLS)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
@@ -92,26 +110,35 @@ void MainWindow::saveAs() {
 		} else {
 			setCurrentFile(filename);
 			setWindowModified(false);
+			return true;
 		}
 	}
+	return false;
 }
-void MainWindow::save() {
+bool MainWindow::save() {
 	if(_currentFile.isEmpty() || _currentFile.endsWith(".exe", Qt::CaseInsensitive)) {
-		saveAs();
-		return;
+		return saveAs();
 	}
 	if(!_tileSet->save(_currentFile)) {
 		QMessageBox::critical(this, tr("File Error"), tr("The file could not be saved."));
+		return false;
 	} else {
 		setWindowModified(false);
+		return true;
 	}
+	return false;
 }
 void MainWindow::importBitmap() {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), _currentDirectory, tr("Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF)"));
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image"), _currentDirectory,
+		tr("Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
+		if(!reallyClose()) {
+			return;
+		}
 		if(!_tileSet->importImage(filename)) {
-			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be imported. Make sure the width and height are divisible by 16."));
+			QMessageBox::critical(this, tr("File Error"),
+				tr("The specified image file could not be imported. Make sure the width and height are divisible by 16."));
 		}
 	}
 }
@@ -120,6 +147,9 @@ void MainWindow::importEgaHead() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open EGAHEAD"), _currentDirectory, tr("EGAHEAD Files (EGAHEAD.CK? egahead.ck?)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
+		if(!reallyClose()) {
+			return;
+		}
 		if(!_tileSet->importEgaHead(filename)) {
 			QMessageBox::critical(this, tr("File Error"),
 				tr("The specified file could not be imported. Note that Keen1 compressed files are not supported at this time."));
@@ -148,10 +178,16 @@ void MainWindow::exportForEditor() {
 void MainWindow::fixPalette() {
 	int button = QMessageBox::question(this, tr("Fix Palette"), tr("Use standard EGA palette?"), QMessageBox::Yes | QMessageBox::No);
 	if(button == QMessageBox::Yes) {
+		if(!reallyClose()) {
+			return;
+		}
 		_tileSet->fixPalette();
 	} else {
 		QString filename = QFileDialog::getOpenFileName(this, tr("Open Palette"), _currentDirectory, tr("Image and palette files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF *.bin *.BIN *.dat *.DAT);;Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF);;Raw VGA palettes (*.bin *.BIN *.dat *.DAT)"));
 		if(!filename.isEmpty()) {
+			if(!reallyClose()) {
+				return;
+			}
 			setCurrentDirectory(filename);
 			if(!_tileSet->fixPalette(filename)) {
 				QMessageBox::critical(this, tr("File Error"), tr("The specified file could not be loaded as a palette."));
@@ -163,6 +199,9 @@ void MainWindow::importPalette() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open Palette"), _currentDirectory, tr("Image and palette files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF *.bin *.BIN *.dat *.DAT);;Image files (*.bmp *.BMP *.png *.PNG *.tiff *.TIFF);;Raw VGA palettes (*.bin *.BIN *.dat *.DAT)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
+		if(!reallyClose()) {
+			return;
+		}
 		if(!_tileSet->loadPalette(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified file could not be loaded as a palette."));
 		}
@@ -212,6 +251,9 @@ void MainWindow::createActions() {
 
 	importEgaHeadAction = new QAction(QIcon(":/images/import-ega.png"), tr("&Import EGAHEAD..."), this);
 	connect(importEgaHeadAction, SIGNAL(triggered()), this, SLOT(importEgaHead()));
+
+	importInfoAction = new QAction(QIcon(":/images/import-info.png"), tr("&Import TileInfo..."), this);
+	connect(importInfoAction, SIGNAL(triggered()), this, SLOT(_importInfo()));
 
 	exportBitmapAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export image..."), this);
 	connect(exportBitmapAction, SIGNAL(triggered()), this, SLOT(exportBitmap()));
@@ -295,11 +337,14 @@ void MainWindow::createMenus() {
 
 	QMenu* portMenu = menuBar()->addMenu(tr("Im&port/Export"));
 	portMenu->addAction(importBitmapAction);
-	portMenu->addAction(importEgaHeadAction);
 	portMenu->addAction(exportBitmapAction);
 	portMenu->addSeparator();
 	portMenu->addAction(importPaletteAction);
 	portMenu->addAction(exportPaletteAction);
+	portMenu->addSeparator();
+	portMenu->addAction(importInfoAction);
+	portMenu->addAction(importEgaHeadAction);
+
 
 	QMenu* toolMenu = menuBar()->addMenu(tr("&Tools"));
 	toolMenu->addAction(exportForEditorAction);
@@ -327,10 +372,12 @@ void MainWindow::createToolBars() {
 	QToolBar* portBar = addToolBar(tr("Import/Export"));
 	portBar->setObjectName("portBar");
 	portBar->addAction(importBitmapAction);
-	portBar->addAction(importEgaHeadAction);
 	portBar->addAction(exportBitmapAction);
 	portBar->addAction(importPaletteAction);
 	portBar->addAction(exportPaletteAction);
+	portBar->addAction(importEgaHeadAction);
+	portBar->addAction(importInfoAction);
+
 
 	QToolBar* toolsBar = addToolBar(tr("&Tools"));
 	toolsBar->setObjectName("toolsBar");
@@ -369,10 +416,12 @@ void MainWindow::setCurrentDirectory(QString str) {
 }
 bool MainWindow::reallyClose() {
 	if(isWindowModified()) {
-		switch(QMessageBox::question(this, tr("Save Changes"), tr("The tileset has been modified. Would you like to save your changes?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel)) {
-			case QMessageBox::Save:
-				save();
-			case QMessageBox::Discard:
+		switch(QMessageBox::question(this, tr("Save Changes"),
+			tr("If you continue, your work may be lost! Would you like to save first?"),
+			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)) {
+			case QMessageBox::Yes:
+				return save();
+			case QMessageBox::No:
 				return true;
 			case QMessageBox::Cancel:
 				return false;
@@ -494,7 +543,7 @@ MainWindow::~MainWindow() {
 	delete _helpViewer;
 }
 void MainWindow::setOneToOne() {
-	if(QMessageBox::question(this, tr("Proceed?"), tr("All animation data will be overwritten! Are you sure you want to continue?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok) {
+	if(reallyClose()) {
 		QProgressDialog progress(tr("Setting frames..."), tr("Cancel"), 0, _tileSet->tileAnim()->rowCount()*_tileSet->tileAnim()->columnCount(), this);
 		progress.setWindowTitle("Operation in Progress");
 		progress.setWindowModality(Qt::WindowModal);

@@ -75,19 +75,6 @@ void TileModel::blank() {
 bool TileModel::open(const QString& filename) {
 	QFile file(filename);
 	if(!file.open(QIODevice::ReadOnly)) return false;
-	if(filename.endsWith(".tls", Qt::CaseInsensitive)) {
-		if(!_openLemm(file)) {
-			return false;
-		}
-	} else {
-		if(!_openVorticon(file)) {
-			return false;
-		}
-	}
-	//emit modificationStateChanged(false);
-	return true;
-}
-bool TileModel::_openLemm(QFile& file) {
     quint8 b;
     quint16 w;
 
@@ -122,7 +109,9 @@ bool TileModel::_openLemm(QFile& file) {
 	_tileAnim->markAllNew();
 	return true;
 }
-bool TileModel::_openVorticon(QFile& file) {
+bool TileModel::openClassic(const QString& filename) {
+	QFile file(filename);
+	if(!file.open(QIODevice::ReadOnly)) return false;
 	QDataStream stream(&file);
 	int tileCount = 0;
 	if(file.fileName().endsWith(".exe", Qt::CaseInsensitive)) {

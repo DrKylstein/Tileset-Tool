@@ -27,6 +27,7 @@
      <file>images/zoomout.png</file>
      <file>images/import-ega.png</file>
      <file>images/leveleditor.png</file>
+     <file>images/import-info.png</file>
      <file>docs/index.html</file>
      <file>images/icon.svg</file>
  </qresource>

@@ -53,10 +53,11 @@ class MainWindow: public QMainWindow {
 	private slots:
 		void startNew();
 		void open();
-		void save();
-		void saveAs();
+		bool save();
+		bool saveAs();
 
 		void setOneToOne();
+		void _importInfo();
 		void importBitmap();
 		void importEgaHead();
 		void exportBitmap();
@@ -98,6 +99,7 @@ class MainWindow: public QMainWindow {
 		QAction* zoomInAction;
 		QAction* zoomOutAction;
 		QAction* setOneToOneAction;
+		QAction* importInfoAction;
 		QAction* importBitmapAction;
 		QAction* importEgaHeadAction;
 		QAction* exportBitmapAction;
