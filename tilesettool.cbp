@@ -142,9 +142,11 @@
 		<Unit filename="images/grid.png" />
 		<Unit filename="images/help.png" />
 		<Unit filename="images/icon.svg" />
+		<Unit filename="images/import-ega.png" />
 		<Unit filename="images/import-image.png" />
 		<Unit filename="images/import-info.png" />
 		<Unit filename="images/import-palette.png" />
+		<Unit filename="images/leveleditor.png" />
 		<Unit filename="images/map-tiles.png" />
 		<Unit filename="images/new.png" />
 		<Unit filename="images/next.png" />
@@ -158,6 +160,8 @@
 		<Unit filename="images/save-as.png" />
 		<Unit filename="images/save.png" />
 		<Unit filename="images/start.png" />
+		<Unit filename="images/zoomin.png" />
+		<Unit filename="images/zoomout.png" />
 		<Unit filename="main.cpp" />
 		<Unit filename="tilesettool.pro" />
 		<Unit filename="tilesettool.qrc" />
