@@ -23,6 +23,10 @@
      <file>images/start.png</file>
      <file>images/end.png</file>
      <file>images/paint.png</file>
+     <file>images/zoomin.png</file>
+     <file>images/zoomout.png</file>
+     <file>images/import-ega.png</file>
+     <file>images/leveleditor.png</file>
      <file>docs/index.html</file>
      <file>images/icon.svg</file>
  </qresource>

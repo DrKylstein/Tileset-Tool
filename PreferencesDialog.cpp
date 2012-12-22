@@ -31,10 +31,10 @@ PreferencesDialog::PreferencesDialog(QWidget * parent, Qt::WindowFlags f): QDial
 		_tilesetWidth->setRange(1,50);
 		_tilesetWidth->setValue(wrapping);
 		layout->addWidget(_tilesetWidth);
-		QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
+		QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 			layout->addWidget(buttonBox);
 			connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-			connect(buttonBox->button(QDialogButtonBox::Discard), SIGNAL(clicked()), this, SLOT(reject()));
+			connect(buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(reject()));
 
 }
 void PreferencesDialog::accept() {

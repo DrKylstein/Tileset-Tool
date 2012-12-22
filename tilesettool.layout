@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="release" />
-	<File name="AnimationEditor.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="6720" topLine="163" />
+	<ActiveTarget name="debug" />
+	<File name="AnimationEditor.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="6639" topLine="174" />
 	</File>
-	<File name="AnimationEditor.hpp" open="1" top="0" tabpos="6">
-		<Cursor position="1653" topLine="47" />
+	<File name="AnimationEditor.hpp" open="0" top="0" tabpos="6">
+		<Cursor position="1654" topLine="41" />
 	</File>
 	<File name="AnimationPreview.cpp" open="0" top="0" tabpos="7">
-		<Cursor position="1891" topLine="23" />
+		<Cursor position="2570" topLine="59" />
 	</File>
 	<File name="AnimationPreview.hpp" open="0" top="0" tabpos="8">
 		<Cursor position="1202" topLine="26" />
@@ -22,17 +22,17 @@
 	<File name="FourWay.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="1101" topLine="22" />
 	</File>
-	<File name="FramePickerDialog.cpp" open="1" top="0" tabpos="13">
+	<File name="FramePickerDialog.cpp" open="0" top="0" tabpos="13">
 		<Cursor position="1639" topLine="24" />
 	</File>
-	<File name="FramePickerDialog.hpp" open="1" top="0" tabpos="14">
+	<File name="FramePickerDialog.hpp" open="0" top="0" tabpos="14">
 		<Cursor position="1285" topLine="27" />
 	</File>
-	<File name="MainWindow.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="24366" topLine="594" />
+	<File name="MainWindow.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="10632" topLine="234" />
 	</File>
 	<File name="MainWindow.hpp" open="1" top="0" tabpos="2">
-		<Cursor position="2923" topLine="100" />
+		<Cursor position="3297" topLine="111" />
 	</File>
 	<File name="PaletteEditor.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="956" topLine="0" />
@@ -40,11 +40,11 @@
 	<File name="PaletteEditor.hpp" open="0" top="0" tabpos="4">
 		<Cursor position="1223" topLine="8" />
 	</File>
-	<File name="PreferencesDialog.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="1594" topLine="36" />
+	<File name="PreferencesDialog.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="1760" topLine="20" />
 	</File>
-	<File name="PreferencesDialog.hpp" open="1" top="0" tabpos="3">
-		<Cursor position="1262" topLine="14" />
+	<File name="PreferencesDialog.hpp" open="1" top="0" tabpos="4">
+		<Cursor position="1199" topLine="12" />
 	</File>
 	<File name="RowToListProxyModel.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="1633" topLine="5" />
@@ -58,34 +58,34 @@
 	<File name="SlopeEditor.hpp" open="0" top="0" tabpos="6">
 		<Cursor position="1269" topLine="24" />
 	</File>
-	<File name="TileAnimModel.cpp" open="0" top="0" tabpos="6">
-		<Cursor position="2785" topLine="64" />
+	<File name="TileAnimModel.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="2097" topLine="38" />
 	</File>
 	<File name="TileAnimModel.hpp" open="0" top="0" tabpos="3">
 		<Cursor position="1606" topLine="25" />
 	</File>
-	<File name="TileEditor.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="5489" topLine="107" />
+	<File name="TileEditor.cpp" open="0" top="0" tabpos="8">
+		<Cursor position="8873" topLine="185" />
 	</File>
-	<File name="TileEditor.hpp" open="1" top="0" tabpos="9">
-		<Cursor position="1119" topLine="64" />
+	<File name="TileEditor.hpp" open="0" top="0" tabpos="9">
+		<Cursor position="1385" topLine="36" />
 	</File>
-	<File name="TileGfxModel.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="3053" topLine="82" />
+	<File name="TileGfxModel.cpp" open="0" top="0" tabpos="8">
+		<Cursor position="3053" topLine="22" />
 	</File>
-	<File name="TileGfxModel.hpp" open="0" top="0" tabpos="3">
+	<File name="TileGfxModel.hpp" open="0" top="0" tabpos="7">
 		<Cursor position="1382" topLine="22" />
 	</File>
-	<File name="TileInfo.h" open="1" top="0" tabpos="10">
+	<File name="TileInfo.h" open="0" top="0" tabpos="10">
 		<Cursor position="1534" topLine="27" />
 	</File>
 	<File name="TileInfoHeuristics.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="1299" topLine="51" />
 	</File>
 	<File name="TileInfoModel.cpp" open="0" top="0" tabpos="4">
-		<Cursor position="1004" topLine="6" />
+		<Cursor position="9858" topLine="320" />
 	</File>
-	<File name="TileInfoModel.hpp" open="1" top="0" tabpos="7">
+	<File name="TileInfoModel.hpp" open="0" top="0" tabpos="7">
 		<Cursor position="2466" topLine="54" />
 	</File>
 	<File name="TileMapDelegate.cpp" open="0" top="0" tabpos="2">
@@ -94,23 +94,23 @@
 	<File name="TileMapDelegate.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="485" topLine="0" />
 	</File>
-	<File name="TileModel.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="5142" topLine="232" />
+	<File name="TileModel.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="5163" topLine="236" />
 	</File>
-	<File name="TileModel.hpp" open="0" top="0" tabpos="9">
-		<Cursor position="1590" topLine="38" />
+	<File name="TileModel.hpp" open="0" top="0" tabpos="4">
+		<Cursor position="1476" topLine="44" />
 	</File>
-	<File name="TilePaletteModel.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1741" topLine="2" />
+	<File name="TilePaletteModel.cpp" open="1" top="1" tabpos="6">
+		<Cursor position="6715" topLine="146" />
 	</File>
-	<File name="TilePaletteModel.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="355" topLine="0" />
+	<File name="TilePaletteModel.hpp" open="0" top="0" tabpos="6">
+		<Cursor position="355" topLine="7" />
 	</File>
-	<File name="TileSetView.cpp" open="1" top="0" tabpos="11">
-		<Cursor position="8365" topLine="14" />
+	<File name="TileSetView.cpp" open="0" top="0" tabpos="11">
+		<Cursor position="7546" topLine="214" />
 	</File>
-	<File name="TileSetView.hpp" open="1" top="0" tabpos="12">
-		<Cursor position="2221" topLine="27" />
+	<File name="TileSetView.hpp" open="0" top="0" tabpos="12">
+		<Cursor position="2449" topLine="42" />
 	</File>
 	<File name="TileSheetDelegate.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="1524" topLine="0" />

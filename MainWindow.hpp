@@ -88,36 +88,25 @@ class MainWindow: public QMainWindow {
 		void _readSettings();
 		void _saveSettings();
 
-		QMenu* fileMenu;
-			QAction* newAction;
-			QAction* openAction;
-			QAction* saveAsAction;
-			QAction* saveAction;
-			QAction* propertiesAction;
-			QAction* quitAction;
-
-		QMenu* editMenu;
-			QAction* prefAction;
-			QAction* zoomInAction;
-			QAction* zoomOutAction;
-
-		QMenu* toolMenu;
-			QAction* setOneToOneAction;
-			QAction* importBitmapAction;
-			QAction* importEgaHeadAction;
-			QAction* exportBitmapAction;
-			QAction* exportForEditorAction;
-			QAction* fixPaletteAction;
-			QAction* importPaletteAction;
-			QAction* exportPaletteAction;
-
-		QMenu* helpMenu;
-			QAction* aboutAction;
-			QAction* helpAction;
-
-		QToolBar* fileToolBar;
-		QToolBar* editToolBar;
-		QToolButton* paintToggleButton;
+		QAction* newAction;
+		QAction* openAction;
+		QAction* saveAsAction;
+		QAction* saveAction;
+		QAction* propertiesAction;
+		QAction* quitAction;
+		QAction* prefAction;
+		QAction* zoomInAction;
+		QAction* zoomOutAction;
+		QAction* setOneToOneAction;
+		QAction* importBitmapAction;
+		QAction* importEgaHeadAction;
+		QAction* exportBitmapAction;
+		QAction* exportForEditorAction;
+		QAction* fixPaletteAction;
+		QAction* importPaletteAction;
+		QAction* exportPaletteAction;
+		QAction* aboutAction;
+		QAction* helpAction;
 
 		QString _currentFile;
 		QString _currentDirectory;
@@ -136,5 +125,8 @@ class MainWindow: public QMainWindow {
 		int _wrap;
 		void _setZoom(int);
 		void _setWrap(int);
+
+		static const int MAX_ZOOM = 8;
+		static const int MIN_ZOOM = 1;
 };
 #endif

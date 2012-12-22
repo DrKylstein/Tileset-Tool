@@ -4,6 +4,8 @@ Makefile.Release
 bin/
 obj/
 release/
+debug/
 *.log
 *.Debug
 *.Release
+*.cbTemp

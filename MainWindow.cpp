@@ -69,7 +69,7 @@ void MainWindow::help() {
 	_helpViewer->show();
 }
 void MainWindow::open() {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory, tr("Lemm's tileset patch file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), _currentDirectory, tr("V2 tileset file (*.tls *.TLS);;TileInfo file (*.tli *.TLI);;UnLZ'ed Commander Keen Episode (*.exe *.EXE)")); // *.tli *.exe
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!reallyClose()) {
@@ -84,7 +84,7 @@ void MainWindow::open() {
 	}
 }
 void MainWindow::saveAs() {
-	QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), _currentDirectory, tr("Lemm's tileset patch file (*.tls *.TLS)"));
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), _currentDirectory, tr("V2 tileset file (*.tls *.TLS)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
 		if(!_tileSet->save(filename)) {
@@ -130,7 +130,7 @@ void MainWindow::exportBitmap() {
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), _currentDirectory, tr("Image files (*.bmp *.png *.tiff)"));
 	setCurrentDirectory(filename);
 	if(!filename.isEmpty()) {
-		if(!_tileSet->tileGfx()->image(_settings->value("Width", 13).toInt()).save(filename)) {
+		if(!_tileSet->tileGfx()->image(_wrap).save(filename)) {
 			QMessageBox::critical(this, tr("File Error"), tr("The specified image file could not be exported to."));
 		}
 	}
@@ -210,13 +210,13 @@ void MainWindow::createActions() {
 	importBitmapAction = new QAction(QIcon(":/images/import-image.png"), tr("&Import image..."), this);
 	connect(importBitmapAction, SIGNAL(triggered()), this, SLOT(importBitmap()));
 
-	importEgaHeadAction = new QAction(QIcon(":/images/import-image.png"), tr("&Import EGAHEAD..."), this);
+	importEgaHeadAction = new QAction(QIcon(":/images/import-ega.png"), tr("&Import EGAHEAD..."), this);
 	connect(importEgaHeadAction, SIGNAL(triggered()), this, SLOT(importEgaHead()));
 
 	exportBitmapAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export image..."), this);
 	connect(exportBitmapAction, SIGNAL(triggered()), this, SLOT(exportBitmap()));
 
-	exportForEditorAction = new QAction(QIcon(":/images/export-image.png"), tr("&Export to external editor..."), this);
+	exportForEditorAction = new QAction(QIcon(":/images/leveleditor.png"), tr("&Export for level editor..."), this);
 	connect(exportForEditorAction, SIGNAL(triggered()), this, SLOT(exportForEditor()));
 
 	fixPaletteAction = new QAction(QIcon(":/images/convert-palette.png"), tr("&Fix palette..."), this);
@@ -243,19 +243,33 @@ void MainWindow::createActions() {
 	connect(helpAction, SIGNAL(triggered()), this, SLOT(help()));
 
 
-	prefAction = new QAction(QIcon(":/images/preferences.png"), tr("Change tileset width..."), this);
+	prefAction = new QAction(QIcon(":/images/grid.png"), tr("Change tileset width..."), this);
 	connect(prefAction, SIGNAL(triggered()), this, SLOT(preferences()));
 
-	zoomInAction = new QAction(QIcon(":/images/preferences.png"), tr("Zoom in"), this);
+	zoomInAction = new QAction(QIcon(":/images/zoomin.png"), tr("Zoom in"), this);
 	connect(zoomInAction, SIGNAL(triggered()), this, SLOT(_zoomIn()));
-	zoomOutAction = new QAction(QIcon(":/images/preferences.png"), tr("Zoom out"), this);
+	zoomOutAction = new QAction(QIcon(":/images/zoomout.png"), tr("Zoom out"), this);
 	connect(zoomOutAction, SIGNAL(triggered()), this, SLOT(_zoomOut()));
 }
 void MainWindow::_setZoom(int i) {
+	if(i < MIN_ZOOM) {
+		i = MIN_ZOOM;
+	}
+	if(i > MAX_ZOOM) {
+		i = MAX_ZOOM;
+	}
+	if(i == MIN_ZOOM) {
+		zoomOutAction->setDisabled(true);
+	} else if(i == MAX_ZOOM) {
+		zoomInAction->setDisabled(true);
+	} else {
+		zoomOutAction->setDisabled(false);
+		zoomInAction->setDisabled(false);
+	}
 	_zoom = i;
 	_mainView->setZoom(_zoom);
 	_animEditor->framePicker()->setZoom(_zoom);
-	_animEditor->setZoom(_zoom*2);
+	_animEditor->setZoom(_zoom+2);
 }
 void MainWindow::_setWrap(int i) {
 	_wrap = i;
@@ -263,63 +277,77 @@ void MainWindow::_setWrap(int i) {
 	_animEditor->framePicker()->setWrap(_wrap);
 }
 void MainWindow::_zoomIn(void) {
-	if(_zoom < 16) {
-		_setZoom(++_zoom);
-	}
+	_setZoom(_zoom + 1);
 }
 void MainWindow::_zoomOut(void){
-	if(_zoom > 1) {
-		_setZoom(--_zoom);
-	}
+	_setZoom(_zoom - 1);
 }
 
 
 void MainWindow::createMenus() {
-	fileMenu = menuBar()->addMenu(tr("&File"));
+	QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(newAction);
 	fileMenu->addAction(openAction);
 	fileMenu->addAction(saveAction);
 	fileMenu->addAction(saveAsAction);
 	fileMenu->addSeparator();
-	fileMenu->addAction(importBitmapAction);
-	fileMenu->addAction(exportBitmapAction);
-	fileMenu->addAction(importPaletteAction);
-	fileMenu->addAction(exportPaletteAction);
-	fileMenu->addAction(importEgaHeadAction);
-	fileMenu->addSeparator();
 	fileMenu->addAction(quitAction);
 
-	editMenu = menuBar()->addMenu(tr("&View"));
-	editMenu->addAction(zoomInAction);
-	editMenu->addAction(zoomOutAction);
-	editMenu->addAction(prefAction);
+	QMenu* portMenu = menuBar()->addMenu(tr("Im&port/Export"));
+	portMenu->addAction(importBitmapAction);
+	portMenu->addAction(importEgaHeadAction);
+	portMenu->addAction(exportBitmapAction);
+	portMenu->addSeparator();
+	portMenu->addAction(importPaletteAction);
+	portMenu->addAction(exportPaletteAction);
 
-	toolMenu = menuBar()->addMenu(tr("&Tools"));
+	QMenu* toolMenu = menuBar()->addMenu(tr("&Tools"));
+	toolMenu->addAction(exportForEditorAction);
 	toolMenu->addAction(fixPaletteAction);
 	toolMenu->addAction(setOneToOneAction);
-	toolMenu->addAction(exportForEditorAction);
+
+	QMenu* viewMenu = menuBar()->addMenu(tr("&View"));
+	viewMenu->addAction(zoomInAction);
+	viewMenu->addAction(zoomOutAction);
+	viewMenu->addAction(prefAction);
 
 	menuBar()->addSeparator();
 
-	helpMenu = menuBar()->addMenu(tr("&Help"));
+	QMenu* helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(helpAction);
 	helpMenu->addAction(aboutAction);
 }
 void MainWindow::createToolBars() {
-	fileToolBar = addToolBar(tr("File"));
+	QToolBar* fileToolBar = addToolBar(tr("File"));
 	fileToolBar->setObjectName("fileToolbar");
 	fileToolBar->addAction(newAction);
 	fileToolBar->addAction(openAction);
 	fileToolBar->addAction(saveAction);
-	fileToolBar->addAction(importBitmapAction);
-	fileToolBar->addAction(exportBitmapAction);
-	fileToolBar->addAction(importPaletteAction);
-	fileToolBar->addAction(exportPaletteAction);
 
-	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->setObjectName("editToolbar");
-	editToolBar->addAction(fixPaletteAction);
-	editToolBar->addAction(setOneToOneAction);
+	QToolBar* portBar = addToolBar(tr("Import/Export"));
+	portBar->setObjectName("portBar");
+	portBar->addAction(importBitmapAction);
+	portBar->addAction(importEgaHeadAction);
+	portBar->addAction(exportBitmapAction);
+	portBar->addAction(importPaletteAction);
+	portBar->addAction(exportPaletteAction);
+
+	QToolBar* toolsBar = addToolBar(tr("&Tools"));
+	toolsBar->setObjectName("toolsBar");
+	toolsBar->addAction(exportForEditorAction);
+	toolsBar->addAction(fixPaletteAction);
+	toolsBar->addAction(setOneToOneAction);
+
+	QToolBar* viewBar = addToolBar(tr("&View"));
+	viewBar->setObjectName("viewBar");
+	viewBar->addAction(zoomInAction);
+	viewBar->addAction(zoomOutAction);
+	viewBar->addAction(prefAction);
+
+	QToolBar* helpBar = addToolBar(tr("&Help"));
+	helpBar->setObjectName("helpBar");
+	helpBar->addAction(helpAction);
+	helpBar->addAction(aboutAction);
 
 }
 void MainWindow::setCurrentFile(QString str) {
