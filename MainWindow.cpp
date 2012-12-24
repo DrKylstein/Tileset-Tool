@@ -345,21 +345,20 @@ void MainWindow::createMenus() {
 	fileMenu->addSeparator();
 	fileMenu->addAction(quitAction);
 
-	QMenu* portMenu = menuBar()->addMenu(tr("Im&port/Export"));
-	portMenu->addAction(importBitmapAction);
-	portMenu->addAction(exportBitmapAction);
-	portMenu->addSeparator();
-	portMenu->addAction(importPaletteAction);
-	portMenu->addAction(exportPaletteAction);
-	portMenu->addSeparator();
-	portMenu->addAction(importInfoAction);
-	portMenu->addAction(importEgaHeadAction);
+	QMenu* graphicsMenu = menuBar()->addMenu(tr("&Graphics"));
+	graphicsMenu->addAction(importBitmapAction);
+	graphicsMenu->addAction(exportBitmapAction);
 
+	QMenu* paletteMenu = menuBar()->addMenu(tr("&Colors"));
+	paletteMenu->addAction(importPaletteAction);
+	paletteMenu->addAction(fixPaletteAction);
+	paletteMenu->addAction(exportPaletteAction);
 
 	QMenu* toolMenu = menuBar()->addMenu(tr("&Tools"));
 	toolMenu->addAction(exportForEditorAction);
-	toolMenu->addAction(fixPaletteAction);
 	toolMenu->addAction(setOneToOneAction);
+	toolMenu->addAction(importInfoAction);
+	toolMenu->addAction(importEgaHeadAction);
 
 	QMenu* viewMenu = menuBar()->addMenu(tr("&View"));
 	viewMenu->addAction(zoomInAction);
@@ -384,16 +383,16 @@ void MainWindow::createToolBars() {
 	portBar->addAction(importBitmapAction);
 	portBar->addAction(exportBitmapAction);
 	portBar->addAction(importPaletteAction);
+	portBar->addAction(fixPaletteAction);
 	portBar->addAction(exportPaletteAction);
-	portBar->addAction(importEgaHeadAction);
-	portBar->addAction(importInfoAction);
 
 
 	QToolBar* toolsBar = addToolBar(tr("&Tools"));
 	toolsBar->setObjectName("toolsBar");
 	toolsBar->addAction(exportForEditorAction);
-	toolsBar->addAction(fixPaletteAction);
 	toolsBar->addAction(setOneToOneAction);
+	toolsBar->addAction(importEgaHeadAction);
+	toolsBar->addAction(importInfoAction);
 
 	QToolBar* viewBar = addToolBar(tr("&View"));
 	viewBar->setObjectName("viewBar");
