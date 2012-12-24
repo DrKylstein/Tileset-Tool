@@ -52,6 +52,7 @@ AnimationEditor::AnimationEditor(QWidget* parent): QWidget(parent) {
 				animFrameLayout->setContentsMargins(0, 0, 0, 0);
 				anim = new AnimationPreview;
 				animFrameLayout->addWidget(anim);
+				animFrame->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 				//animFrame->setMaximumSize(QSize(64, 64));
 			framesLayout->addWidget(_framesView);
 		QHBoxLayout* controlsLayout = new QHBoxLayout;
@@ -84,7 +85,7 @@ AnimationEditor::AnimationEditor(QWidget* parent): QWidget(parent) {
 				animPreset->addItem(tr("Eight-Frame Cycle"));
 				animPreset->addItem(tr("Three-Frame Oscilation"));
 				animPreset->addItem(tr("Five-Frame Oscilation"));
-			_applyPreset = new QPushButton(tr("Apply"));
+			_applyPreset = new QPushButton(tr("Apply &Cycle"));
 				controlsLayout->addWidget(_applyPreset);
 				connect(_applyPreset, SIGNAL(released(void)), this, SLOT(applyPreset(void)));
 
@@ -95,6 +96,11 @@ AnimationEditor::AnimationEditor(QWidget* parent): QWidget(parent) {
 	_presetShortcut = new QShortcut(QKeySequence(tr("C")), this);
 	_presetShortcut->setContext(Qt::ApplicationShortcut);
 	connect(_presetShortcut, SIGNAL(activated()), this, SLOT(applyPreset()));
+
+	_framesView->setStatusTip(tr("Double-click to assign graphic."));
+
+	_applyPreset->setStatusTip(tr("Applies selected animation cycle to current tile. Shortcut: C"));
+	animPreset->setStatusTip(tr("Chooses a preset animation cycle. Click \"Apply\" to use."));
 }
 void AnimationEditor::applyPreset() {
 	QModelIndex baseFrame = _model->index(_currentRow, 0);

@@ -33,8 +33,10 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 	mapper = new QDataWidgetMapper(this);
 	QVBoxLayout* layout = new QVBoxLayout;
 		setLayout(layout);
+		QGroupBox* collision = new QGroupBox(tr("Collision"));
+			layout->addWidget(collision);
 			QGridLayout* currentTileGrid = new QGridLayout;
-				layout->addLayout(currentTileGrid);
+				collision->setLayout(currentTileGrid);
 				QVBoxLayout* centerLayout = new QVBoxLayout;
 					currentTileGrid->addLayout(centerLayout, 1, 1);
 					QFrame* slopeFrame = new QFrame;
@@ -50,8 +52,8 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 							connect(topSlope, SIGNAL(runChanged(int)), this, SLOT(_runChanged(int)));
 					slopeEnable = new QComboBox();
 						slopeEnable->addItem(tr("No Slope"));
-						slopeEnable->addItem(tr("Top Slope"));
-						slopeEnable->addItem(tr("Bottom Slope"));
+						slopeEnable->addItem(tr("Sloped Top"));
+						slopeEnable->addItem(tr("Sloped Bottom"));
 						centerLayout->addWidget(slopeEnable, 0, Qt::AlignHCenter);
 							connect(slopeEnable, SIGNAL(currentIndexChanged(int)), this, SLOT(_slopeEnableChanged(int)));
 				topBlocking = new QCheckBox(tr("Top"));
@@ -62,12 +64,14 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 					currentTileGrid->addWidget(rightBlocking, 1, 2, Qt::AlignHCenter | Qt::AlignVCenter);
 				bottomBlocking = new QCheckBox(tr("Bottom"));
 					currentTileGrid->addWidget(bottomBlocking, 2, 1, Qt::AlignHCenter | Qt::AlignVCenter);
+		QGroupBox* gamerules = new QGroupBox("Game Rules");
+			layout->addWidget(gamerules);
 		QFormLayout* behaviorForm = new QFormLayout;
-			layout->addLayout(behaviorForm);
+			gamerules->setLayout(behaviorForm);
 					behavior = new QComboBox;
-						behaviorForm->addRow(tr("Interaction:"), behavior);
-						behavior->addItem(tr("Does Nothing"));
-						behavior->addItem(tr("Kills"));
+						behaviorForm->addRow(tr("When player touches center:"), behavior);
+						behavior->addItem(tr("Do Nothing"));
+						behavior->addItem(tr("Hurt"));
 						behavior->addItem(tr("Door 1"));
 						behavior->addItem(tr("Door 2"));
 						behavior->addItem(tr("Door 3"));
@@ -88,7 +92,7 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 						behavior->addItem(tr("Key 2"));
 						behavior->addItem(tr("Key 3"));
 						behavior->addItem(tr("Key 4"));
-						behavior->addItem(tr("Message box popup"));
+						behavior->addItem(tr("Message box pops up"));
 						behavior->addItem(tr("Lightswitch"));
 						behavior->addItem(tr("Teleporter"));
 						behavior->addItem(tr("Switch On"));
@@ -98,16 +102,16 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 						behavior->addItem(tr("Foreground"));
 						behavior->addItem(tr("Masked"));
 					surfaceType = new QComboBox;
-						surfaceType->addItem(tr("Normal"));
-						surfaceType->addItem(tr("Slippery"));
-						surfaceType->addItem(tr("Frictionless"));
-						behaviorForm->addRow(tr("Friction:"), surfaceType);
+						surfaceType->addItem(tr("Do Nothing"));
+						surfaceType->addItem(tr("Player slips"));
+						surfaceType->addItem(tr("Player slides"));
+						behaviorForm->addRow(tr("When player touches top:"), surfaceType);
 								connect(topBlocking, SIGNAL(toggled(bool)), surfaceType, SLOT(setEnabled(bool)));
 					bottomType = new QComboBox;
-						bottomType->addItem(tr("Normal"));
-						bottomType->addItem(tr("Type 2 (CKCM Hand-hang)"));
-						bottomType->addItem(tr("Type 3"));
-						behaviorForm->addRow(tr("Bottom Behavior:"), bottomType);
+						bottomType->addItem(tr("Do Nothing"));
+						bottomType->addItem(tr("(CKCM) Player grabs on"));
+						bottomType->addItem(tr("Patch Action"));
+						behaviorForm->addRow(tr("When player touches bottom:"), bottomType);
 								connect(bottomBlocking, SIGNAL(toggled(bool)), bottomType, SLOT(setEnabled(bool)));
 
 	connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(_focusChange(QWidget*, QWidget*)));
@@ -153,6 +157,12 @@ TileEditor::TileEditor(QWidget* parent): QWidget(parent) {
 	connect(setMaskedAction, SIGNAL(activated()), this, SLOT(setMasked()));
 	setMaskedAction->setContext(Qt::ApplicationShortcut);
 
+	topSlope->setStatusTip(tr("Drag handles to edit slope."));
+	slopeEnable->setStatusTip(tr("Enable slope or select side to slope."));
+	topBlocking->setStatusTip(tr("Shortcut: W"));
+	leftBlocking->setStatusTip(tr("Shortcut: A"));
+	bottomBlocking->setStatusTip(tr("Shortcut: S"));
+	rightBlocking->setStatusTip(tr("Shortcut: D"));
 }
 void TileEditor::_slopeEnableChanged(int i) {
 	topSlope->setEnabled(i > 0);

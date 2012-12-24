@@ -541,12 +541,15 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags): QMainWindow(par
 
 	_currentTileIndicator = new QLabel(tr("Tile: %1/910 Hex: 0x%2").arg(1).arg(0, 4, 16, QLatin1Char( '0' )));
 	connect(_mainView, SIGNAL(tileSelected(int)), this, SLOT(tileSelected(int)));
-	statusBar()->addWidget(_currentTileIndicator);
+	statusBar()->addPermanentWidget(_currentTileIndicator);
 
 	_mainView->setCurrentIndex(_tileSet->tileAnim()->index(0,0));
 
 	connect(_mainView, SIGNAL(doubleClicked(const QModelIndex&)), _animEditor, SLOT(pickTile(const QModelIndex&)));
 	connect(_tileSet, SIGNAL(modificationStateChanged(bool)), this, SLOT(setWindowModified(bool)));
+
+	_mainView->setStatusTip(tr("Double-click to assign graphic."));
+	_paletteEditor->setStatusTip(tr("Double-click to change color."));
 }
 MainWindow::~MainWindow() {
 	_saveSettings();
