@@ -93,15 +93,26 @@ AnimationEditor::AnimationEditor(QWidget* parent): QWidget(parent) {
 			connect(anim, SIGNAL(frameChanged(int)), this, SLOT(frameChange(int)));
 			connect(_framesView, SIGNAL(tileSelected(int)), this, SLOT(frameSelected(int)));
 
-	_presetShortcut = new QShortcut(QKeySequence(tr("C")), this);
+	QShortcut* _presetShortcut = new QShortcut(QKeySequence(tr("C")), this);
 	_presetShortcut->setContext(Qt::ApplicationShortcut);
 	connect(_presetShortcut, SIGNAL(activated()), this, SLOT(applyPreset()));
+
+	QShortcut* _mapShortcut = new QShortcut(QKeySequence(tr("T")), this);
+	_mapShortcut->setContext(Qt::ApplicationShortcut);
+	connect(_mapShortcut, SIGNAL(activated()), this, SLOT(_mapTileAdjacent()));
 
 	_framesView->setStatusTip(tr("Double-click to assign graphic."));
 
 	_applyPreset->setStatusTip(tr("Applies selected animation cycle to current tile. Shortcut: C"));
 	animPreset->setStatusTip(tr("Chooses a preset animation cycle. Click \"Apply\" to use."));
 }
+
+void AnimationEditor::_mapTileAdjacent() {
+	for(int i = 0; i < _model->columnCount(); ++i) {
+		_model->setData(_model->index(_currentRow, i), _model->index(_currentRow-1, 0).data().toInt()+1);
+	}
+}
+
 void AnimationEditor::applyPreset() {
 	QModelIndex baseFrame = _model->index(_currentRow, 0);
 	QVector<int> newFrames;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="debug" />
-	<File name="AnimationEditor.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="6639" topLine="174" />
+	<File name="AnimationEditor.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="3627" topLine="73" />
 	</File>
 	<File name="AnimationEditor.hpp" open="0" top="0" tabpos="6">
 		<Cursor position="1654" topLine="41" />
@@ -28,8 +28,8 @@
 	<File name="FramePickerDialog.hpp" open="0" top="0" tabpos="14">
 		<Cursor position="1285" topLine="27" />
 	</File>
-	<File name="MainWindow.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="3409" topLine="78" />
+	<File name="MainWindow.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="14837" topLine="377" />
 	</File>
 	<File name="MainWindow.hpp" open="1" top="0" tabpos="2">
 		<Cursor position="1550" topLine="48" />
@@ -64,8 +64,8 @@
 	<File name="TileAnimModel.hpp" open="0" top="0" tabpos="3">
 		<Cursor position="1606" topLine="25" />
 	</File>
-	<File name="TileEditor.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="8873" topLine="185" />
+	<File name="TileEditor.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="7555" topLine="139" />
 	</File>
 	<File name="TileEditor.hpp" open="0" top="0" tabpos="9">
 		<Cursor position="1385" topLine="36" />
@@ -121,8 +121,8 @@
 	<File name="V2TileInfo.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="135" topLine="0" />
 	</File>
-	<File name="docs/index.html" open="1" top="1" tabpos="8">
-		<Cursor position="5493" topLine="106" />
+	<File name="docs/index.html" open="1" top="0" tabpos="8">
+		<Cursor position="5272" topLine="97" />
 	</File>
 	<File name="main.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="42" topLine="0" />

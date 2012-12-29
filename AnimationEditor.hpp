@@ -36,7 +36,7 @@ class RowToListProxyModel;
 class TileSetView;
 class TileMapDelegate;
 class QToolButton;
-class QShortcut;
+//class QShortcut;
 class AnimationEditor: public QWidget {
 	Q_OBJECT
 
@@ -58,6 +58,7 @@ class AnimationEditor: public QWidget {
 		void frameSelected(int);
 		void togglePlayback();
 		void frameChange(int);
+		void _mapTileAdjacent(void);
 
 	private:
 		QComboBox* animPreset;
@@ -79,7 +80,7 @@ class AnimationEditor: public QWidget {
 		int _frames;
 		bool _playing;
 
-		QShortcut* _presetShortcut;
+		//QShortcut* _presetShortcut;
 
 		FramePickerDialog* _framePicker;
 };
